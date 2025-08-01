@@ -6,5 +6,5 @@ class GetNowPlaying {
 
   GetNowPlaying(this.repository);
 
-  Future<List<Movie>> call() => repository.getNowPlaying();
+  Future<List<Movie>> call(int page) => repository.getNowPlaying( page);
 }

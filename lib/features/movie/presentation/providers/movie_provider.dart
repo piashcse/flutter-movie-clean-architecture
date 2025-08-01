@@ -6,17 +6,17 @@ import 'package:flutter_movie_clean_architecture/features/movie/domain/repositor
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final movieRemoteDataSourceProvider = Provider(
-  (ref) => MovieRemoteDataSource(ref.watch(dioProvider)),
+      (ref) => MovieRemoteDataSource(ref.watch(dioProvider)),
 );
 
 final movieRepositoryProvider = Provider(
-  (ref) => MovieRepositoryImpl(ref.watch(movieRemoteDataSourceProvider)),
+      (ref) => MovieRepositoryImpl(ref.watch(movieRemoteDataSourceProvider)),
 );
 
 final getNowPlayingProvider = Provider(
-  (ref) => GetNowPlaying(ref.watch(movieRepositoryProvider)),
+      (ref) => GetNowPlaying(ref.watch(movieRepositoryProvider)),
 );
 
-final nowPlayingMoviesProvider = FutureProvider<List<Movie>>((ref) async {
-  return ref.watch(getNowPlayingProvider).call();
+final nowPlayingMoviesProvider = FutureProvider.family<List<Movie>, int>((ref, page) async {
+  return ref.watch(getNowPlayingProvider).call(page);
 });
