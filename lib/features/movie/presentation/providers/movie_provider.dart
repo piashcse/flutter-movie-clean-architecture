@@ -3,6 +3,9 @@ import 'package:flutter_movie_clean_architecture/features/movie/data/datasources
 import 'package:flutter_movie_clean_architecture/features/movie/data/repositories/movie_repository_impl.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_now_playing.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_popular.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_top_rated.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_up_coming.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final movieRemoteDataSourceProvider = Provider(
@@ -19,4 +22,28 @@ final getNowPlayingProvider = Provider(
 
 final nowPlayingMoviesProvider = FutureProvider.family<List<Movie>, int>((ref, page) async {
   return ref.watch(getNowPlayingProvider).call(page);
+});
+
+final getPopularProvider = Provider(
+      (ref) => GetPopular(ref.watch(movieRepositoryProvider)),
+);
+
+final popularMoviesProvider = FutureProvider.family<List<Movie>, int>((ref, page) async {
+  return ref.watch(getPopularProvider).call(page);
+});
+
+final getTopRatedProvider = Provider(
+      (ref) => GetTopRated(ref.watch(movieRepositoryProvider)),
+);
+
+final topRatedMoviesProvider = FutureProvider.family<List<Movie>, int>((ref, page) async {
+  return ref.watch(getTopRatedProvider).call(page);
+});
+
+final getUpcomingProvider = Provider(
+      (ref) => GetUpComing(ref.watch(movieRepositoryProvider)),
+);
+
+final upComingMoviesProvider = FutureProvider.family<List<Movie>, int>((ref, page) async {
+  return ref.watch(getUpcomingProvider).call(page);
 });
