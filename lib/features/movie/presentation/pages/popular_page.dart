@@ -55,7 +55,6 @@ class _PopularMoviePageState extends ConsumerState<PopularPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Popular')),
       body: _isInitialLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
