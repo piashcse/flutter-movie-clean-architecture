@@ -1,5 +1,6 @@
 import 'package:flutter_movie_clean_architecture/features/movie/data/datasources/movie_remote_data_source.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/entities/movie_repository.dart';
 
 class MovieRepositoryImpl implements MovieRepository {
@@ -57,5 +58,23 @@ class MovieRepositoryImpl implements MovieRepository {
               overview: e.overview ?? '',
             ))
         .toList();
+  }
+
+  @override
+  Future<MovieDetail> getMovieDetail(int movieId) async {
+    final model = await remoteDataSource.getMovieDetail(movieId);
+
+    return MovieDetail(
+      id: model.id,
+      title: model.title,
+      overview: model.overview,
+      posterPath: model.posterPath ?? "",
+      releaseDate: model.releaseDate ?? "",
+      voteAverage: model.voteAverage ?? 0,
+      runtime: model.runtime ?? 0,
+      originalLanguage: model.originalLanguage ?? "N/A",
+      genres: model.genres?.map((genre) => genre.name ?? "").toList() ?? [],
+      productionCompanies: model.productionCompanies?.map((company) => company.name ?? "").toList() ?? [],
+    );
   }
 }
