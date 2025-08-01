@@ -1,7 +1,7 @@
 # Flutter Movie
 [![Flutter](https://img.shields.io/badge/Flutter-3.22.1-blue.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.3.1-blue.svg?logo=dart)](https://dart.dev)
-[![Riverpod](https://img.shields.io/badge/Riverpod-State--Management-brightgreen?logo=flutter)](https://riverpod.dev)
+[![Riverpod](https://img.shields.io/badge/Riverpod-2.5.1-brightgreen?logo=flutter)](https://riverpod.dev)
 ![badge-Android](https://img.shields.io/badge/Platform-Android-brightgreen)
 ![badge-iOS](https://img.shields.io/badge/Platform-iOS-lightgray)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
@@ -19,6 +19,16 @@ Flutter Movie is built with Riverpod, Clean Architecture, and GoRouter that show
 -	🧪 Riverpod State Management
 -	🌐 Network layer using Dio with Logging
 -	🚀 Smooth UX with loading indicators
+
+## Architecture
+
+<p align="center">
+  </br>
+  <img width="80%" height="80%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter-clean-architecture.png" />
+</p>
+<p align="center">
+<b>Fig.  Clean Architecture </b>
+</p>
 
 ## Project Directory
 
