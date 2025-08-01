@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/data/models/movie_detail_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/movie_model.dart';
 
 class MovieRemoteDataSource {
@@ -29,5 +30,14 @@ class MovieRemoteDataSource {
     return (response.data['results'] as List)
         .map((e) => MovieModel.fromJson(e))
         .toList();
+  }
+
+  Future<MovieDetailModel> getMovieDetail(int id) async {
+    final response = await dio.get('/movie/$id');
+    if (response.statusCode == 200 && response.data != null && response.data is Map<String, dynamic>) {
+      return MovieDetailModel.fromJson(response.data as Map<String, dynamic>);
+    } else {
+      throw Exception('Failed to load movie detail: Invalid response');
+    }
   }
 }
