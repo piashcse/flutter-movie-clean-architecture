@@ -55,7 +55,6 @@ class _MovieHomePageState extends ConsumerState<NowPlayingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Now Playing')),
       body: _isInitialLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(

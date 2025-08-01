@@ -55,7 +55,6 @@ class _UpComingMoviePageState extends ConsumerState<UpComingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Upcoming')),
       body: _isInitialLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(

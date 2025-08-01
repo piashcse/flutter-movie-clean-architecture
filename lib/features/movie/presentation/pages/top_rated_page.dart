@@ -55,7 +55,6 @@ class _TopRatedMoviePageState extends ConsumerState<TopRatedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Top Rated')),
       body: _isInitialLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
