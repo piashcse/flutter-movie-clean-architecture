@@ -1,6 +1,7 @@
 # Flutter Movie
 [![Flutter](https://img.shields.io/badge/Flutter-3.22.1-blue.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.3.1-blue.svg?logo=dart)](https://dart.dev)
+[![Riverpod](https://img.shields.io/badge/Riverpod-State--Management-brightgreen?logo=flutter)](https://riverpod.dev)
 ![badge-Android](https://img.shields.io/badge/Platform-Android-brightgreen)
 ![badge-iOS](https://img.shields.io/badge/Platform-iOS-lightgray)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
@@ -18,6 +19,71 @@ Flutter Movie is built with Riverpod, Clean Architecture, and GoRouter that show
 -	🧪 Riverpod State Management
 -	🌐 Network layer using Dio with Logging
 -	🚀 Smooth UX with loading indicators
+
+## Project Directory
+
+```
+flutter_movie_clean_architecture/
+├── lib/
+│   ├── core/
+│   │   ├── config/
+│   │   │   └── app_constant.dart
+│   │   ├── network/
+│   │   │   └── dio_provider.dart
+│   │   └── utils/
+│   ├── features/
+│   │   └── movie/
+│   │       ├── data/
+│   │       │   ├── datasources/
+│   │       │   │   └── movie_remote_data_source.dart
+│   │       │   ├── models/
+│   │       │   │   ├── movie_model.dart
+│   │       │   │   ├── movie_model.freezed.dart
+│   │       │   │   └── movie_model.g.dart
+│   │       │   └── repositories/
+│   │       │       └── movie_repository_impl.dart
+│   │       ├── domain/
+│   │       │   ├── entities/
+│   │       │   │   └── movie.dart
+│   │       │   ├── repositories/
+│   │       │   │   └── movie_repository.dart
+│   │       │   └── usecases/
+│   │       │       ├── get_now_playing.dart
+│   │       │       ├── get_popular.dart
+│   │       │       ├── get_top_rated.dart
+│   │       │       └── get_up_coming.dart
+│   │       └── presentation/
+│   │           ├── pages/
+│   │           │   ├── movie_detail_page.dart
+│   │           │   ├── movie_main_page.dart
+│   │           │   ├── now_playing_page.dart
+│   │           │   ├── popular_page.dart
+│   │           │   ├── top_rated_page.dart
+│   │           │   └── up_coming_page.dart
+│   │           ├── providers/
+│   │           │   └── movie_provider.dart
+│   │           └── widgets/
+│   │               └── movie_card.dart
+│   ├── routing/
+│   │   ├── app_router.dart
+│   │   └── main.dart
+│   └── main.dart
+├── ios/
+├── screen_shots/
+├── test/
+├── .flutter-plugins
+├── .flutter-plugins-dependencies
+├── .gitignore
+├── .metadata
+├── analysis_options.yaml
+└── flutter_movie_clean_architecture.iml
+```
+
+## Clone the repository
+
+```bash
+git clone git@github.com:piashcse/flutter-movie-clean-architecture.git
+```
 
 ## Install dependencies
 
