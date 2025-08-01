@@ -10,11 +10,52 @@ class MovieRepositoryImpl implements MovieRepository {
   @override
   Future<List<Movie>> getNowPlaying(int page) async {
     final models = await remoteDataSource.getNowPlaying(page);
-    return models.map((e) => Movie(
-      id: e.id,
-      title: e.title,
-      posterPath: e.posterPath,
-      overview: e.overview ?? '',
-    )).toList();
+    return models
+        .map((e) => Movie(
+              id: e.id,
+              title: e.title,
+              posterPath: e.posterPath,
+              overview: e.overview ?? '',
+            ))
+        .toList();
+  }
+
+  @override
+  Future<List<Movie>> getPopular(int page) async {
+    final models = await remoteDataSource.getPopular(page);
+    return models
+        .map((e) => Movie(
+              id: e.id,
+              title: e.title,
+              posterPath: e.posterPath,
+              overview: e.overview ?? '',
+            ))
+        .toList();
+  }
+
+  @override
+  Future<List<Movie>> getTopRated(int page) async {
+    final models = await remoteDataSource.getTopRated(page);
+    return models
+        .map((e) => Movie(
+              id: e.id,
+              title: e.title,
+              posterPath: e.posterPath,
+              overview: e.overview ?? '',
+            ))
+        .toList();
+  }
+
+  @override
+  Future<List<Movie>> getUpComing(int page) async {
+    final models = await remoteDataSource.getUpcoming(page);
+    return models
+        .map((e) => Movie(
+              id: e.id,
+              title: e.title,
+              posterPath: e.posterPath,
+              overview: e.overview ?? '',
+            ))
+        .toList();
   }
 }

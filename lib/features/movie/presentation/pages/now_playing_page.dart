@@ -4,14 +4,14 @@ import 'package:flutter_movie_clean_architecture/features/movie/presentation/pro
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/widgets/movie_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MovieHomePage extends ConsumerStatefulWidget {
-  const MovieHomePage({super.key});
+class NowPlayingPage extends ConsumerStatefulWidget {
+  const NowPlayingPage({super.key});
 
   @override
-  ConsumerState<MovieHomePage> createState() => _MovieHomePageState();
+  ConsumerState<NowPlayingPage> createState() => _MovieHomePageState();
 }
 
-class _MovieHomePageState extends ConsumerState<MovieHomePage> {
+class _MovieHomePageState extends ConsumerState<NowPlayingPage> {
   final _scrollController = ScrollController();
   int _currentPage = 1;
   final List<Movie> _movies = [];

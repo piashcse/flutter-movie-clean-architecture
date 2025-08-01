@@ -1,13 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/movie_home_page.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/presentation/widgets/movie_detail_page.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/movie_detail_page.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/movie_main_page.dart';
 import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (_, __) => const MovieHomePage(),
+      builder: (_, __) => const MovieMainPage(),
     ),
     GoRoute(
       path: '/movie/:id',
