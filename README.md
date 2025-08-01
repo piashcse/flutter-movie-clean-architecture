@@ -33,14 +33,13 @@ flutter run
 
 
 ## Built With 🛠
-- [Flutter](https://kotlinlang.org/) - First class and official programming language for Android development.
-- [Riverpod](https://developer.android.com/jetpack/compose) - Jetpack Compose is Android’s modern toolkit for building native UI.
-- [GoRouter](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous and more..
-- [Dio](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/) - A cold asynchronous data stream that sequentially emits values and completes normally or with an exception.
-- [Freezed](https://developer.android.com/topic/libraries/architecture) - Collection of libraries that help you design robust, testable, and maintainable apps.
-- [JsonSerializable](https://developer.android.com/topic/libraries/architecture/livedata) - Data objects that notify views when the underlying database changes.
-- [Logger / DioLogger](https://developer.android.com/training/data-storage/room) - The Room database provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite
-
+- [Flutter](https://flutter.dev) - Google’s UI toolkit for building natively compiled applications for mobile, web, and desktop from a single codebase.
+- [Riverpod](https://riverpod.dev) - A simple, composable, and testable state management solution for Flutter.
+- [GoRouter](https://pub.dev/packages/go_router) - Declarative routing package for Flutter, designed to work seamlessly with state management and deep linking.
+- [Dio](https://pub.dev/packages/dio) - A powerful HTTP client for Dart, supporting interceptors, global configuration, FormData, request cancellation, and more.
+- [Freezed](https://pub.dev/packages/freezed) - A code generator for immutable classes that helps with union types/pattern matching in Dart.
+- [JsonSerializable](https://pub.dev/packages/json_serializable) - Generates code for converting between Dart objects and JSON, making serialization easy.
+- [Logger / DioLogger](https://pub.dev/packages/logger) - Easy and pretty logging package for debugging; use `DioLogger` to log Dio HTTP requests and responses.
 
 ## 👨 Developed By
 
