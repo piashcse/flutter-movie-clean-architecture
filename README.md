@@ -8,6 +8,12 @@
 <a href="https://github.com/piashcse"><img alt="GitHub" src="https://img.shields.io/static/v1?label=GitHub&message=piashcse&color=C51162"/></a>
 
 Flutter Movie is built with Riverpod, Clean Architecture, and GoRouter that showcases movies fetched from TMDB API. It includes now playing, popular, top-rated, and upcoming movies with support for pagination, search, and detailed view.
+<p align="center">
+  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/Simulator%20Screenshot-iphone-16-pro-2025-08-01-15.08.32.png" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/Simulator%20Screenshot-iphone-16-pro-2025-08-01-15.08.38.png" />
+</p>
+
 
 # ✨ Features
 -	🎞 Now Playing, Popular, Top Rated & Upcoming movie sections
