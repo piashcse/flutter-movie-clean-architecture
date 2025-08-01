@@ -8,8 +8,8 @@ class MovieRepositoryImpl implements MovieRepository {
   MovieRepositoryImpl(this.remoteDataSource);
 
   @override
-  Future<List<Movie>> getNowPlaying() async {
-    final models = await remoteDataSource.getNowPlaying();
+  Future<List<Movie>> getNowPlaying(int page) async {
+    final models = await remoteDataSource.getNowPlaying(page);
     return models.map((e) => Movie(
       id: e.id,
       title: e.title,
