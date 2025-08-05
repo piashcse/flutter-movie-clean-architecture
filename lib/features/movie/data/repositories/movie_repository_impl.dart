@@ -77,4 +77,16 @@ class MovieRepositoryImpl implements MovieRepository {
       productionCompanies: model.productionCompanies?.map((company) => company.name ?? "").toList() ?? [],
     );
   }
+  @override
+  Future<List<Movie>> getMovieSearch(String query) async {
+    final models = await remoteDataSource.getMovieSearch(query);
+    return models
+        .map((e) => Movie(
+      id: e.id,
+      title: e.title,
+      posterPath: e.posterPath,
+      overview: e.overview ?? '',
+    ))
+        .toList();
+  }
 }

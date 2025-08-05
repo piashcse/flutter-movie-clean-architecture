@@ -4,10 +4,10 @@ import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:go_router/go_router.dart';
 
-class MovieCard extends StatelessWidget {
+class MovieCardWidget extends StatelessWidget {
   final Movie movie;
 
-  const MovieCard({super.key, required this.movie});
+  const MovieCardWidget({super.key, required this.movie});
 
   @override
   Widget build(BuildContext context) {
