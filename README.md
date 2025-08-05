@@ -1,5 +1,5 @@
 # Flutter Movie
-[![Flutter](https://img.shields.io/badge/Flutter-3.22.1-blue.svg?logo=flutter)](https://flutter.dev)
+[![Flutter](https://img.shields.io/badge/Flutter-3.8.1-blue.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.3.1-blue.svg?logo=dart)](https://dart.dev)
 [![Riverpod](https://img.shields.io/badge/Riverpod-2.5.1-brightgreen?logo=flutter)](https://riverpod.dev)
 ![badge-Android](https://img.shields.io/badge/Platform-Android-brightgreen)
@@ -53,17 +53,19 @@ flutter_movie_clean_architecture/
 │   │       │   ├── datasources/
 │   │       │   │   └── movie_remote_data_source.dart
 │   │       │   ├── models/
+│   │       │   │   ├── movie_detail_model.dart
 │   │       │   │   ├── movie_model.dart
-│   │       │   │   ├── movie_model.freezed.dart
-│   │       │   │   └── movie_model.g.dart
 │   │       │   └── repositories/
 │   │       │       └── movie_repository_impl.dart
 │   │       ├── domain/
 │   │       │   ├── entities/
-│   │       │   │   └── movie.dart
+│   │       │   │   ├── movie.dart
+│   │       │   │   └── movie_detail.dart
 │   │       │   ├── repositories/
 │   │       │   │   └── movie_repository.dart
 │   │       │   └── usecases/
+│   │       │       ├── get_movie_detail.dart
+│   │       │       ├── get_movie_search.dart
 │   │       │       ├── get_now_playing.dart
 │   │       │       ├── get_popular.dart
 │   │       │       ├── get_top_rated.dart
@@ -79,10 +81,10 @@ flutter_movie_clean_architecture/
 │   │           ├── providers/
 │   │           │   └── movie_provider.dart
 │   │           └── widgets/
-│   │               └── movie_card.dart
+│   │               ├── movie_card.dart
+│   │               └── movie_search.dart
 │   ├── routing/
-│   │   ├── app_router.dart
-│   │   └── main.dart
+│   │   └── app_router.dart
 │   └── main.dart
 ├── ios/
 ├── screen_shots/
@@ -139,7 +141,7 @@ flutter run
 
 # License
 ```
-Copyright 2024 piashcse (Mehedi Hassan Piash)
+Copyright 2025 piashcse (Mehedi Hassan Piash)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
