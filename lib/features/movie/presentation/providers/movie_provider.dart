@@ -4,6 +4,7 @@ import 'package:flutter_movie_clean_architecture/features/movie/data/repositorie
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_movie_detail.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_movie_search.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_now_playing.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_popular.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_top_rated.dart';
@@ -56,4 +57,12 @@ final getMovieDetailProvider = Provider(
 
 final movieDetailProvider = FutureProvider.family<MovieDetail, int>((ref, movieId) async {
   return ref.watch(getMovieDetailProvider).call(movieId);
+});
+
+final getMovieSearchProvider = Provider(
+      (ref) => GetMovieSearch(ref.watch(movieRepositoryProvider)),
+);
+
+final movieSearchProvider = FutureProvider.family<List<Movie>, String>((ref, query) async {
+  return ref.watch(getMovieSearchProvider).call(query);
 });

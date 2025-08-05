@@ -71,7 +71,7 @@ class _MovieHomePageState extends ConsumerState<NowPlayingPage> {
               ),
               itemCount: _movies.length,
               itemBuilder: (context, index) {
-                return MovieCard(movie: _movies[index]);
+                return MovieCardWidget(movie: _movies[index]);
               },
             ),
           ),
