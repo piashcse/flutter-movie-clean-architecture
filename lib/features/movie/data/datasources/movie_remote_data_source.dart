@@ -57,4 +57,11 @@ class MovieRemoteDataSource {
         .map((e) => MovieModel.fromJson(e))
         .toList();
   }
+  Future<List<MovieModel>> getRecommendedMovie(int movieId) async {
+    final response =
+    await dio.get('movie/$movieId/recommendations');
+    return (response.data['results'] as List)
+        .map((e) => MovieModel.fromJson(e))
+        .toList();
+  }
 }
