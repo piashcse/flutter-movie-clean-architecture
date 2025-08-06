@@ -74,19 +74,36 @@ class MovieRepositoryImpl implements MovieRepository {
       runtime: model.runtime ?? 0,
       originalLanguage: model.originalLanguage ?? "N/A",
       genres: model.genres?.map((genre) => genre.name ?? "").toList() ?? [],
-      productionCompanies: model.productionCompanies?.map((company) => company.name ?? "").toList() ?? [],
+      productionCompanies: model.productionCompanies
+              ?.map((company) => company.name ?? "")
+              .toList() ??
+          [],
     );
   }
+
   @override
   Future<List<Movie>> getMovieSearch(String query) async {
     final models = await remoteDataSource.getMovieSearch(query);
     return models
         .map((e) => Movie(
-      id: e.id,
-      title: e.title,
-      posterPath: e.posterPath,
-      overview: e.overview ?? '',
-    ))
+              id: e.id,
+              title: e.title,
+              posterPath: e.posterPath,
+              overview: e.overview ?? '',
+            ))
+        .toList();
+  }
+
+  @override
+  Future<List<Movie>> getRecommendedMovie(int movieId) async {
+    final models = await remoteDataSource.getRecommendedMovie(movieId);
+    return models
+        .map((e) => Movie(
+              id: e.id,
+              title: e.title,
+              posterPath: e.posterPath,
+              overview: e.overview ?? '',
+            ))
         .toList();
   }
 }
