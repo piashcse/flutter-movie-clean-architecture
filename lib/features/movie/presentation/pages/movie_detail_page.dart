@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/utils.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,6 +17,7 @@ class MovieDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final movieDetailAsync = ref.watch(movieDetailProvider(movieId));
     final recommendMovieAsync = ref.watch(recommendMovieProvider(movieId));
+    final movieCreditAsync = ref.watch(movieCreditsProvider(movieId));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -29,6 +31,7 @@ class MovieDetailPage extends ConsumerWidget {
                   MovieDetailInfoSection(movie: movie),
                   MovieDescriptionSection(movie: movie),
                   RecommendedMoviesSection(recommendMovieAsync: recommendMovieAsync),
+                  MovieCreditsSection(movieCreditAsync: movieCreditAsync),
                 ],
               ),
             ),
@@ -330,7 +333,7 @@ class RecommendedMoviesSection extends StatelessWidget {
                 },
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
           ],
         );
       },
@@ -354,6 +357,113 @@ class RecommendedMoviesSection extends StatelessWidget {
       height: 160,
       color: Colors.grey[300],
       child: const Icon(Icons.movie, size: 48, color: Colors.grey),
+    );
+  }
+}
+
+class MovieCreditsSection extends StatelessWidget {
+  final AsyncValue movieCreditAsync;
+
+  const MovieCreditsSection({super.key, required this.movieCreditAsync});
+
+  @override
+  Widget build(BuildContext context) {
+    return movieCreditAsync.when(
+      data: (credits) {
+        final castList = credits?.cast ?? <Cast>[];
+        if (castList.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(
+                'Cast',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 140, // Increased height to accommodate character names
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                scrollDirection: Axis.horizontal,
+                itemCount: castList.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 4),
+                itemBuilder: (context, index) {
+                  final cast = castList[index];
+                  final imageUrl = cast.profilePath != null
+                      ? '$IMAGE_URL${cast.profilePath}'
+                      : null;
+
+                  return SizedBox(
+                    width: 80, // Fixed width for consistent layout
+                    child: Column(
+                      children: [
+                        ClipOval(
+                          child: imageUrl != null
+                              ? Image.network(
+                            imageUrl,
+                            width: 70,
+                            height: 70,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => _placeholder(),
+                          )
+                              : _placeholder(),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          cast.name ?? 'Unknown',
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        );
+      },
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 24),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFF7B2CBF),
+          ),
+        ),
+      ),
+      error: (error, _) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Text(
+          'Failed to load cast.',
+          style: TextStyle(color: Colors.red[400]),
+        ),
+      ),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      width: 70,
+      height: 70,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        shape: BoxShape.circle,
+      ),
+      child: const Icon(Icons.person, color: Colors.grey, size: 35),
     );
   }
 }

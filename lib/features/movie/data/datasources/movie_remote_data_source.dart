@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/movie_detail_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/movie_model.dart';
 
@@ -63,5 +64,10 @@ class MovieRemoteDataSource {
     return (response.data['results'] as List)
         .map((e) => MovieModel.fromJson(e))
         .toList();
+  }
+  Future<Credit> getMovieCredits(int movieId) async {
+    final response =
+    await dio.get('movie/$movieId/credits');
+    return Credit.fromJson(response.data as Map<String, dynamic>);
   }
 }

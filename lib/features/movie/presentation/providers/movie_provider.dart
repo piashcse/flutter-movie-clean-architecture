@@ -1,15 +1,17 @@
 import 'package:flutter_movie_clean_architecture/core/network/dio_provider.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/datasources/movie_remote_data_source.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/repositories/movie_repository_impl.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_movie_credits.dart' show GetMovieCredits;
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_movie_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_movie_search.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_now_playing.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_popular.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_now_playing_movie.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_popular_movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_recommended_movie.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_top_rated.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_up_coming.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_top_rated_movie.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_up_coming_movie.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final movieRemoteDataSourceProvider = Provider(
@@ -81,4 +83,13 @@ final getRecommendMovieProvider = Provider(
 final recommendMovieProvider =
     FutureProvider.family<List<Movie>, int>((ref, movieId) async {
   return ref.watch(getRecommendMovieProvider).call(movieId);
+});
+
+final getMovieCreditProvider = Provider(
+  (ref) => GetMovieCredits(ref.watch(movieRepositoryProvider)),
+);
+
+final movieCreditsProvider =
+    FutureProvider.family<Credit, int>((ref, movieId) async {
+  return ref.watch(getMovieCreditProvider).call(movieId);
 });
