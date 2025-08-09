@@ -30,7 +30,8 @@ class MovieDetailPage extends ConsumerWidget {
                 children: [
                   MovieDetailInfoSection(movie: movie),
                   MovieDescriptionSection(movie: movie),
-                  RecommendedMoviesSection(recommendMovieAsync: recommendMovieAsync),
+                  RecommendedMoviesSection(
+                      recommendMovieAsync: recommendMovieAsync),
                   MovieCreditsSection(movieCreditAsync: movieCreditAsync),
                 ],
               ),
@@ -90,19 +91,19 @@ class MovieDetailHeader extends StatelessWidget {
           children: [
             movie.posterPath != null
                 ? Image.network(
-              '$IMAGE_URL${movie.posterPath}',
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) => Container(
-                color: Colors.grey[300],
-                child: const Icon(Icons.movie,
-                    size: 64, color: Colors.grey),
-              ),
-            )
+                    '$IMAGE_URL${movie.posterPath}',
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => Container(
+                      color: Colors.grey[300],
+                      child:
+                          const Icon(Icons.movie, size: 64, color: Colors.grey),
+                    ),
+                  )
                 : Container(
-              color: Colors.grey[300],
-              child: const Icon(Icons.movie,
-                  size: 64, color: Colors.grey),
-            ),
+                    color: Colors.grey[300],
+                    child:
+                        const Icon(Icons.movie, size: 64, color: Colors.grey),
+                  ),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -150,17 +151,17 @@ class MovieDetailInfoSection extends StatelessWidget {
               ),
               child: movie.posterPath != null
                   ? Image.network(
-                '$IMAGE_URL${movie.posterPath}',
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  color: Colors.grey[300],
-                  child: const Icon(Icons.movie, color: Colors.grey),
-                ),
-              )
+                      '$IMAGE_URL${movie.posterPath}',
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => Container(
+                        color: Colors.grey[300],
+                        child: const Icon(Icons.movie, color: Colors.grey),
+                      ),
+                    )
                   : Container(
-                color: Colors.grey[300],
-                child: const Icon(Icons.movie, color: Colors.grey),
-              ),
+                      color: Colors.grey[300],
+                      child: const Icon(Icons.movie, color: Colors.grey),
+                    ),
             ),
           ),
           const SizedBox(width: 16),
@@ -179,8 +180,11 @@ class MovieDetailInfoSection extends StatelessWidget {
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildInfoItem('Duration',
-                        movie.runtime != null ? formatDuration(movie.runtime!) : 'N/A'),
+                    _buildInfoItem(
+                        'Duration',
+                        movie.runtime != null
+                            ? formatDuration(movie.runtime!)
+                            : 'N/A'),
                     _buildInfoItem('Release Date', movie.releaseDate ?? 'N/A'),
                   ],
                 ),
@@ -251,7 +255,7 @@ class MovieDescriptionSection extends ConsumerWidget {
           const SizedBox(height: 12),
           GestureDetector(
             onTap: () => ref.read(descriptionExpandedProvider.notifier).state =
-            !isExpanded,
+                !isExpanded,
             child: RichText(
               text: TextSpan(
                 children: [
@@ -280,10 +284,12 @@ class MovieDescriptionSection extends ConsumerWidget {
     );
   }
 }
+
 class RecommendedMoviesSection extends StatelessWidget {
   final AsyncValue<List<dynamic>> recommendMovieAsync;
 
-  const RecommendedMoviesSection({super.key, required this.recommendMovieAsync});
+  const RecommendedMoviesSection(
+      {super.key, required this.recommendMovieAsync});
 
   @override
   Widget build(BuildContext context) {
@@ -321,12 +327,12 @@ class RecommendedMoviesSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: movie.posterPath != null
                           ? Image.network(
-                        '$IMAGE_URL${movie.posterPath}',
-                        width: 110,
-                        height: 160,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _errorPlaceholder(),
-                      )
+                              '$IMAGE_URL${movie.posterPath}',
+                              width: 110,
+                              height: 160,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => _errorPlaceholder(),
+                            )
                           : _errorPlaceholder(),
                     ),
                   );
@@ -388,7 +394,7 @@ class MovieCreditsSection extends StatelessWidget {
               ),
             ),
             SizedBox(
-              height: 140, // Increased height to accommodate character names
+              height: 140, // Increased height to accommodate names
               child: ListView.separated(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
@@ -400,34 +406,42 @@ class MovieCreditsSection extends StatelessWidget {
                       ? '$IMAGE_URL${cast.profilePath}'
                       : null;
 
-                  return SizedBox(
-                    width: 80, // Fixed width for consistent layout
-                    child: Column(
-                      children: [
-                        ClipOval(
-                          child: imageUrl != null
-                              ? Image.network(
-                            imageUrl,
-                            width: 70,
-                            height: 70,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => _placeholder(),
-                          )
-                              : _placeholder(),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          cast.name ?? 'Unknown',
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
+                  return InkWell(
+                    onTap: () {
+                      // Navigate to artist detail using GoRouter
+                      context.push('/artistId/${cast.id}');
+                    },
+                    borderRadius: BorderRadius.circular(50),
+                    child: SizedBox(
+                      width: 80, // Fixed width for consistent layout
+                      child: Column(
+                        children: [
+                          ClipOval(
+                            child: imageUrl != null
+                                ? Image.network(
+                                    imageUrl,
+                                    width: 70,
+                                    height: 70,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) =>
+                                        _placeholder(),
+                                  )
+                                : _placeholder(),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 8),
+                          Text(
+                            cast.name ?? 'Unknown',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

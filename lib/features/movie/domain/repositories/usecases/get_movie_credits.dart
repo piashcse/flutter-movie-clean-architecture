@@ -6,5 +6,5 @@ class GetMovieCredits {
 
   GetMovieCredits(this.repository);
 
-  Future<Credit> call(int movieId) => repository.getMovieCredits(movieId);
+  Future<CreditModel> call(int movieId) => repository.getMovieCredits(movieId);
 }
