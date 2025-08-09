@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/data/models/artist_detail_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/movie_detail_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/movie_model.dart';
@@ -58,16 +59,21 @@ class MovieRemoteDataSource {
         .map((e) => MovieModel.fromJson(e))
         .toList();
   }
+
   Future<List<MovieModel>> getRecommendedMovie(int movieId) async {
-    final response =
-    await dio.get('movie/$movieId/recommendations');
+    final response = await dio.get('movie/$movieId/recommendations');
     return (response.data['results'] as List)
         .map((e) => MovieModel.fromJson(e))
         .toList();
   }
-  Future<Credit> getMovieCredits(int movieId) async {
-    final response =
-    await dio.get('movie/$movieId/credits');
-    return Credit.fromJson(response.data as Map<String, dynamic>);
+
+  Future<CreditModel> getMovieCredits(int movieId) async {
+    final response = await dio.get('movie/$movieId/credits');
+    return CreditModel.fromJson(response.data as Map<String, dynamic>);
+  }
+
+  Future<ArtistDetailModel> getArtistDetail(int artistId) async {
+    final response = await dio.get('person/$artistId');
+    return ArtistDetailModel.fromJson(response.data as Map<String, dynamic>);
   }
 }

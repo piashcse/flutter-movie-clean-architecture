@@ -1,5 +1,6 @@
 import 'package:flutter_movie_clean_architecture/features/movie/data/datasources/movie_remote_data_source.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/ArtistDetail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/entities/movie_repository.dart';
@@ -109,12 +110,26 @@ class MovieRepositoryImpl implements MovieRepository {
   }
 
   @override
-  Future<Credit> getMovieCredits(int movieId) async {
+  Future<CreditModel> getMovieCredits(int movieId) async {
     final model = await remoteDataSource.getMovieCredits(movieId);
-    return Credit(
+    return CreditModel(
       id: model.id,
       cast: model.cast,
       crew: model.crew,
+    );
+  }
+
+  @override
+  Future<Artistdetail> getArtistDetail(int artistId) async {
+    final model = await remoteDataSource.getArtistDetail(artistId);
+    return Artistdetail(
+      id: model.id,
+      name: model.name,
+      profilePath: model.profilePath,
+      biography: model.biography,
+      knownForDepartment: model.knownForDepartment,
+      placeOfBirth: model.placeOfBirth ?? '',
+      birthday: model.birthday ?? '',
     );
   }
 }

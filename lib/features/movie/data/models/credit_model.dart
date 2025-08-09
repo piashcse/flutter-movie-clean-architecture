@@ -4,14 +4,14 @@ part 'credit_model.freezed.dart';
 part 'credit_model.g.dart';
 
 @freezed
-class Credit with _$Credit {
-  const factory Credit({
+class CreditModel with _$CreditModel {
+  const factory CreditModel({
     required int id,
     List<Cast>? cast,
     List<Crew>? crew,
-  }) = _Credit;
+  }) = _CreditModel;
 
-  factory Credit.fromJson(Map<String, dynamic> json) => _$CreditFromJson(json);
+  factory CreditModel.fromJson(Map<String, dynamic> json) => _$CreditModelFromJson(json);
 }
 
 @freezed

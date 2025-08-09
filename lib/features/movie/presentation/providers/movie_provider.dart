@@ -2,9 +2,12 @@ import 'package:flutter_movie_clean_architecture/core/network/dio_provider.dart'
 import 'package:flutter_movie_clean_architecture/features/movie/data/datasources/movie_remote_data_source.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/repositories/movie_repository_impl.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/ArtistDetail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_movie_credits.dart' show GetMovieCredits;
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_artist_detail.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_movie_credits.dart'
+    show GetMovieCredits;
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_movie_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_movie_search.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_now_playing_movie.dart';
@@ -90,6 +93,15 @@ final getMovieCreditProvider = Provider(
 );
 
 final movieCreditsProvider =
-    FutureProvider.family<Credit, int>((ref, movieId) async {
+    FutureProvider.family<CreditModel, int>((ref, movieId) async {
   return ref.watch(getMovieCreditProvider).call(movieId);
+});
+
+final getArtistDetailProvider = Provider(
+  (ref) => GetArtistDetail(ref.watch(movieRepositoryProvider)),
+);
+
+final artistDetailProvider =
+    FutureProvider.family<Artistdetail, int>((ref, movieId) async {
+  return ref.watch(getArtistDetailProvider).call(movieId);
 });
