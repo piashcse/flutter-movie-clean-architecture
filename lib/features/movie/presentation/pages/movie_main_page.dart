@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/popular_page.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/top_rated_page.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/up_coming_page.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/presentation/widgets/movie_search.dart'
-    show MovieSearchWidget;
+import 'package:flutter_movie_clean_architecture/features/movie/presentation/widgets/movie_search.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'now_playing_page.dart';
@@ -27,7 +26,7 @@ class _MovieMainPageState extends ConsumerState<MovieMainPage> {
   ];
 
   final _pageLabels = [
-    'Now Playing',
+    'Flutter Movie',
     'Popular',
     'Top Rated',
     'Upcoming',
