@@ -2,7 +2,7 @@ import 'package:flutter_movie_clean_architecture/core/network/dio_provider.dart'
 import 'package:flutter_movie_clean_architecture/features/movie/data/datasources/movie_remote_data_source.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/repositories/movie_repository_impl.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/ArtistDetail.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/artist_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_all_artist_movies.dart';
