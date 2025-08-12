@@ -76,4 +76,8 @@ class MovieRemoteDataSource {
     final response = await dio.get('person/$artistId');
     return ArtistDetailModel.fromJson(response.data as Map<String, dynamic>);
   }
+  Future<CreditModel> getArtistAllMovies(int artistId) async {
+      final response = await dio.get('person/$artistId/combined_credits');
+      return CreditModel.fromJson(response.data as Map<String, dynamic>);
+  }
 }

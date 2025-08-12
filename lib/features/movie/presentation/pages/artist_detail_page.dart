@@ -18,6 +18,7 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
   @override
   Widget build(BuildContext context) {
     final artistDetailAsync = ref.watch(artistDetailProvider(widget.artistId));
+    final artistAllMoviesAsync = ref.watch(artistDetailAllMoviesProvider(widget.artistId));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -34,9 +35,7 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
               expandedHeight: 0,
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () =>{
-                  Navigator.pop(context)
-                },
+                onPressed: () => Navigator.pop(context),
               ),
               title: Text(
                 artist.name,
@@ -68,13 +67,10 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                               fit: BoxFit.cover,
                             )
                                 : null,
-                            color: artist.profilePath == null
-                                ? Colors.grey[300]
-                                : null,
+                            color: artist.profilePath == null ? Colors.grey[300] : null,
                           ),
                           child: artist.profilePath == null
-                              ? const Icon(Icons.person,
-                              color: Colors.grey, size: 60)
+                              ? const Icon(Icons.person, color: Colors.grey, size: 60)
                               : null,
                         ),
                         const SizedBox(width: 18),
@@ -93,68 +89,29 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                               const SizedBox(height: 8),
                               Text(
                                 'Artist Detail',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
+                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                               ),
                               Text(
                                 artist.knownForDepartment ?? 'Acting',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                ),
+                                style: const TextStyle(fontSize: 16, color: Colors.black87),
                               ),
                               const SizedBox(height: 8),
-
-                              // Artist Detail Info
-                              Text(
-                                'Artist Detail',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
-                              ),
-                              const Text(
-                                '1',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-
-                              // Birthday
                               Text(
                                 'Birthday',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
+                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                               ),
                               Text(
-                                artist.birthday ?? '1978-10-13',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                ),
+                                artist.birthday ?? 'N/A',
+                                style: const TextStyle(fontSize: 16, color: Colors.black87),
                               ),
                               const SizedBox(height: 8),
-
-                              // Place of Birth
                               Text(
                                 'Place of Birth',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
-                                ),
+                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                               ),
                               Text(
-                                artist.placeOfBirth ?? 'Orange County, California, USA',
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black87,
-                                ),
+                                artist.placeOfBirth ?? 'N/A',
+                                style: const TextStyle(fontSize: 16, color: Colors.black87),
                               ),
                             ],
                           ),
@@ -166,24 +123,14 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                     // Biography Section
                     const Text(
                       'Biography',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      artist.biography ??
-                          "Sadie Katz is a working actress living in Los Angeles. Her most recent film Credits include starring in 20th Century Fox's Fan Favorite Horror franchise \"Wrong Turn 6\" playing the twisted, sexy Sally Hillicker. Showing her range and acting chops she also played the sweet sensitive, leading lady in \"Chavez: Cage of Glory\" opening in 400 theaters September 2013 along side Danny Trejo, Steven Bauer and Hector Echavarria. Katz also stars in the thriller \"House of Bad\" Fan Favorite Award Winner at Big Bear Horror Fest 2013. You can also see Sadie starring as a free-spirited partygirl with issues in \"Nipple and Pal...",
+                      artist.biography ?? 'No biography available.',
                       maxLines: _isExpanded ? null : 4,
-                      overflow: _isExpanded
-                          ? TextOverflow.visible
-                          : TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        height: 1.5,
-                        color: Colors.black87,
-                      ),
+                      overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                      style: const TextStyle(fontSize: 16, height: 1.5, color: Colors.black87),
                     ),
                     const SizedBox(height: 8),
                     GestureDetector(
@@ -202,6 +149,9 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
+
+                    // Artist Movies Section
+                    ArtistMoviesSection(artistAllMoviesAsync: artistAllMoviesAsync),
                   ],
                 ),
               ),
@@ -232,6 +182,89 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ArtistMoviesSection extends StatelessWidget {
+  final AsyncValue<dynamic> artistAllMoviesAsync; // expecting API response
+
+  const ArtistMoviesSection({super.key, required this.artistAllMoviesAsync});
+
+  @override
+  Widget build(BuildContext context) {
+    return artistAllMoviesAsync.when(
+      data: (moviesResponse) {
+        final movies = moviesResponse.cast; // cast list from API
+        if (movies.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
+              child: Text(
+                'Movies',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 160,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: movies.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final movie = movies[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, '/movie/${movie.id}');
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: movie.posterPath != null
+                          ? Image.network(
+                        '$IMAGE_URL${movie.posterPath}',
+                        width: 110,
+                        height: 160,
+                        fit: BoxFit.cover,
+                        errorBuilder: (_, __, ___) => _errorPlaceholder(),
+                      )
+                          : _errorPlaceholder(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+        );
+      },
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 24),
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, _) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Text(
+          'Failed to load movies.',
+          style: TextStyle(color: Colors.red[400]),
+        ),
+      ),
+    );
+  }
+
+  Widget _errorPlaceholder() {
+    return Container(
+      width: 100,
+      height: 160,
+      color: Colors.grey[300],
+      child: const Icon(Icons.movie, size: 48, color: Colors.grey),
     );
   }
 }
