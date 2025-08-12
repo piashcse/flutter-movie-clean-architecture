@@ -9,22 +9,30 @@
 
 Flutter Movie is built with Riverpod, Clean Architecture, and GoRouter that showcases movies fetched from TMDB API. It includes now playing, popular, top-rated, and upcoming movies with support for pagination, search, and detailed view.
 <p align="center">
-  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/Simulator%20Screenshot-iphone-16-pro-2025-08-01-15.08.32.png" />
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/Simulator%20Screenshot-iphone-16-pro-2025-08-01-15.08.38.png" />
+  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/home.png" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/detail.png" />
+</p>
+<br>
+<p align="center">
+  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/search.png" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/artist.png" />
 </p>
 
 
 # ✨ Features
--	🎞 Now Playing, Popular, Top Rated & Upcoming movie sections
--	🔍 Movie Detail Page
--	📃 Pagination (infinite scroll)
--	🔄 Bottom Navigation
--	🧭 Declarative Routing with GoRouter
--	🧱 Clean Architecture (Presentation / Domain / Data)
--	🧪 Riverpod State Management
--	🌐 Network layer using Dio with Logging
--	🚀 Smooth UX with loading indicators
+- 🎞 Now Playing, Popular, Top Rated & Upcoming movie sections
+- 🔍 Movie Detail Page
+- 🎯 Recommended Movies
+- 🔍 Search Movies
+- 👥 Artist List
+- 🧾 Artist Detail Page
+- 📃 Pagination (infinite scroll)
+- 🔄 Bottom Navigation
+- 🧭 Declarative Routing with GoRouter
+- 🧱 Clean Architecture (Presentation / Domain / Data)
+- 🧪 Riverpod State Management
+- 🌐 Network layer using Dio with Logging
+- 🚀 Smooth UX with loading indicators
 
 ## Architecture
 
@@ -47,6 +55,7 @@ flutter_movie_clean_architecture/
 │   │   ├── network/
 │   │   │   └── dio_provider.dart
 │   │   └── utils/
+│   │       └── utils.dart
 │   ├── features/
 │   │   └── movie/
 │   │       ├── data/
@@ -55,23 +64,32 @@ flutter_movie_clean_architecture/
 │   │       │   ├── models/
 │   │       │   │   ├── movie_detail_model.dart
 │   │       │   │   ├── movie_model.dart
+│   │       │   │   └── credit_model.dart
 │   │       │   └── repositories/
 │   │       │       └── movie_repository_impl.dart
 │   │       ├── domain/
 │   │       │   ├── entities/
 │   │       │   │   ├── movie.dart
-│   │       │   │   └── movie_detail.dart
+│   │       │   │   ├── movie_detail.dart
+│   │       │   │   ├── credit.dart
+│   │       │   │   └── artist_detail.dart
 │   │       │   ├── repositories/
 │   │       │   │   └── movie_repository.dart
 │   │       │   └── usecases/
+│   │       │       ├── get_all_artist_movies.dart
 │   │       │       ├── get_movie_detail.dart
+│   │       │       ├── get_movie_credits.dart
 │   │       │       ├── get_movie_search.dart
 │   │       │       ├── get_now_playing.dart
 │   │       │       ├── get_popular.dart
 │   │       │       ├── get_top_rated.dart
-│   │       │       └── get_up_coming.dart
+│   │       │       ├── get_up_coming.dart
+│   │       │       ├── get_recommended_movie.dart
+│   │       │       └── get_artist_detail.dart
 │   │       └── presentation/
 │   │           ├── pages/
+│   │           │   ├── artist_detail_page.dart
+│   │           │   ├── artist_list_page.dart
 │   │           │   ├── movie_detail_page.dart
 │   │           │   ├── movie_main_page.dart
 │   │           │   ├── now_playing_page.dart
@@ -79,7 +97,7 @@ flutter_movie_clean_architecture/
 │   │           │   ├── top_rated_page.dart
 │   │           │   └── up_coming_page.dart
 │   │           ├── providers/
-│   │           │   └── movie_provider.dart
+│   │           │   ├── movie_provider.dart
 │   │           └── widgets/
 │   │               ├── movie_card.dart
 │   │               └── movie_search.dart
@@ -107,6 +125,11 @@ git clone git@github.com:piashcse/flutter-movie-clean-architecture.git
 
 ```bash
 flutter pub get
+```
+## Generate code (build runner)
+
+```bash
+flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 ## Run the app
