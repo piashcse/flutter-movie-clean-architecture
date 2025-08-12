@@ -10,7 +10,7 @@ final dioProvider = Provider<Dio>((ref) {
       'api_key': API_KEY,
     },
   ));
-  dio.interceptors.add(PrettyDioLogger(
+  /*dio.interceptors.add(PrettyDioLogger(
     requestHeader: true,
     requestBody: true,
     responseBody: true,
@@ -18,6 +18,6 @@ final dioProvider = Provider<Dio>((ref) {
     error: true,
     compact: true,
     maxWidth: 90,
-  ));
+  ));*/
   return dio;
 });

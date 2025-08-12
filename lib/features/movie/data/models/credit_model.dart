@@ -25,6 +25,7 @@ class Cast with _$Cast {
     @JsonKey(name: 'original_name') String? originalName,
     double? popularity,
     @JsonKey(name: 'profile_path') String? profilePath,
+    @JsonKey(name: 'poster_path') String? posterPath,
     @JsonKey(name: 'cast_id') int? castId,
     String? character,
     @JsonKey(name: 'credit_id') String? creditId,

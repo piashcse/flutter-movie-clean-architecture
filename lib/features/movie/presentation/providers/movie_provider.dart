@@ -5,6 +5,7 @@ import 'package:flutter_movie_clean_architecture/features/movie/data/repositorie
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/ArtistDetail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_all_artist_movies.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_artist_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/usecases/get_movie_credits.dart'
     show GetMovieCredits;
@@ -104,4 +105,13 @@ final getArtistDetailProvider = Provider(
 final artistDetailProvider =
     FutureProvider.family<Artistdetail, int>((ref, movieId) async {
   return ref.watch(getArtistDetailProvider).call(movieId);
+});
+
+final getArtistAllMoviesProvider = Provider(
+  (ref) => GetAllArtistMovies(ref.watch(movieRepositoryProvider)),
+);
+
+final artistDetailAllMoviesProvider =
+FutureProvider.family<CreditModel, int>((ref, artistId) async {
+  return ref.watch(getArtistAllMoviesProvider).call(artistId);
 });
