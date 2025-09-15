@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series.dart';
 
 part 'tv_series_model.freezed.dart';
 part 'tv_series_model.g.dart';
@@ -13,5 +12,6 @@ class TvSeriesModel with _$TvSeriesModel {
     required String overview,
   }) = _TvSeriesModel;
 
-  factory TvSeriesModel.fromJson(Map<String, dynamic> json) => _$TvSeriesModelFromJson(json);
+  factory TvSeriesModel.fromJson(Map<String, dynamic> json) =>
+      _$TvSeriesModelFromJson(json);
 }
