@@ -1,4 +1,4 @@
-# Flutter Movie
+# Flutter Movie & TV Series
 [![Flutter](https://img.shields.io/badge/Flutter-3.8.1-blue.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.3.1-blue.svg?logo=dart)](https://dart.dev)
 [![Riverpod](https://img.shields.io/badge/Riverpod-2.5.1-brightgreen?logo=flutter)](https://riverpod.dev)
@@ -7,7 +7,7 @@
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 <a href="https://github.com/piashcse"><img alt="GitHub" src="https://img.shields.io/static/v1?label=GitHub&message=piashcse&color=C51162"/></a>
 
-Flutter Movie is built with Riverpod, Clean Architecture, and GoRouter that showcases movies fetched from TMDB API. It includes now playing, popular, top-rated, and upcoming movies with support for pagination, search, and detailed view.
+Flutter Movie & TV Series is built with Riverpod, Clean Architecture, and GoRouter that showcases movies and TV series fetched from TMDB API. It includes now playing, popular, top-rated, and upcoming movies and TV series with support for pagination, search, and detailed views.
 <p align="center">
   <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/home.png" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/detail.png" />
@@ -20,12 +20,22 @@ Flutter Movie is built with Riverpod, Clean Architecture, and GoRouter that show
 
 
 # ✨ Features
+
+### Movies
 - 🎞 Now Playing, Popular, Top Rated & Upcoming movie sections
-- 🔍 Movie Detail Page
+- 🔍 Movie Detail Pages with Cast & Crew
 - 🎯 Recommended Movies
 - 🔍 Search Movies
-- 👥 Artist List
-- 🧾 Artist Detail Page
+- 👤 Artist/Actor Detail Page with navigation from movie cast
+
+### TV Series
+- 📺 Airing Today, On The Air, Popular & Upcoming TV series sections
+- 🔍 TV Series Detail Pages with Cast & Crew
+- 🎯 Recommended TV Series
+- 🔍 Search TV Series
+- 👤 Artist/Actor Detail Page with navigation from TV series cast
+
+### Common Features
 - 📃 Pagination (infinite scroll)
 - 🔄 Bottom Navigation
 - 🧭 Declarative Routing with GoRouter
@@ -57,50 +67,87 @@ flutter_movie_clean_architecture/
 │   │   └── utils/
 │   │       └── utils.dart
 │   ├── features/
-│   │   └── movie/
+│   │   ├── movie/
+│   │   │   ├── data/
+│   │   │   │   ├── datasources/
+│   │   │   │   │   └── movie_remote_data_source.dart
+│   │   │   │   ├── models/
+│   │   │   │   │   ├── movie_detail_model.dart
+│   │   │   │   │   ├── movie_model.dart
+│   │   │   │   │   └── credit_model.dart
+│   │   │   │   └── repositories/
+│   │   │   │       └── movie_repository_impl.dart
+│   │   │   ├── domain/
+│   │   │   │   ├── entities/
+│   │   │   │   │   ├── movie.dart
+│   │   │   │   │   ├── movie_detail.dart
+│   │   │   │   │   ├── credit.dart
+│   │   │   │   │   └── artist_detail.dart
+│   │   │   │   ├── repositories/
+│   │   │   │   │   └── movie_repository.dart
+│   │   │   │   └── usecases/
+│   │   │   │       ├── get_all_artist_movies.dart
+│   │   │   │       ├── get_movie_detail.dart
+│   │   │   │       ├── get_movie_credits.dart
+│   │   │   │       ├── get_movie_search.dart
+│   │   │   │       ├── get_now_playing.dart
+│   │   │   │       ├── get_popular.dart
+│   │   │   │       ├── get_top_rated.dart
+│   │   │   │       ├── get_up_coming.dart
+│   │   │   │       ├── get_recommended_movie.dart
+│   │   │   │       └── get_artist_detail.dart
+│   │   │   └── presentation/
+│   │   │       ├── pages/
+│   │   │       │   ├── artist_detail_page.dart
+│   │   │       │   ├── artist_list_page.dart
+│   │   │       │   ├── movie_detail_page.dart
+│   │   │       │   ├── movie_main_page.dart
+│   │   │       │   ├── now_playing_page.dart
+│   │   │       │   ├── popular_page.dart
+│   │   │       │   ├── top_rated_page.dart
+│   │   │       │   └── up_coming_page.dart
+│   │   │       ├── providers/
+│   │   │       │   ├── movie_provider.dart
+│   │   │       └── widgets/
+│   │   │           ├── movie_card.dart
+│   │   │           └── movie_search.dart
+│   │   └── tv_series/
 │   │       ├── data/
 │   │       │   ├── datasources/
-│   │       │   │   └── movie_remote_data_source.dart
+│   │       │   │   └── tv_series_remote_data_source.dart
 │   │       │   ├── models/
-│   │       │   │   ├── movie_detail_model.dart
-│   │       │   │   ├── movie_model.dart
-│   │       │   │   └── credit_model.dart
+│   │       │   │   ├── tv_series_detail_model.dart
+│   │       │   │   ├── tv_series_model.dart
+│   │       │   │   └── tv_series_credit_model.dart
 │   │       │   └── repositories/
-│   │       │       └── movie_repository_impl.dart
+│   │       │       └── tv_series_repository_impl.dart
 │   │       ├── domain/
 │   │       │   ├── entities/
-│   │       │   │   ├── movie.dart
-│   │       │   │   ├── movie_detail.dart
-│   │       │   │   ├── credit.dart
-│   │       │   │   └── artist_detail.dart
+│   │       │   │   ├── tv_series.dart
+│   │       │   │   └── tv_series_detail.dart
 │   │       │   ├── repositories/
-│   │       │   │   └── movie_repository.dart
+│   │       │   │   └── tv_series_repository.dart
 │   │       │   └── usecases/
-│   │       │       ├── get_all_artist_movies.dart
-│   │       │       ├── get_movie_detail.dart
-│   │       │       ├── get_movie_credits.dart
-│   │       │       ├── get_movie_search.dart
-│   │       │       ├── get_now_playing.dart
-│   │       │       ├── get_popular.dart
-│   │       │       ├── get_top_rated.dart
-│   │       │       ├── get_up_coming.dart
-│   │       │       ├── get_recommended_movie.dart
-│   │       │       └── get_artist_detail.dart
+│   │       │       ├── get_airing_today.dart
+│   │       │       ├── get_on_the_air.dart
+│   │       │       ├── get_popular_tv_series.dart
+│   │       │       ├── get_upcoming_tv_series.dart
+│   │       │       ├── get_tv_series_detail.dart
+│   │       │       ├── get_tv_series_credits.dart
+│   │       │       ├── get_recommended_tv_series.dart
+│   │       │       └── get_tv_series_search.dart
 │   │       └── presentation/
 │   │           ├── pages/
-│   │           │   ├── artist_detail_page.dart
-│   │           │   ├── artist_list_page.dart
-│   │           │   ├── movie_detail_page.dart
-│   │           │   ├── movie_main_page.dart
-│   │           │   ├── now_playing_page.dart
-│   │           │   ├── popular_page.dart
-│   │           │   ├── top_rated_page.dart
-│   │           │   └── up_coming_page.dart
+│   │           │   ├── airing_today_page.dart
+│   │           │   ├── on_the_air_page.dart
+│   │           │   ├── popular_tv_series_page.dart
+│   │           │   ├── tv_series_detail_page.dart
+│   │           │   ├── tv_series_main_page.dart
+│   │           │   └── upcoming_tv_series_page.dart
 │   │           ├── providers/
-│   │           │   ├── movie_provider.dart
+│   │           │   ├── tv_series_provider.dart
 │   │           └── widgets/
-│   │               ├── movie_card.dart
-│   │               └── movie_search.dart
+│   │               └── tv_series_card.dart
 │   ├── routing/
 │   │   └── app_router.dart
 │   └── main.dart
