@@ -72,6 +72,11 @@ class TvSeriesRepositoryImpl implements TvSeriesRepository {
       overview: model.overview,
       voteAverage: model.voteAverage,
       firstAirDate: model.firstAirDate,
+      originalLanguage: model.originalLanguage,
+      episodeRunTime: model.episodeRunTime,
+      lastAirDate: model.lastAirDate,
+      numberOfEpisodes: model.numberOfEpisodes,
+      numberOfSeasons: model.numberOfSeasons,
     );
   }
 

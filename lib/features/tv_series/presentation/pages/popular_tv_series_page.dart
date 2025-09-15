@@ -54,10 +54,9 @@ class _PopularTvSeriesPageState extends ConsumerState<PopularTvSeriesPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _isInitialLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
+    return _isInitialLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
               children: [
                 Expanded(
                   child: GridView.builder(
@@ -81,7 +80,6 @@ class _PopularTvSeriesPageState extends ConsumerState<PopularTvSeriesPage> {
                     child: CircularProgressIndicator(),
                   ),
               ],
-            ),
-    );
+            );
   }
 }

@@ -54,10 +54,9 @@ class _OnTheAirPageState extends ConsumerState<OnTheAirPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _isInitialLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
+    return _isInitialLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
               children: [
                 Expanded(
                   child: GridView.builder(
@@ -81,7 +80,6 @@ class _OnTheAirPageState extends ConsumerState<OnTheAirPage> {
                     child: CircularProgressIndicator(),
                   ),
               ],
-            ),
-    );
+            );
   }
 }

@@ -66,10 +66,15 @@ class _MainTabPageState extends ConsumerState<MainTabPage> with SingleTickerProv
             UniversalSearchWidget(onClose: _closeSearch),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleSearch,
-        child: const Icon(Icons.search),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 48.0), // moves FAB upward
+        child: FloatingActionButton(
+          onPressed: _toggleSearch,
+          child: const Icon(Icons.search),
+        ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      extendBody: true, // allows FAB to float over content
     );
   }
 }

@@ -13,6 +13,11 @@ class TvSeriesDetailModel with _$TvSeriesDetailModel {
     required String overview,
     @JsonKey(name: 'first_air_date') required String firstAirDate,
     @JsonKey(name: 'vote_average') required double voteAverage,
+    @JsonKey(name: 'original_language') String? originalLanguage,
+    @JsonKey(name: 'episode_run_time') List<int>? episodeRunTime,
+    @JsonKey(name: 'last_air_date') String? lastAirDate,
+    @JsonKey(name: 'number_of_episodes') int? numberOfEpisodes,
+    @JsonKey(name: 'number_of_seasons') int? numberOfSeasons,
   }) = _TvSeriesDetailModel;
 
   factory TvSeriesDetailModel.fromJson(Map<String, dynamic> json) =>

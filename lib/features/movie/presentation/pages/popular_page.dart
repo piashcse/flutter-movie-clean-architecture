@@ -54,34 +54,32 @@ class _PopularMoviePageState extends ConsumerState<PopularPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _isInitialLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-        children: [
-          Expanded(
-            child: GridView.builder(
-              controller: _scrollController,
-              padding: const EdgeInsets.all(8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 2 / 3,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-              ),
-              itemCount: _movies.length,
-              itemBuilder: (context, index) {
-                return MovieCardWidget(movie: _movies[index]);
-              },
+    return _isInitialLoading
+        ? const Center(child: CircularProgressIndicator())
+        : Column(
+      children: [
+        Expanded(
+          child: GridView.builder(
+            controller: _scrollController,
+            padding: const EdgeInsets.all(8),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 2 / 3,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
             ),
+            itemCount: _movies.length,
+            itemBuilder: (context, index) {
+              return MovieCardWidget(movie: _movies[index]);
+            },
           ),
-          if (_hasMore && _isLoadingMore && !_isInitialLoading)
-            const Padding(
-              padding: EdgeInsets.only(bottom: 24.0, top: 8.0),
-              child: CircularProgressIndicator(),
-            ),
-        ],
-      ),
+        ),
+        if (_hasMore && _isLoadingMore && !_isInitialLoading)
+          const Padding(
+            padding: EdgeInsets.only(bottom: 24.0, top: 8.0),
+            child: CircularProgressIndicator(),
+          ),
+      ],
     );
   }
 }
