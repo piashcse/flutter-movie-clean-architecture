@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/popular_page.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/top_rated_page.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/up_coming_page.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/presentation/widgets/movie_search.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'now_playing_page.dart';
@@ -16,7 +15,6 @@ class MovieMainPage extends ConsumerStatefulWidget {
 
 class _MovieMainPageState extends ConsumerState<MovieMainPage> {
   int _selectedIndex = 0;
-  bool _isSearching = false;
 
   final _pages = [
     const NowPlayingPage(),
@@ -25,62 +23,27 @@ class _MovieMainPageState extends ConsumerState<MovieMainPage> {
     const UpComingPage(),
   ];
 
-  final _pageLabels = [
-    'Flutter Movie',
-    'Popular',
-    'Top Rated',
-    'Upcoming',
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      _isSearching = false;
-    });
-  }
-
-  void _toggleSearch() {
-    setState(() {
-      _isSearching = !_isSearching;
-    });
-  }
-
-  void _closeSearch() {
-    setState(() {
-      _isSearching = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(_pageLabels[_selectedIndex]),
-      ),
-      body: Stack(
-        children: [
-          // Main content
-          _pages[_selectedIndex],
-          // Search overlay
-          if (_isSearching)
-            MovieSearchWidget(onClose: _closeSearch),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _toggleSearch,
-        child: const Icon(Icons.search),
-      ),
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.movie),
+            icon: Icon(Icons.play_circle_fill),
             label: 'Now Playing',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.trending_up),
+            icon: Icon(Icons.favorite),
             label: 'Popular',
           ),
           BottomNavigationBarItem(
@@ -88,7 +51,7 @@ class _MovieMainPageState extends ConsumerState<MovieMainPage> {
             label: 'Top Rated',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.keyboard_arrow_down),
+            icon: Icon(Icons.upcoming),
             label: 'Upcoming',
           ),
         ],
