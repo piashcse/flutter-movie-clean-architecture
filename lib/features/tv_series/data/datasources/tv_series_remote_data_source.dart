@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/tv_series_credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/tv_series_detail_model.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/tv_series_model.dart';
-import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series.dart';
-import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series_detail.dart';
 
 class TvSeriesRemoteDataSource {
   final Dio dio;
@@ -62,5 +61,17 @@ class TvSeriesRemoteDataSource {
     return (response.data['results'] as List)
         .map((e) => TvSeriesModel.fromJson(e as Map<String, dynamic>))
         .toList();
+  }
+
+  Future<List<TvSeriesModel>> getRecommendedTvSeries(int tvSeriesId) async {
+    final response = await dio.get('tv/$tvSeriesId/recommendations');
+    return (response.data['results'] as List)
+        .map((e) => TvSeriesModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<TvSeriesCreditModel> getTvSeriesCredits(int tvSeriesId) async {
+    final response = await dio.get('tv/$tvSeriesId/credits');
+    return TvSeriesCreditModel.fromJson(response.data as Map<String, dynamic>);
   }
 }

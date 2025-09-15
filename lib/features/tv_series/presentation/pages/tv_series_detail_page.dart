@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/utils.dart';
+import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/tv_series_credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/providers/tv_series_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +16,8 @@ class TvSeriesDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tvSeriesDetailAsync = ref.watch(tvSeriesDetailProvider(tvSeriesId));
+    final recommendedTvSeriesAsync = ref.watch(recommendedTvSeriesProvider(tvSeriesId));
+    final tvSeriesCreditsAsync = ref.watch(tvSeriesCreditsProvider(tvSeriesId));
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -27,6 +30,8 @@ class TvSeriesDetailPage extends ConsumerWidget {
                 children: [
                   TvSeriesDetailInfoSection(tvSeries: tvSeries),
                   TvSeriesDescriptionSection(tvSeries: tvSeries),
+                  RecommendedTvSeriesSection(recommendedTvSeriesAsync: recommendedTvSeriesAsync),
+                  TvSeriesCastSection(tvSeriesCreditsAsync: tvSeriesCreditsAsync),
                 ],
               ),
             ),
@@ -280,6 +285,200 @@ class TvSeriesDescriptionSection extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class RecommendedTvSeriesSection extends StatelessWidget {
+  final AsyncValue<List<dynamic>> recommendedTvSeriesAsync;
+
+  const RecommendedTvSeriesSection({super.key, required this.recommendedTvSeriesAsync});
+
+  @override
+  Widget build(BuildContext context) {
+    return recommendedTvSeriesAsync.when(
+      data: (recommendedTvSeries) {
+        if (recommendedTvSeries.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 12, 16, 0),
+              child: Text(
+                'Recommended TV Series',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 160,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                itemCount: recommendedTvSeries.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (context, index) {
+                  final tvSeries = recommendedTvSeries[index];
+                  return GestureDetector(
+                    onTap: () => context.push('/tv/${tvSeries.id}'),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: tvSeries.posterPath != null
+                          ? Image.network(
+                              '$IMAGE_URL${tvSeries.posterPath}',
+                              width: 110,
+                              height: 160,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) => _errorPlaceholder(),
+                            )
+                          : _errorPlaceholder(),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
+        );
+      },
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 24),
+        child: Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, _) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Text(
+          'Failed to load recommended TV series.',
+          style: TextStyle(color: Colors.red[400]),
+        ),
+      ),
+    );
+  }
+
+  Widget _errorPlaceholder() {
+    return Container(
+      width: 100,
+      height: 160,
+      color: Colors.grey[300],
+      child: const Icon(Icons.tv, size: 48, color: Colors.grey),
+    );
+  }
+}
+
+class TvSeriesCastSection extends StatelessWidget {
+  final AsyncValue<TvSeriesCreditModel> tvSeriesCreditsAsync;
+
+  const TvSeriesCastSection({super.key, required this.tvSeriesCreditsAsync});
+
+  @override
+  Widget build(BuildContext context) {
+    return tvSeriesCreditsAsync.when(
+      data: (credits) {
+        final castList = credits.cast ?? <Cast>[];
+        if (castList.isEmpty) return const SizedBox.shrink();
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: Text(
+                'Cast',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 140, // Increased height to accommodate names
+              child: ListView.separated(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                scrollDirection: Axis.horizontal,
+                itemCount: castList.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 4),
+                itemBuilder: (context, index) {
+                  final cast = castList[index];
+                  final imageUrl = cast.profilePath != null
+                      ? '$IMAGE_URL${cast.profilePath}'
+                      : null;
+
+                  return GestureDetector(
+                    onTap: () {
+                      context.push('/artistId/${cast.id}');
+                    },
+                    child: SizedBox(
+                      width: 80, // Fixed width for consistent layout
+                      child: Column(
+                        children: [
+                          ClipOval(
+                            child: imageUrl != null
+                                ? Image.network(
+                                    imageUrl,
+                                    width: 70,
+                                    height: 70,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (_, __, ___) =>
+                                        _placeholder(),
+                                  )
+                                : _placeholder(),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            cast.name ?? 'Unknown',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 10,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
+          ],
+        );
+      },
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(vertical: 24),
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Color(0xFF7B2CBF),
+          ),
+        ),
+      ),
+      error: (error, _) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Text(
+          'Failed to load cast.',
+          style: TextStyle(color: Colors.red[400]),
+        ),
+      ),
+    );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      width: 70,
+      height: 70,
+      decoration: BoxDecoration(
+        color: Colors.grey[300],
+        shape: BoxShape.circle,
+      ),
+      child: const Icon(Icons.person, color: Colors.grey, size: 35),
     );
   }
 }

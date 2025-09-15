@@ -1,9 +1,9 @@
 import 'package:flutter_movie_clean_architecture/features/tv_series/data/datasources/tv_series_remote_data_source.dart';
-import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/tv_series_detail_model.dart';
-import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/tv_series_model.dart';
+import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/tv_series_credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/domain/repositories/entities/tv_series_repository.dart';
+
 
 class TvSeriesRepositoryImpl implements TvSeriesRepository {
   final TvSeriesRemoteDataSource remoteDataSource;
@@ -91,5 +91,23 @@ class TvSeriesRepositoryImpl implements TvSeriesRepository {
               overview: e.overview,
             ))
         .toList();
+  }
+
+  @override
+  Future<List<TvSeries>> getRecommendedTvSeries(int tvSeriesId) async {
+    final models = await remoteDataSource.getRecommendedTvSeries(tvSeriesId);
+    return models
+        .map((e) => TvSeries(
+              id: e.id,
+              name: e.name,
+              posterPath: e.posterPath,
+              overview: e.overview,
+            ))
+        .toList();
+  }
+
+  @override
+  Future<TvSeriesCreditModel> getTvSeriesCredits(int tvSeriesId) async {
+    return await remoteDataSource.getTvSeriesCredits(tvSeriesId);
   }
 }
