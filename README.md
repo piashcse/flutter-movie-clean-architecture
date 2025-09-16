@@ -7,7 +7,7 @@
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
 <a href="https://github.com/piashcse"><img alt="GitHub" src="https://img.shields.io/static/v1?label=GitHub&message=piashcse&color=C51162"/></a>
 
-Flutter Movie & TV Series is built with Riverpod, Clean Architecture, and GoRouter that showcases movies and TV series fetched from TMDB API. It includes now playing, popular, top-rated, and upcoming movies and TV series with support for pagination, search, and detailed views.
+Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that showcases movies and TV series fetched from TMDB API. It includes now playing, popular, top-rated, and upcoming Movies, TV series and Celebrity with support for pagination, search, and detailed views.
 <p align="center">
   <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/home.png" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
   <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/detail.png" />
@@ -34,6 +34,11 @@ Flutter Movie & TV Series is built with Riverpod, Clean Architecture, and GoRout
 - 🎯 Recommended TV Series
 - 🔍 Search TV Series
 - 👤 Artist/Actor Detail Page with navigation from TV series cast
+
+### Celebrity
+- 🌟 Popular and Trending Celebrities/Persons sections
+- 🔍 Celebrity Search functionality
+- 👤 Celebrity Detail Page with navigation from movie/tv cast
 
 ### Common Features
 - 📃 Pagination (infinite scroll)
@@ -67,6 +72,34 @@ flutter_movie_clean_architecture/
 │   │   └── utils/
 │   │       └── utils.dart
 │   ├── features/
+│   │   ├── celebrity/
+│   │   │   ├── data/
+│   │   │   │   ├── datasources/
+│   │   │   │   │   └── celebrity_remote_data_source.dart
+│   │   │   │   ├── models/
+│   │   │   │   │   ├── person_model.dart
+│   │   │   │   │   └── person_list_response.dart
+│   │   │   │   └── repositories/
+│   │   │   │       └── celebrity_repository_impl.dart
+│   │   │   ├── domain/
+│   │   │   │   ├── entities/
+│   │   │   │   │   └── person.dart
+│   │   │   │   ├── repositories/
+│   │   │   │   │   └── celebrity_repository.dart
+│   │   │   │   └── usecases/
+│   │   │   │       ├── get_popular_persons.dart
+│   │   │   │       ├── get_trending_persons.dart
+│   │   │   │       └── search_persons.dart
+│   │   │   └── presentation/
+│   │   │       ├── pages/
+│   │   │       │   ├── celebrity_main_page.dart
+│   │   │       │   ├── celebrity_search_page.dart
+│   │   │       │   ├── popular_persons_page.dart
+│   │   │       │   └── trending_persons_page.dart
+│   │   │       ├── providers/
+│   │   │       │   └── celebrity_provider.dart
+│   │   │       └── widgets/
+│   │   │           └── person_card.dart
 │   │   ├── movie/
 │   │   │   ├── data/
 │   │   │   │   ├── datasources/
