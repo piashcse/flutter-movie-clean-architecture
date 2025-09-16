@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
+import 'package:flutter_movie_clean_architecture/features/celebrity/presentation/providers/celebrity_provider.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/providers/tv_series_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,7 +22,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
   bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _searchResults = [];
-  int _activeTab = 0; // 0 for movies, 1 for TV series
+  int _activeTab = 0; // 0 for movies, 1 for TV series, 2 for celebrities
 
   Future<void> _movieSearch(String query) async {
     setState(() {
@@ -81,12 +82,43 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
     }
   }
 
+  Future<void> _celebritySearch(String query) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final result = await ref.read(searchPersonsResultProvider(query).future);
+      setState(() {
+        _searchResults = result.map<Map<String, dynamic>>((person) {
+          return {
+            'id': person.id.toString() ?? '',
+            'title': person.name ?? '',
+            'image': '$IMAGE_URL${person.profilePath ?? ''}',
+            'type': 'celebrity',
+          };
+        }).toList();
+      });
+    } catch (e) {
+      debugPrint('Celebrity search error: $e');
+      setState(() {
+        _searchResults = [];
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
   void _performSearch(String query) {
     if (query.trim().isNotEmpty) {
       if (_activeTab == 0) {
         _movieSearch(query);
-      } else {
+      } else if (_activeTab == 1) {
         _tvSeriesSearch(query);
+      } else {
+        _celebritySearch(query);
       }
     } else {
       setState(() {
@@ -139,8 +171,10 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
               if (id != null && id.toString().isNotEmpty) {
                 if (item['type'] == 'movie') {
                   context.push('/movie/$id');
-                } else {
+                } else if (item['type'] == 'tv') {
                   context.push('/tv/$id');
+                } else if (item['type'] == 'celebrity') {
+                  context.push('/artistId/$id');
                 }
                 widget.onClose(); // Close search after navigation
               }
@@ -207,7 +241,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                             controller: _searchController,
                             autofocus: true,
                             decoration: const InputDecoration(
-                              hintText: 'Search movies and TV series...',
+                              hintText: 'Search movies, TV series, and celebrities...',
                               border: InputBorder.none,
                             ),
                             onChanged: _performSearch,
@@ -229,7 +263,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                       ],
                     ),
                   ),
-                  // Tab selector for movies/TV series
+                  // Tab selector for movies/TV series/celebrities
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
@@ -244,6 +278,12 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                           label: const Text('TV Series'),
                           selected: _activeTab == 1,
                           onSelected: (selected) => _switchTab(1),
+                        ),
+                        const SizedBox(width: 8),
+                        ChoiceChip(
+                          label: const Text('Celebrities'),
+                          selected: _activeTab == 2,
+                          onSelected: (selected) => _switchTab(2),
                         ),
                       ],
                     ),
