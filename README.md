@@ -27,6 +27,7 @@ Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that sho
 - 🎯 Recommended Movies
 - 🔍 Search Movies
 - 👤 Artist/Actor Detail Page with navigation from movie cast
+- ❤️ Favorite Movies (saved locally using Hive database)
 
 ### TV Series
 - 📺 Airing Today, On The Air, Popular & Upcoming TV series sections
@@ -34,11 +35,13 @@ Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that sho
 - 🎯 Recommended TV Series
 - 🔍 Search TV Series
 - 👤 Artist/Actor Detail Page with navigation from TV series cast
+- ❤️ Favorite TV Series (saved locally using Hive database)
 
 ### Celebrity
 - 🌟 Popular and Trending Celebrities/Persons sections
 - 🔍 Celebrity Search functionality
 - 👤 Celebrity Detail Page with navigation from movie/tv cast
+- ❤️ Favorite Celebrities (saved locally using Hive database)
 
 ### Common Features
 - 📃 Pagination (infinite scroll)
@@ -48,6 +51,7 @@ Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that sho
 - 🧪 Riverpod State Management
 - 🌐 Network layer using Dio with Logging
 - 🚀 Smooth UX with loading indicators
+- ❤️ Favorite Management with Local Storage (Hive)
 
 ## Architecture
 
@@ -62,6 +66,7 @@ Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that sho
 ## Project Directory
 
 ```
+```
 flutter_movie_clean_architecture/
 ├── lib/
 │   ├── core/
@@ -69,8 +74,12 @@ flutter_movie_clean_architecture/
 │   │   │   └── app_constant.dart
 │   │   ├── network/
 │   │   │   └── dio_provider.dart
-│   │   └── utils/
-│   │       └── utils.dart
+│   │   ├── utils/
+│   │   │   └── utils.dart
+│   │   └── hive/
+│   │       ├── favorite_model.dart
+│   │       ├── favorite_model.g.dart
+│   │       └── hive_helper.dart
 │   ├── features/
 │   │   ├── celebrity/
 │   │   │   ├── data/
@@ -144,43 +153,45 @@ flutter_movie_clean_architecture/
 │   │   │       └── widgets/
 │   │   │           ├── movie_card.dart
 │   │   │           └── movie_search.dart
-│   │   └── tv_series/
-│   │       ├── data/
-│   │       │   ├── datasources/
-│   │       │   │   └── tv_series_remote_data_source.dart
-│   │       │   ├── models/
-│   │       │   │   ├── tv_series_detail_model.dart
-│   │       │   │   ├── tv_series_model.dart
-│   │       │   │   └── tv_series_credit_model.dart
-│   │       │   └── repositories/
-│   │       │       └── tv_series_repository_impl.dart
-│   │       ├── domain/
-│   │       │   ├── entities/
-│   │       │   │   ├── tv_series.dart
-│   │       │   │   └── tv_series_detail.dart
-│   │       │   ├── repositories/
-│   │       │   │   └── tv_series_repository.dart
-│   │       │   └── usecases/
-│   │       │       ├── get_airing_today.dart
-│   │       │       ├── get_on_the_air.dart
-│   │       │       ├── get_popular_tv_series.dart
-│   │       │       ├── get_upcoming_tv_series.dart
-│   │       │       ├── get_tv_series_detail.dart
-│   │       │       ├── get_tv_series_credits.dart
-│   │       │       ├── get_recommended_tv_series.dart
-│   │       │       └── get_tv_series_search.dart
-│   │       └── presentation/
-│   │           ├── pages/
-│   │           │   ├── airing_today_page.dart
-│   │           │   ├── on_the_air_page.dart
-│   │           │   ├── popular_tv_series_page.dart
-│   │           │   ├── tv_series_detail_page.dart
-│   │           │   ├── tv_series_main_page.dart
-│   │           │   └── upcoming_tv_series_page.dart
-│   │           ├── providers/
-│   │           │   ├── tv_series_provider.dart
-│   │           └── widgets/
-│   │               └── tv_series_card.dart
+│   │   ├── tv_series/
+│   │   │   ├── data/
+│   │   │   │   ├── datasources/
+│   │   │   │   │   └── tv_series_remote_data_source.dart
+│   │   │   │   ├── models/
+│   │   │   │   │   ├── tv_series_detail_model.dart
+│   │   │   │   │   ├── tv_series_model.dart
+│   │   │   │   │   └── tv_series_credit_model.dart
+│   │   │   │   └── repositories/
+│   │   │   │       └── tv_series_repository_impl.dart
+│   │   │   ├── domain/
+│   │   │   │   ├── entities/
+│   │   │   │   │   ├── tv_series.dart
+│   │   │   │   │   └── tv_series_detail.dart
+│   │   │   │   ├── repositories/
+│   │   │   │   │   └── tv_series_repository.dart
+│   │   │   │   └── usecases/
+│   │   │   │       ├── get_airing_today.dart
+│   │   │   │       ├── get_on_the_air.dart
+│   │   │   │       ├── get_popular_tv_series.dart
+│   │   │   │       ├── get_upcoming_tv_series.dart
+│   │   │   │       ├── get_tv_series_detail.dart
+│   │   │   │       ├── get_tv_series_credits.dart
+│   │   │   │       ├── get_recommended_tv_series.dart
+│   │   │   │       └── get_tv_series_search.dart
+│   │   │   └── presentation/
+│   │   │       ├── pages/
+│   │   │       │   ├── airing_today_page.dart
+│   │   │       │   ├── on_the_air_page.dart
+│   │   │       │   ├── popular_tv_series_page.dart
+│   │   │       │   ├── tv_series_detail_page.dart
+│   │   │       │   ├── tv_series_main_page.dart
+│   │   │       │   └── upcoming_tv_series_page.dart
+│   │   │       ├── providers/
+│   │   │       │   ├── tv_series_provider.dart
+│   │   │       └── widgets/
+│   │   │           └── tv_series_card.dart
+│   │   └── favorites/
+│   │       └── favorites_page.dart
 │   ├── routing/
 │   │   └── app_router.dart
 │   └── main.dart
@@ -193,6 +204,7 @@ flutter_movie_clean_architecture/
 ├── .metadata
 ├── analysis_options.yaml
 └── flutter_movie_clean_architecture.iml
+```
 ```
 
 ## Clone the repository
@@ -212,11 +224,22 @@ flutter pub get
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
+This command generates code for:
+- Freezed models (immutable data classes)
+- JsonSerializable (JSON serialization/deserialization)
+- Hive adapters (local database models)
+
 ## Run the app
 
 ```bash
 flutter run
 ```
+
+After running the app, you can:
+- Browse movies, TV series, and celebrities
+- View detailed information about each item
+- Save your favorite items using the heart icon on detail pages
+- Access your saved favorites through the Favorites tab
 
 
 ## Built With 🛠
@@ -227,6 +250,8 @@ flutter run
 - [Freezed](https://pub.dev/packages/freezed) - A code generator for immutable classes that helps with union types/pattern matching in Dart.
 - [JsonSerializable](https://pub.dev/packages/json_serializable) - Generates code for converting between Dart objects and JSON, making serialization easy.
 - [Logger / DioLogger](https://pub.dev/packages/logger) - Easy and pretty logging package for debugging; use `DioLogger` to log Dio HTTP requests and responses.
+- [Hive](https://pub.dev/packages/hive) - Lightweight and blazing fast key-value database written in pure Dart.
+- [Hive Flutter](https://pub.dev/packages/hive_flutter) - Extension for Hive that enables Flutter specific features.
 
 ## 👨 Developed By
 
