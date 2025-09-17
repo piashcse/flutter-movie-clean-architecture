@@ -66,7 +66,6 @@ Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that sho
 ## Project Directory
 
 ```
-```
 flutter_movie_clean_architecture/
 ├── lib/
 │   ├── core/
@@ -204,7 +203,6 @@ flutter_movie_clean_architecture/
 ├── .metadata
 ├── analysis_options.yaml
 └── flutter_movie_clean_architecture.iml
-```
 ```
 
 ## Clone the repository
