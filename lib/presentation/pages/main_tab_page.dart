@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/features/celebrity/presentation/pages/celebrity_main_page.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/favorites_page.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/movie_main_page.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/pages/tv_series_main_page.dart';
 import 'package:flutter_movie_clean_architecture/presentation/widgets/universal_search.dart';
@@ -20,7 +21,7 @@ class _MainTabPageState extends ConsumerState<MainTabPage> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
   }
 
   @override
@@ -52,6 +53,7 @@ class _MainTabPageState extends ConsumerState<MainTabPage> with SingleTickerProv
             Tab(icon: Icon(Icons.movie), text: 'Movies'),
             Tab(icon: Icon(Icons.tv), text: 'TV Series'),
             Tab(icon: Icon(Icons.people), text: 'Celebrities'),
+            Tab(icon: Icon(Icons.favorite), text: 'Favorites'),
           ],
         ),
       ),
@@ -63,6 +65,7 @@ class _MainTabPageState extends ConsumerState<MainTabPage> with SingleTickerProv
               MovieMainPage(),
               TvSeriesMainPage(),
               CelebrityMainPage(),
+              FavoritesPage(),
             ],
           ),
           if (_isSearching)

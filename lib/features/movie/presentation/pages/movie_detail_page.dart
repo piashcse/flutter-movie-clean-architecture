@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
+import 'package:flutter_movie_clean_architecture/core/hive/favorite_model.dart';
+import 'package:flutter_movie_clean_architecture/core/hive/hive_helper.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/utils.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
@@ -66,10 +68,55 @@ class MovieDetailPage extends ConsumerWidget {
   }
 }
 
-class MovieDetailHeader extends StatelessWidget {
+class MovieDetailHeader extends ConsumerStatefulWidget {
   final dynamic movie;
 
   const MovieDetailHeader({super.key, required this.movie});
+
+  @override
+  ConsumerState<MovieDetailHeader> createState() => _MovieDetailHeaderState();
+}
+
+class _MovieDetailHeaderState extends ConsumerState<MovieDetailHeader> {
+  bool _isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorite();
+  }
+
+  Future<void> _checkIfFavorite() async {
+    final isFavorite = await HiveHelper.isFavorite(widget.movie.id, 'movie');
+    if (mounted) {
+      setState(() {
+        _isFavorite = isFavorite;
+      });
+    }
+  }
+
+  Future<void> _toggleFavorite() async {
+    if (_isFavorite) {
+      // Remove from favorites
+      await HiveHelper.deleteFavorite(widget.movie.id, 'movie');
+    } else {
+      // Add to favorites
+      final favorite = Favorite(
+        id: DateTime.now().millisecondsSinceEpoch,
+        itemId: widget.movie.id,
+        title: widget.movie.title ?? 'Unknown Title',
+        posterPath: widget.movie.posterPath ?? '',
+        type: 'movie',
+        overview: widget.movie.overview,
+        releaseDate: widget.movie.releaseDate,
+      );
+      await HiveHelper.insertFavorite(favorite);
+    }
+
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,13 +132,22 @@ class MovieDetailHeader extends StatelessWidget {
         'Movie Detail',
         style: TextStyle(color: Colors.white, fontSize: 20),
       ),
+      actions: [
+        IconButton(
+          icon: Icon(
+            _isFavorite ? Icons.favorite : Icons.favorite_border,
+            color: _isFavorite ? Colors.red : Colors.white,
+          ),
+          onPressed: _toggleFavorite,
+        ),
+      ],
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,
           children: [
-            movie.posterPath != null
+            widget.movie.posterPath != null
                 ? Image.network(
-                    '$IMAGE_URL${movie.posterPath}',
+                    '$IMAGE_URL${widget.movie.posterPath}',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Colors.grey[300],

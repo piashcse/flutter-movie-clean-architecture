@@ -30,6 +30,8 @@ class Cast with _$Cast {
     String? character,
     @JsonKey(name: 'credit_id') String? creditId,
     int? order,
+    @JsonKey(name: 'media_type') String? mediaType,
+    @JsonKey(name: 'first_air_date') String? firstAirDate,
   }) = _Cast;
 
   factory Cast.fromJson(Map<String, dynamic> json) => _$CastFromJson(json);
