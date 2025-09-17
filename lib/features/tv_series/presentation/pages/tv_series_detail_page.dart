@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
+import 'package:flutter_movie_clean_architecture/core/hive/favorite_model.dart';
+import 'package:flutter_movie_clean_architecture/core/hive/hive_helper.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/utils.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/tv_series_credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/providers/tv_series_provider.dart';
@@ -65,10 +67,55 @@ class TvSeriesDetailPage extends ConsumerWidget {
   }
 }
 
-class TvSeriesDetailHeader extends StatelessWidget {
+class TvSeriesDetailHeader extends ConsumerStatefulWidget {
   final dynamic tvSeries;
 
   const TvSeriesDetailHeader({super.key, required this.tvSeries});
+
+  @override
+  ConsumerState<TvSeriesDetailHeader> createState() => _TvSeriesDetailHeaderState();
+}
+
+class _TvSeriesDetailHeaderState extends ConsumerState<TvSeriesDetailHeader> {
+  bool _isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorite();
+  }
+
+  Future<void> _checkIfFavorite() async {
+    final isFavorite = await HiveHelper.isFavorite(widget.tvSeries.id, 'tv');
+    if (mounted) {
+      setState(() {
+        _isFavorite = isFavorite;
+      });
+    }
+  }
+
+  Future<void> _toggleFavorite() async {
+    if (_isFavorite) {
+      // Remove from favorites
+      await HiveHelper.deleteFavorite(widget.tvSeries.id, 'tv');
+    } else {
+      // Add to favorites
+      final favorite = Favorite(
+        id: DateTime.now().millisecondsSinceEpoch,
+        itemId: widget.tvSeries.id,
+        title: widget.tvSeries.name ?? 'Unknown Title',
+        posterPath: widget.tvSeries.posterPath ?? '',
+        type: 'tv',
+        overview: widget.tvSeries.overview,
+        releaseDate: widget.tvSeries.firstAirDate,
+      );
+      await HiveHelper.insertFavorite(favorite);
+    }
+
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,13 +131,22 @@ class TvSeriesDetailHeader extends StatelessWidget {
         'TV Series Detail',
         style: TextStyle(color: Colors.white, fontSize: 20),
       ),
+      actions: [
+        IconButton(
+          icon: Icon(
+            _isFavorite ? Icons.favorite : Icons.favorite_border,
+            color: _isFavorite ? Colors.red : Colors.white,
+          ),
+          onPressed: _toggleFavorite,
+        ),
+      ],
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,
           children: [
-            tvSeries.posterPath != null
+            widget.tvSeries.posterPath != null
                 ? Image.network(
-                    '$IMAGE_URL${tvSeries.posterPath}',
+                    '$IMAGE_URL${widget.tvSeries.posterPath}',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Colors.grey[300],

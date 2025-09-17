@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_movie_clean_architecture/core/hive/hive_helper.dart';
 import 'routing/app_router.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveHelper.init();
   runApp(const ProviderScope(child: MyApp()));
 }
 

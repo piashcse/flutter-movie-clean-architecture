@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
+import 'package:flutter_movie_clean_architecture/core/hive/favorite_model.dart';
+import 'package:flutter_movie_clean_architecture/core/hive/hive_helper.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ArtistDetailPage extends ConsumerStatefulWidget {
   final int artistId;
@@ -14,6 +17,45 @@ class ArtistDetailPage extends ConsumerStatefulWidget {
 
 class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
   bool _isExpanded = false;
+  bool _isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorite();
+  }
+
+  Future<void> _checkIfFavorite() async {
+    final isFavorite = await HiveHelper.isFavorite(widget.artistId, 'celebrity');
+    if (mounted) {
+      setState(() {
+        _isFavorite = isFavorite;
+      });
+    }
+  }
+
+  Future<void> _toggleFavorite(dynamic artist) async {
+    if (_isFavorite) {
+      // Remove from favorites
+      await HiveHelper.deleteFavorite(widget.artistId, 'celebrity');
+    } else {
+      // Add to favorites
+      final favorite = Favorite(
+        id: DateTime.now().millisecondsSinceEpoch,
+        itemId: widget.artistId,
+        title: artist.name ?? 'Unknown Artist',
+        posterPath: artist.profilePath ?? '',
+        type: 'celebrity',
+        overview: artist.biography,
+        releaseDate: null,
+      );
+      await HiveHelper.insertFavorite(favorite);
+    }
+
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +86,15 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              actions: [
+                IconButton(
+                  icon: Icon(
+                    _isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: _isFavorite ? Colors.red : Colors.black,
+                  ),
+                  onPressed: () => _toggleFavorite(artist),
+                ),
+              ],
             ),
             // Content
             SliverToBoxAdapter(
@@ -204,7 +255,7 @@ class ArtistMoviesSection extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.fromLTRB(0, 12, 0, 0),
               child: Text(
-                'Movies',
+                'Movies & TV Shows',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -220,16 +271,22 @@ class ArtistMoviesSection extends StatelessWidget {
                 itemCount: movies.length,
                 separatorBuilder: (_, __) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
-                  final movie = movies[index];
+                  final item = movies[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/movie/${movie.id}');
+                      // Check if the item is a movie or TV series
+                      if (item.mediaType == 'tv') {
+                        context.push('/tv/${item.id}');
+                      } else {
+                        // Default to movie if mediaType is not specified or is 'movie'
+                        context.push('/movie/${item.id}');
+                      }
                     },
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: movie.posterPath != null
+                      child: item.posterPath != null
                           ? Image.network(
-                        '$IMAGE_URL${movie.posterPath}',
+                        '$IMAGE_URL${item.posterPath}',
                         width: 110,
                         height: 160,
                         fit: BoxFit.cover,
