@@ -22,7 +22,7 @@ class PersonCardWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               child: person.profilePath != null
                   ? CachedNetworkImage(
-                      imageUrl: '$IMAGE_URL${person.profilePath}',
+                      imageUrl: '$imageUrl${person.profilePath}',
                       fit: BoxFit.cover,
                       errorWidget: (context, url, error) => Container(
                         color: Colors.grey[300],

@@ -23,7 +23,7 @@ class TvSeriesCardWidget extends StatelessWidget {
                 12,
               ), // Match movie card radius
               child: CachedNetworkImage(
-                imageUrl: '$IMAGE_URL${tvSeries.posterPath}',
+                imageUrl: '$imageUrl${tvSeries.posterPath}',
                 fit: BoxFit.cover,
               ),
             ),

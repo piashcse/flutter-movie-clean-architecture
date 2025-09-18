@@ -23,7 +23,7 @@ class MovieCardWidget extends StatelessWidget {
                 12,
               ), // Adjust radius as needed
               child: CachedNetworkImage(
-                imageUrl: '$IMAGE_URL${movie.posterPath}',
+                imageUrl: '$imageUrl${movie.posterPath}',
                 fit: BoxFit.cover,
               ),
             ),

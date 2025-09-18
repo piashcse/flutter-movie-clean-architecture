@@ -152,7 +152,7 @@ class _MovieDetailHeaderState extends ConsumerState<MovieDetailHeader> {
           children: [
             widget.movie.posterPath != null
                 ? Image.network(
-                    '$IMAGE_URL${widget.movie.posterPath}',
+                    '$imageUrl${widget.movie.posterPath}',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Colors.grey[300],
@@ -176,7 +176,7 @@ class _MovieDetailHeaderState extends ConsumerState<MovieDetailHeader> {
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
+                  colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
                 ),
               ),
             ),
@@ -207,7 +207,7 @@ class MovieDetailInfoSection extends StatelessWidget {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -215,9 +215,9 @@ class MovieDetailInfoSection extends StatelessWidget {
               ),
               child: movie.posterPath != null
                   ? Image.network(
-                      '$IMAGE_URL${movie.posterPath}',
+                      '$imageUrl${movie.posterPath}',
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (context, error, stackTrace) => Container(
                         color: Colors.grey[300],
                         child: const Icon(Icons.movie, color: Colors.grey),
                       ),
@@ -386,7 +386,7 @@ class RecommendedMoviesSection extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: recommendedMovies.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   final movie = recommendedMovies[index];
                   return GestureDetector(
@@ -395,11 +395,11 @@ class RecommendedMoviesSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: movie.posterPath != null
                           ? Image.network(
-                              '$IMAGE_URL${movie.posterPath}',
+                              '$imageUrl${movie.posterPath}',
                               width: 110,
                               height: 160,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => _errorPlaceholder(),
+                              errorBuilder: (context, error, stackTrace) => _errorPlaceholder(),
                             )
                           : _errorPlaceholder(),
                     ),
@@ -467,11 +467,11 @@ class MovieCreditsSection extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
                 itemCount: castList.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 4),
+                separatorBuilder: (context, index) => const SizedBox(width: 4),
                 itemBuilder: (context, index) {
                   final cast = castList[index];
-                  final imageUrl = cast.profilePath != null
-                      ? '$IMAGE_URL${cast.profilePath}'
+                  final profileImageUrl = cast.profilePath != null
+                      ? '$imageUrl${cast.profilePath}'
                       : null;
 
                   return InkWell(
@@ -485,13 +485,13 @@ class MovieCreditsSection extends StatelessWidget {
                       child: Column(
                         children: [
                           ClipOval(
-                            child: imageUrl != null
+                            child: profileImageUrl != null
                                 ? Image.network(
-                                    imageUrl,
+                                    profileImageUrl,
                                     width: 70,
                                     height: 70,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) =>
+                                    errorBuilder: (context, error, stackTrace) =>
                                         _placeholder(),
                                   )
                                 : _placeholder(),

@@ -120,7 +120,7 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                             image: artist.profilePath != null
                                 ? DecorationImage(
                                     image: NetworkImage(
-                                      "$IMAGE_URL${artist.profilePath}",
+                                      "$imageUrl${artist.profilePath}",
                                     ),
                                     fit: BoxFit.cover,
                                   )
@@ -159,7 +159,7 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                                 ),
                               ),
                               Text(
-                                artist.knownForDepartment ?? 'Acting',
+                                artist.knownForDepartment,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color: Colors.black87,
@@ -174,7 +174,7 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                                 ),
                               ),
                               Text(
-                                artist.birthday ?? 'N/A',
+                                artist.birthday,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color: Colors.black87,
@@ -189,7 +189,7 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                                 ),
                               ),
                               Text(
-                                artist.placeOfBirth ?? 'N/A',
+                                artist.placeOfBirth,
                                 style: const TextStyle(
                                   fontSize: 16,
                                   color: Colors.black87,
@@ -212,7 +212,7 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      artist.biography ?? 'No biography available.',
+                      artist.biography,
                       maxLines: _isExpanded ? null : 4,
                       overflow: _isExpanded
                           ? TextOverflow.visible
@@ -315,7 +315,7 @@ class ArtistMoviesSection extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: movies.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   final item = movies[index];
                   return GestureDetector(
@@ -332,11 +332,11 @@ class ArtistMoviesSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: item.posterPath != null
                           ? Image.network(
-                              '$IMAGE_URL${item.posterPath}',
+                              '$imageUrl${item.posterPath}',
                               width: 110,
                               height: 160,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => _errorPlaceholder(),
+                              errorBuilder: (context, error, stackTrace) => _errorPlaceholder(),
                             )
                           : _errorPlaceholder(),
                     ),

@@ -32,9 +32,9 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
       setState(() {
         _searchResults = result.map<Map<String, dynamic>>((movie) {
           return {
-            'id': movie.id.toString() ?? '',
-            'title': movie.title ?? '',
-            'image': '$IMAGE_URL${movie.posterPath ?? ''}',
+            'id': movie.id.toString(),
+            'title': movie.title,
+            'image': '$imageUrl${movie.posterPath ?? ''}',
             'type': 'movie',
           };
         }).toList();
@@ -61,10 +61,10 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
       setState(() {
         _searchResults = result.map<Map<String, dynamic>>((tvSeries) {
           return {
-            'id': tvSeries.id.toString() ?? '',
+            'id': tvSeries.id.toString(),
             'title':
-                tvSeries.name ?? '', // TV series use 'name' instead of 'title'
-            'image': '$IMAGE_URL${tvSeries.posterPath ?? ''}',
+                tvSeries.name, // TV series use 'name' instead of 'title'
+            'image': '$imageUrl${tvSeries.posterPath ?? ''}',
             'type': 'tv',
           };
         }).toList();
@@ -91,9 +91,9 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
       setState(() {
         _searchResults = result.map<Map<String, dynamic>>((person) {
           return {
-            'id': person.id.toString() ?? '',
-            'title': person.name ?? '',
-            'image': '$IMAGE_URL${person.profilePath ?? ''}',
+            'id': person.id.toString(),
+            'title': person.name,
+            'image': '$imageUrl${person.profilePath ?? ''}',
             'type': 'celebrity',
           };
         }).toList();
@@ -222,7 +222,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.5),
+      backgroundColor: Colors.black.withValues(alpha: 0.5),
       body: SafeArea(
         child: Column(
           children: [

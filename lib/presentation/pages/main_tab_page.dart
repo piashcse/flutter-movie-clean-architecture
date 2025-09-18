@@ -5,7 +5,6 @@ import 'package:flutter_movie_clean_architecture/features/movie/presentation/pag
 import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/pages/tv_series_main_page.dart';
 import 'package:flutter_movie_clean_architecture/presentation/widgets/universal_search.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class MainTabPage extends ConsumerStatefulWidget {
   const MainTabPage({super.key});

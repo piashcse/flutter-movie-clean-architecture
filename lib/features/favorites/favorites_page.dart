@@ -127,10 +127,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
                             ),
                             child: favorite.posterPath.isNotEmpty
                                 ? Image.network(
-                                    '$IMAGE_URL${favorite.posterPath}',
+                                    '$imageUrl${favorite.posterPath}',
                                     fit: BoxFit.cover,
                                     width: double.infinity,
-                                    errorBuilder: (_, __, ___) =>
+                                    errorBuilder: (context, error, stackTrace) =>
                                         _buildPlaceholderImage(),
                                   )
                                 : _buildPlaceholderImage(),

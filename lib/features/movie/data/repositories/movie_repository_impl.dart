@@ -142,6 +142,7 @@ class MovieRepositoryImpl implements MovieRepository {
     );
   }
 
+  @override
   Future<CreditModel> getArtistAllMovies(int artistId) async {
     final model = await remoteDataSource.getArtistAllMovies(artistId);
     return CreditModel(id: model.id, cast: model.cast, crew: model.crew);
