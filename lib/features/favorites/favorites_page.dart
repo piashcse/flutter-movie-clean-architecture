@@ -127,10 +127,10 @@ class _FavoritesPageState extends State<FavoritesPage> {
                             ),
                             child: favorite.posterPath.isNotEmpty
                                 ? Image.network(
-                                    '$IMAGE_URL${favorite.posterPath}',
+                                    '$imageUrl${favorite.posterPath}',
                                     fit: BoxFit.cover,
                                     width: double.infinity,
-                                    errorBuilder: (_, __, ___) =>
+                                    errorBuilder: (context, error, stackTrace) =>
                                         _buildPlaceholderImage(),
                                   )
                                 : _buildPlaceholderImage(),
@@ -171,7 +171,9 @@ class _FavoritesPageState extends State<FavoritesPage> {
                                     padding: EdgeInsets.zero,
                                     onPressed: () async {
                                       await HiveHelper.deleteFavorite(
-                                          favorite.itemId, favorite.type);
+                                        favorite.itemId,
+                                        favorite.type,
+                                      );
                                       _refreshFavorites();
                                     },
                                   ),
@@ -198,14 +200,8 @@ class _FavoritesPageState extends State<FavoritesPage> {
           });
         },
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.movie),
-            label: 'Movies',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.tv),
-            label: 'TV Series',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.movie), label: 'Movies'),
+          BottomNavigationBarItem(icon: Icon(Icons.tv), label: 'TV Series'),
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
             label: 'Celebrities',

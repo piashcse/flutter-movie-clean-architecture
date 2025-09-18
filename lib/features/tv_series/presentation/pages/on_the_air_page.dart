@@ -12,7 +12,8 @@ class OnTheAirPage extends ConsumerStatefulWidget {
   ConsumerState<OnTheAirPage> createState() => _OnTheAirPageState();
 }
 
-class _OnTheAirPageState extends PaginationConsumerState<TvSeries, OnTheAirPage> {
+class _OnTheAirPageState
+    extends PaginationConsumerState<TvSeries, OnTheAirPage> {
   @override
   Future<List<TvSeries>> fetchData(int page) async {
     return ref.read(onTheAirTvSeriesProvider(page).future);

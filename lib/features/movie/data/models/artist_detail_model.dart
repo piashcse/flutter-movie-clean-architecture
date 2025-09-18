@@ -4,7 +4,7 @@ part 'artist_detail_model.freezed.dart';
 part 'artist_detail_model.g.dart';
 
 @freezed
-class ArtistDetailModel with _$ArtistDetailModel{
+class ArtistDetailModel with _$ArtistDetailModel {
   const factory ArtistDetailModel({
     required bool adult,
     @JsonKey(name: 'also_known_as') required List<String> alsoKnownAs,

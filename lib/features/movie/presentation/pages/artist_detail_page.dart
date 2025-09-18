@@ -26,7 +26,10 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
   }
 
   Future<void> _checkIfFavorite() async {
-    final isFavorite = await HiveHelper.isFavorite(widget.artistId, 'celebrity');
+    final isFavorite = await HiveHelper.isFavorite(
+      widget.artistId,
+      'celebrity',
+    );
     if (mounted) {
       setState(() {
         _isFavorite = isFavorite;
@@ -60,7 +63,9 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
   @override
   Widget build(BuildContext context) {
     final artistDetailAsync = ref.watch(artistDetailProvider(widget.artistId));
-    final artistAllMoviesAsync = ref.watch(artistDetailAllMoviesProvider(widget.artistId));
+    final artistAllMoviesAsync = ref.watch(
+      artistDetailAllMoviesProvider(widget.artistId),
+    );
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -114,14 +119,22 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                             borderRadius: BorderRadius.circular(8),
                             image: artist.profilePath != null
                                 ? DecorationImage(
-                              image: NetworkImage("$IMAGE_URL${artist.profilePath}"),
-                              fit: BoxFit.cover,
-                            )
+                                    image: NetworkImage(
+                                      "$imageUrl${artist.profilePath}",
+                                    ),
+                                    fit: BoxFit.cover,
+                                  )
                                 : null,
-                            color: artist.profilePath == null ? Colors.grey[300] : null,
+                            color: artist.profilePath == null
+                                ? Colors.grey[300]
+                                : null,
                           ),
                           child: artist.profilePath == null
-                              ? const Icon(Icons.person, color: Colors.grey, size: 60)
+                              ? const Icon(
+                                  Icons.person,
+                                  color: Colors.grey,
+                                  size: 60,
+                                )
                               : null,
                         ),
                         const SizedBox(width: 18),
@@ -140,29 +153,47 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                               const SizedBox(height: 8),
                               Text(
                                 'Artist Detail',
-                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
                               ),
                               Text(
-                                artist.knownForDepartment ?? 'Acting',
-                                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                                artist.knownForDepartment,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 'Birthday',
-                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
                               ),
                               Text(
-                                artist.birthday ?? 'N/A',
-                                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                                artist.birthday,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 'Place of Birth',
-                                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
                               ),
                               Text(
-                                artist.placeOfBirth ?? 'N/A',
-                                style: const TextStyle(fontSize: 16, color: Colors.black87),
+                                artist.placeOfBirth,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
                               ),
                             ],
                           ),
@@ -174,14 +205,23 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                     // Biography Section
                     const Text(
                       'Biography',
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      artist.biography ?? 'No biography available.',
+                      artist.biography,
                       maxLines: _isExpanded ? null : 4,
-                      overflow: _isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                      style: const TextStyle(fontSize: 16, height: 1.5, color: Colors.black87),
+                      overflow: _isExpanded
+                          ? TextOverflow.visible
+                          : TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        height: 1.5,
+                        color: Colors.black87,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     GestureDetector(
@@ -202,7 +242,9 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                     const SizedBox(height: 20),
 
                     // Artist Movies Section
-                    ArtistMoviesSection(artistAllMoviesAsync: artistAllMoviesAsync),
+                    ArtistMoviesSection(
+                      artistAllMoviesAsync: artistAllMoviesAsync,
+                    ),
                   ],
                 ),
               ),
@@ -218,12 +260,16 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Error loading artist details',
-                  style: Theme.of(context).textTheme.headlineSmall),
+              Text(
+                'Error loading artist details',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SizedBox(height: 8),
-              Text(error.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.grey)),
+              Text(
+                error.toString(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey),
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -269,7 +315,7 @@ class ArtistMoviesSection extends StatelessWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: movies.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   final item = movies[index];
                   return GestureDetector(
@@ -286,12 +332,12 @@ class ArtistMoviesSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: item.posterPath != null
                           ? Image.network(
-                        '$IMAGE_URL${item.posterPath}',
-                        width: 110,
-                        height: 160,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _errorPlaceholder(),
-                      )
+                              '$imageUrl${item.posterPath}',
+                              width: 110,
+                              height: 160,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) => _errorPlaceholder(),
+                            )
                           : _errorPlaceholder(),
                     ),
                   );

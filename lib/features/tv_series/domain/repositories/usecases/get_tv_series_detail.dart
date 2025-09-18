@@ -6,5 +6,6 @@ class GetTvSeriesDetail {
 
   GetTvSeriesDetail(this.repository);
 
-  Future<TvSeriesDetail> call(int tvSeriesId) => repository.getTvSeriesDetail(tvSeriesId);
+  Future<TvSeriesDetail> call(int tvSeriesId) =>
+      repository.getTvSeriesDetail(tvSeriesId);
 }

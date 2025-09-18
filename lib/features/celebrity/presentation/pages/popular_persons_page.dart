@@ -12,7 +12,8 @@ class PopularPersonsPage extends ConsumerStatefulWidget {
   ConsumerState<PopularPersonsPage> createState() => _PopularPersonsPageState();
 }
 
-class _PopularPersonsPageState extends PaginationConsumerState<Person, PopularPersonsPage> {
+class _PopularPersonsPageState
+    extends PaginationConsumerState<Person, PopularPersonsPage> {
   @override
   Future<List<Person>> fetchData(int page) async {
     return ref.read(popularPersonsProvider(page).future);

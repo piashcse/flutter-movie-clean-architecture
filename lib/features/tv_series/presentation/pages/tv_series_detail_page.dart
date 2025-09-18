@@ -18,7 +18,9 @@ class TvSeriesDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tvSeriesDetailAsync = ref.watch(tvSeriesDetailProvider(tvSeriesId));
-    final recommendedTvSeriesAsync = ref.watch(recommendedTvSeriesProvider(tvSeriesId));
+    final recommendedTvSeriesAsync = ref.watch(
+      recommendedTvSeriesProvider(tvSeriesId),
+    );
     final tvSeriesCreditsAsync = ref.watch(tvSeriesCreditsProvider(tvSeriesId));
 
     return Scaffold(
@@ -32,8 +34,12 @@ class TvSeriesDetailPage extends ConsumerWidget {
                 children: [
                   TvSeriesDetailInfoSection(tvSeries: tvSeries),
                   TvSeriesDescriptionSection(tvSeries: tvSeries),
-                  RecommendedTvSeriesSection(recommendedTvSeriesAsync: recommendedTvSeriesAsync),
-                  TvSeriesCastSection(tvSeriesCreditsAsync: tvSeriesCreditsAsync),
+                  RecommendedTvSeriesSection(
+                    recommendedTvSeriesAsync: recommendedTvSeriesAsync,
+                  ),
+                  TvSeriesCastSection(
+                    tvSeriesCreditsAsync: tvSeriesCreditsAsync,
+                  ),
                 ],
               ),
             ),
@@ -48,12 +54,16 @@ class TvSeriesDetailPage extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Error loading TV series details',
-                  style: Theme.of(context).textTheme.headlineSmall),
+              Text(
+                'Error loading TV series details',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SizedBox(height: 8),
-              Text(error.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.grey)),
+              Text(
+                error.toString(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey),
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -73,7 +83,8 @@ class TvSeriesDetailHeader extends ConsumerStatefulWidget {
   const TvSeriesDetailHeader({super.key, required this.tvSeries});
 
   @override
-  ConsumerState<TvSeriesDetailHeader> createState() => _TvSeriesDetailHeaderState();
+  ConsumerState<TvSeriesDetailHeader> createState() =>
+      _TvSeriesDetailHeaderState();
 }
 
 class _TvSeriesDetailHeaderState extends ConsumerState<TvSeriesDetailHeader> {
@@ -146,28 +157,31 @@ class _TvSeriesDetailHeaderState extends ConsumerState<TvSeriesDetailHeader> {
           children: [
             widget.tvSeries.posterPath != null
                 ? Image.network(
-                    '$IMAGE_URL${widget.tvSeries.posterPath}',
+                    '$imageUrl${widget.tvSeries.posterPath}',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Colors.grey[300],
-                      child:
-                          const Icon(Icons.movie, size: 64, color: Colors.grey),
+                      child: const Icon(
+                        Icons.movie,
+                        size: 64,
+                        color: Colors.grey,
+                      ),
                     ),
                   )
                 : Container(
                     color: Colors.grey[300],
-                    child:
-                        const Icon(Icons.movie, size: 64, color: Colors.grey),
+                    child: const Icon(
+                      Icons.movie,
+                      size: 64,
+                      color: Colors.grey,
+                    ),
                   ),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.7),
-                  ],
+                  colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
                 ),
               ),
             ),
@@ -198,7 +212,7 @@ class TvSeriesDetailInfoSection extends StatelessWidget {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -206,9 +220,9 @@ class TvSeriesDetailInfoSection extends StatelessWidget {
               ),
               child: tvSeries.posterPath != null
                   ? Image.network(
-                      '$IMAGE_URL${tvSeries.posterPath}',
+                      '$imageUrl${tvSeries.posterPath}',
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (context, error, stackTrace) => Container(
                         color: Colors.grey[300],
                         child: const Icon(Icons.movie, color: Colors.grey),
                       ),
@@ -236,25 +250,39 @@ class TvSeriesDetailInfoSection extends StatelessWidget {
                 Row(
                   children: [
                     _buildInfoItem(
-                        'Duration',
-                        formatTvDuration(tvSeries.episodeRunTime)),
-                    _buildInfoItem('First Air Date', tvSeries.firstAirDate ?? 'N/A'),
+                      'Duration',
+                      formatTvDuration(tvSeries.episodeRunTime),
+                    ),
+                    _buildInfoItem(
+                      'First Air Date',
+                      tvSeries.firstAirDate ?? 'N/A',
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildInfoItem('Language',
-                        tvSeries.originalLanguage?.toUpperCase() ?? 'N/A'),
-                    _buildInfoItem('Rating',
-                        tvSeries.voteAverage?.toStringAsFixed(1) ?? 'N/A'),
+                    _buildInfoItem(
+                      'Language',
+                      tvSeries.originalLanguage?.toUpperCase() ?? 'N/A',
+                    ),
+                    _buildInfoItem(
+                      'Rating',
+                      tvSeries.voteAverage?.toStringAsFixed(1) ?? 'N/A',
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildInfoItem('Episodes', tvSeries.numberOfEpisodes?.toString() ?? 'N/A'),
-                    _buildInfoItem('Seasons', tvSeries.numberOfSeasons?.toString() ?? 'N/A'),
+                    _buildInfoItem(
+                      'Episodes',
+                      tvSeries.numberOfEpisodes?.toString() ?? 'N/A',
+                    ),
+                    _buildInfoItem(
+                      'Seasons',
+                      tvSeries.numberOfSeasons?.toString() ?? 'N/A',
+                    ),
                   ],
                 ),
               ],
@@ -272,10 +300,7 @@ class TvSeriesDetailInfoSection extends StatelessWidget {
         children: [
           Text(label),
           const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(color: Colors.grey),
-          ),
+          Text(value, style: const TextStyle(color: Colors.grey)),
         ],
       ),
     );
@@ -314,8 +339,9 @@ class TvSeriesDescriptionSection extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           GestureDetector(
-            onTap: () => ref.read(tvDescriptionExpandedProvider.notifier).state =
-                !isExpanded,
+            onTap: () =>
+                ref.read(tvDescriptionExpandedProvider.notifier).state =
+                    !isExpanded,
             child: RichText(
               text: TextSpan(
                 children: [
@@ -348,7 +374,10 @@ class TvSeriesDescriptionSection extends ConsumerWidget {
 class RecommendedTvSeriesSection extends StatelessWidget {
   final AsyncValue<List<dynamic>> recommendedTvSeriesAsync;
 
-  const RecommendedTvSeriesSection({super.key, required this.recommendedTvSeriesAsync});
+  const RecommendedTvSeriesSection({
+    super.key,
+    required this.recommendedTvSeriesAsync,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -377,7 +406,7 @@ class RecommendedTvSeriesSection extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: recommendedTvSeries.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   final tvSeries = recommendedTvSeries[index];
                   return GestureDetector(
@@ -386,11 +415,11 @@ class RecommendedTvSeriesSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: tvSeries.posterPath != null
                           ? Image.network(
-                              '$IMAGE_URL${tvSeries.posterPath}',
+                              '$imageUrl${tvSeries.posterPath}',
                               width: 110,
                               height: 160,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => _errorPlaceholder(),
+                              errorBuilder: (context, error, stackTrace) => _errorPlaceholder(),
                             )
                           : _errorPlaceholder(),
                     ),
@@ -458,11 +487,11 @@ class TvSeriesCastSection extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
                 itemCount: castList.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 4),
+                separatorBuilder: (context, index) => const SizedBox(width: 4),
                 itemBuilder: (context, index) {
                   final cast = castList[index];
-                  final imageUrl = cast.profilePath != null
-                      ? '$IMAGE_URL${cast.profilePath}'
+                  final profileImageUrl = cast.profilePath != null
+                      ? '$imageUrl${cast.profilePath}'
                       : null;
 
                   return GestureDetector(
@@ -474,13 +503,13 @@ class TvSeriesCastSection extends StatelessWidget {
                       child: Column(
                         children: [
                           ClipOval(
-                            child: imageUrl != null
+                            child: profileImageUrl != null
                                 ? Image.network(
-                                    imageUrl,
+                                    profileImageUrl,
                                     width: 70,
                                     height: 70,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) =>
+                                    errorBuilder: (context, error, stackTrace) =>
                                         _placeholder(),
                                   )
                                 : _placeholder(),
@@ -511,9 +540,7 @@ class TvSeriesCastSection extends StatelessWidget {
       loading: () => const Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(
-          child: CircularProgressIndicator(
-            color: Color(0xFF7B2CBF),
-          ),
+          child: CircularProgressIndicator(color: Color(0xFF7B2CBF)),
         ),
       ),
       error: (error, _) => Padding(

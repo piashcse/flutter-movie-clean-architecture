@@ -26,8 +26,10 @@ final getAiringTodayProvider = Provider(
   (ref) => GetAiringToday(ref.watch(tvSeriesRepositoryProvider)),
 );
 
-final airingTodayTvSeriesProvider =
-    FutureProvider.family<List<TvSeries>, int>((ref, page) async {
+final airingTodayTvSeriesProvider = FutureProvider.family<List<TvSeries>, int>((
+  ref,
+  page,
+) async {
   return ref.watch(getAiringTodayProvider).call(page);
 });
 
@@ -35,8 +37,10 @@ final getOnTheAirProvider = Provider(
   (ref) => GetOnTheAir(ref.watch(tvSeriesRepositoryProvider)),
 );
 
-final onTheAirTvSeriesProvider =
-    FutureProvider.family<List<TvSeries>, int>((ref, page) async {
+final onTheAirTvSeriesProvider = FutureProvider.family<List<TvSeries>, int>((
+  ref,
+  page,
+) async {
   return ref.watch(getOnTheAirProvider).call(page);
 });
 
@@ -44,8 +48,10 @@ final getPopularTvSeriesProvider = Provider(
   (ref) => GetPopularTvSeries(ref.watch(tvSeriesRepositoryProvider)),
 );
 
-final popularTvSeriesProvider =
-    FutureProvider.family<List<TvSeries>, int>((ref, page) async {
+final popularTvSeriesProvider = FutureProvider.family<List<TvSeries>, int>((
+  ref,
+  page,
+) async {
   return ref.watch(getPopularTvSeriesProvider).call(page);
 });
 
@@ -53,8 +59,10 @@ final getUpcomingTvSeriesProvider = Provider(
   (ref) => GetUpcomingTvSeries(ref.watch(tvSeriesRepositoryProvider)),
 );
 
-final upcomingTvSeriesProvider =
-    FutureProvider.family<List<TvSeries>, int>((ref, page) async {
+final upcomingTvSeriesProvider = FutureProvider.family<List<TvSeries>, int>((
+  ref,
+  page,
+) async {
   return ref.watch(getUpcomingTvSeriesProvider).call(page);
 });
 
@@ -62,8 +70,10 @@ final getTvSeriesDetailProvider = Provider(
   (ref) => GetTvSeriesDetail(ref.watch(tvSeriesRepositoryProvider)),
 );
 
-final tvSeriesDetailProvider =
-    FutureProvider.family<TvSeriesDetail, int>((ref, tvSeriesId) async {
+final tvSeriesDetailProvider = FutureProvider.family<TvSeriesDetail, int>((
+  ref,
+  tvSeriesId,
+) async {
   return ref.watch(getTvSeriesDetailProvider).call(tvSeriesId);
 });
 
@@ -71,8 +81,10 @@ final getTvSeriesSearchProvider = Provider(
   (ref) => GetTvSeriesSearch(ref.watch(tvSeriesRepositoryProvider)),
 );
 
-final tvSeriesSearchProvider =
-    FutureProvider.family<List<TvSeries>, String>((ref, query) async {
+final tvSeriesSearchProvider = FutureProvider.family<List<TvSeries>, String>((
+  ref,
+  query,
+) async {
   return ref.watch(getTvSeriesSearchProvider).call(query);
 });
 
@@ -80,8 +92,10 @@ final getRecommendedTvSeriesProvider = Provider(
   (ref) => GetRecommendedTvSeries(ref.watch(tvSeriesRepositoryProvider)),
 );
 
-final recommendedTvSeriesProvider =
-    FutureProvider.family<List<TvSeries>, int>((ref, tvSeriesId) async {
+final recommendedTvSeriesProvider = FutureProvider.family<List<TvSeries>, int>((
+  ref,
+  tvSeriesId,
+) async {
   return ref.watch(getRecommendedTvSeriesProvider).call(tvSeriesId);
 });
 
@@ -89,7 +103,8 @@ final getTvSeriesCreditsProvider = Provider(
   (ref) => GetTvSeriesCredits(ref.watch(tvSeriesRepositoryProvider)),
 );
 
-final tvSeriesCreditsProvider =
-    FutureProvider.family<TvSeriesCreditModel, int>((ref, tvSeriesId) async {
-  return ref.watch(getTvSeriesCreditsProvider).call(tvSeriesId);
-});
+final tvSeriesCreditsProvider = FutureProvider.family<TvSeriesCreditModel, int>(
+  (ref, tvSeriesId) async {
+    return ref.watch(getTvSeriesCreditsProvider).call(tvSeriesId);
+  },
+);

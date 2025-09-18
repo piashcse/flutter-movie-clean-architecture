@@ -12,5 +12,6 @@ class MovieModel with _$MovieModel {
     @JsonKey(name: 'overview') String? overview,
   }) = _MovieModel;
 
-  factory MovieModel.fromJson(Map<String, dynamic> json) => _$MovieModelFromJson(json);
+  factory MovieModel.fromJson(Map<String, dynamic> json) =>
+      _$MovieModelFromJson(json);
 }

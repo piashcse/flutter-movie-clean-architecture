@@ -19,9 +19,11 @@ class TvSeriesCardWidget extends StatelessWidget {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12), // Match movie card radius
+              borderRadius: BorderRadius.circular(
+                12,
+              ), // Match movie card radius
               child: CachedNetworkImage(
-                imageUrl: '$IMAGE_URL${tvSeries.posterPath}',
+                imageUrl: '$imageUrl${tvSeries.posterPath}',
                 fit: BoxFit.cover,
               ),
             ),

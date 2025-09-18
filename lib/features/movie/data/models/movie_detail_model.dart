@@ -9,13 +9,14 @@ class MovieDetailModel with _$MovieDetailModel {
     required int id,
     required String title,
     required String overview,
-    @JsonKey(name: 'poster_path') required String posterPath,
-    @JsonKey(name: 'release_date') required String releaseDate,
-    @JsonKey(name: 'vote_average') required double voteAverage,
-    required int runtime,
+    @JsonKey(name: 'poster_path') String? posterPath,
+    @JsonKey(name: 'release_date') String? releaseDate,
+    @JsonKey(name: 'vote_average') double? voteAverage,
+    int? runtime,
     @JsonKey(name: 'original_language') String? originalLanguage,
     List<Genre>? genres,
-    @JsonKey(name: 'production_companies') List<ProductionCompany>? productionCompanies,
+    @JsonKey(name: 'production_companies')
+    List<ProductionCompany>? productionCompanies,
   }) = _MovieDetailModel;
 
   factory MovieDetailModel.fromJson(Map<String, dynamic> json) =>
@@ -24,10 +25,7 @@ class MovieDetailModel with _$MovieDetailModel {
 
 @freezed
 class Genre with _$Genre {
-  const factory Genre({
-    required int id,
-    required String? name,
-  }) = _Genre;
+  const factory Genre({required int id, required String? name}) = _Genre;
 
   factory Genre.fromJson(Map<String, dynamic> json) => _$GenreFromJson(json);
 }

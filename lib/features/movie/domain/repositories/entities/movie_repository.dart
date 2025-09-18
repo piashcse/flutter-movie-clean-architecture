@@ -3,7 +3,7 @@ import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
 
-abstract class  MovieRepository {
+abstract class MovieRepository {
   Future<List<Movie>> getNowPlaying(int page);
   Future<List<Movie>> getPopular(int page);
   Future<List<Movie>> getTopRated(int page);

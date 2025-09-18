@@ -45,10 +45,7 @@ class _TvSeriesMainPageState extends ConsumerState<TvSeriesMainPage> {
             icon: Icon(Icons.live_tv),
             label: 'On The Air',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Popular',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Popular'),
           BottomNavigationBarItem(
             icon: Icon(Icons.upcoming),
             label: 'Upcoming',

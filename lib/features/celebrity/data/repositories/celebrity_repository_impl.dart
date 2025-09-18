@@ -28,13 +28,15 @@ class CelebrityRepositoryImpl implements CelebrityRepository {
 
   List<Person> _mapToEntities(List<PersonModel> models) {
     return models
-        .map((model) => Person(
-              id: model.id,
-              name: model.name,
-              profilePath: model.profilePath,
-              knownForDepartment: model.knownForDepartment,
-              popularity: model.popularity,
-            ))
+        .map(
+          (model) => Person(
+            id: model.id,
+            name: model.name,
+            profilePath: model.profilePath,
+            knownForDepartment: model.knownForDepartment,
+            popularity: model.popularity,
+          ),
+        )
         .toList();
   }
 }

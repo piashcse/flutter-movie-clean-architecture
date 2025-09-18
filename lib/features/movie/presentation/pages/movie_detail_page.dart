@@ -33,7 +33,8 @@ class MovieDetailPage extends ConsumerWidget {
                   MovieDetailInfoSection(movie: movie),
                   MovieDescriptionSection(movie: movie),
                   RecommendedMoviesSection(
-                      recommendMovieAsync: recommendMovieAsync),
+                    recommendMovieAsync: recommendMovieAsync,
+                  ),
                   MovieCreditsSection(movieCreditAsync: movieCreditAsync),
                 ],
               ),
@@ -49,12 +50,16 @@ class MovieDetailPage extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Error loading movie details',
-                  style: Theme.of(context).textTheme.headlineSmall),
+              Text(
+                'Error loading movie details',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SizedBox(height: 8),
-              Text(error.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.grey)),
+              Text(
+                error.toString(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey),
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -147,28 +152,31 @@ class _MovieDetailHeaderState extends ConsumerState<MovieDetailHeader> {
           children: [
             widget.movie.posterPath != null
                 ? Image.network(
-                    '$IMAGE_URL${widget.movie.posterPath}',
+                    '$imageUrl${widget.movie.posterPath}',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Colors.grey[300],
-                      child:
-                          const Icon(Icons.movie, size: 64, color: Colors.grey),
+                      child: const Icon(
+                        Icons.movie,
+                        size: 64,
+                        color: Colors.grey,
+                      ),
                     ),
                   )
                 : Container(
                     color: Colors.grey[300],
-                    child:
-                        const Icon(Icons.movie, size: 64, color: Colors.grey),
+                    child: const Icon(
+                      Icons.movie,
+                      size: 64,
+                      color: Colors.grey,
+                    ),
                   ),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.7),
-                  ],
+                  colors: [Colors.transparent, Colors.black.withValues(alpha: 0.7)],
                 ),
               ),
             ),
@@ -199,7 +207,7 @@ class MovieDetailInfoSection extends StatelessWidget {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -207,9 +215,9 @@ class MovieDetailInfoSection extends StatelessWidget {
               ),
               child: movie.posterPath != null
                   ? Image.network(
-                      '$IMAGE_URL${movie.posterPath}',
+                      '$imageUrl${movie.posterPath}',
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
+                      errorBuilder: (context, error, stackTrace) => Container(
                         color: Colors.grey[300],
                         child: const Icon(Icons.movie, color: Colors.grey),
                       ),
@@ -237,20 +245,25 @@ class MovieDetailInfoSection extends StatelessWidget {
                 Row(
                   children: [
                     _buildInfoItem(
-                        'Duration',
-                        movie.runtime != null
-                            ? formatDuration(movie.runtime!)
-                            : 'N/A'),
+                      'Duration',
+                      movie.runtime != null
+                          ? formatDuration(movie.runtime!)
+                          : 'N/A',
+                    ),
                     _buildInfoItem('Release Date', movie.releaseDate ?? 'N/A'),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildInfoItem('Language',
-                        movie.originalLanguage?.toUpperCase() ?? 'N/A'),
-                    _buildInfoItem('Rating',
-                        movie.voteAverage?.toStringAsFixed(1) ?? 'N/A'),
+                    _buildInfoItem(
+                      'Language',
+                      movie.originalLanguage?.toUpperCase() ?? 'N/A',
+                    ),
+                    _buildInfoItem(
+                      'Rating',
+                      movie.voteAverage?.toStringAsFixed(1) ?? 'N/A',
+                    ),
                   ],
                 ),
               ],
@@ -268,10 +281,7 @@ class MovieDetailInfoSection extends StatelessWidget {
         children: [
           Text(label),
           const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(color: Colors.grey),
-          ),
+          Text(value, style: const TextStyle(color: Colors.grey)),
         ],
       ),
     );
@@ -344,8 +354,10 @@ class MovieDescriptionSection extends ConsumerWidget {
 class RecommendedMoviesSection extends StatelessWidget {
   final AsyncValue<List<dynamic>> recommendMovieAsync;
 
-  const RecommendedMoviesSection(
-      {super.key, required this.recommendMovieAsync});
+  const RecommendedMoviesSection({
+    super.key,
+    required this.recommendMovieAsync,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -374,7 +386,7 @@ class RecommendedMoviesSection extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: recommendedMovies.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                separatorBuilder: (context, index) => const SizedBox(width: 12),
                 itemBuilder: (context, index) {
                   final movie = recommendedMovies[index];
                   return GestureDetector(
@@ -383,11 +395,11 @@ class RecommendedMoviesSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: movie.posterPath != null
                           ? Image.network(
-                              '$IMAGE_URL${movie.posterPath}',
+                              '$imageUrl${movie.posterPath}',
                               width: 110,
                               height: 160,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => _errorPlaceholder(),
+                              errorBuilder: (context, error, stackTrace) => _errorPlaceholder(),
                             )
                           : _errorPlaceholder(),
                     ),
@@ -455,11 +467,11 @@ class MovieCreditsSection extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 scrollDirection: Axis.horizontal,
                 itemCount: castList.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 4),
+                separatorBuilder: (context, index) => const SizedBox(width: 4),
                 itemBuilder: (context, index) {
                   final cast = castList[index];
-                  final imageUrl = cast.profilePath != null
-                      ? '$IMAGE_URL${cast.profilePath}'
+                  final profileImageUrl = cast.profilePath != null
+                      ? '$imageUrl${cast.profilePath}'
                       : null;
 
                   return InkWell(
@@ -473,13 +485,13 @@ class MovieCreditsSection extends StatelessWidget {
                       child: Column(
                         children: [
                           ClipOval(
-                            child: imageUrl != null
+                            child: profileImageUrl != null
                                 ? Image.network(
-                                    imageUrl,
+                                    profileImageUrl,
                                     width: 70,
                                     height: 70,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) =>
+                                    errorBuilder: (context, error, stackTrace) =>
                                         _placeholder(),
                                   )
                                 : _placeholder(),
@@ -510,9 +522,7 @@ class MovieCreditsSection extends StatelessWidget {
       loading: () => const Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(
-          child: CircularProgressIndicator(
-            color: Color(0xFF7B2CBF),
-          ),
+          child: CircularProgressIndicator(color: Color(0xFF7B2CBF)),
         ),
       ),
       error: (error, _) => Padding(

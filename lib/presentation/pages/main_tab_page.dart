@@ -5,7 +5,6 @@ import 'package:flutter_movie_clean_architecture/features/movie/presentation/pag
 import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/pages/tv_series_main_page.dart';
 import 'package:flutter_movie_clean_architecture/presentation/widgets/universal_search.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class MainTabPage extends ConsumerStatefulWidget {
   const MainTabPage({super.key});
@@ -14,7 +13,8 @@ class MainTabPage extends ConsumerStatefulWidget {
   ConsumerState<MainTabPage> createState() => _MainTabPageState();
 }
 
-class _MainTabPageState extends ConsumerState<MainTabPage> with SingleTickerProviderStateMixin {
+class _MainTabPageState extends ConsumerState<MainTabPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isSearching = false;
 
@@ -68,8 +68,7 @@ class _MainTabPageState extends ConsumerState<MainTabPage> with SingleTickerProv
               FavoritesPage(),
             ],
           ),
-          if (_isSearching)
-            UniversalSearchWidget(onClose: _closeSearch),
+          if (_isSearching) UniversalSearchWidget(onClose: _closeSearch),
         ],
       ),
       floatingActionButton: Padding(

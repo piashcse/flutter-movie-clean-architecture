@@ -6,5 +6,5 @@ class GetUpComing {
 
   GetUpComing(this.repository);
 
-  Future<List<Movie>> call(int page) => repository.getUpComing( page);
+  Future<List<Movie>> call(int page) => repository.getUpComing(page);
 }

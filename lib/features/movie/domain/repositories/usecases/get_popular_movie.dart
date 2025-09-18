@@ -6,5 +6,5 @@ class GetPopular {
 
   GetPopular(this.repository);
 
-  Future<List<Movie>> call(int page) => repository.getPopular( page);
+  Future<List<Movie>> call(int page) => repository.getPopular(page);
 }

@@ -19,9 +19,11 @@ class MovieCardWidget extends StatelessWidget {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(12), // Adjust radius as needed
+              borderRadius: BorderRadius.circular(
+                12,
+              ), // Adjust radius as needed
               child: CachedNetworkImage(
-                imageUrl: '$IMAGE_URL${movie.posterPath}',
+                imageUrl: '$imageUrl${movie.posterPath}',
                 fit: BoxFit.cover,
               ),
             ),

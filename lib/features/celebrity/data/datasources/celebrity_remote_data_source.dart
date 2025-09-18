@@ -36,16 +36,15 @@ class CelebrityRemoteDataSourceImpl implements CelebrityRemoteDataSource {
   Future<PersonListResponse> searchPersons(String query, int page) async {
     final response = await dio.get(
       'search/person',
-      queryParameters: {
-        'query': query,
-        'page': page,
-      },
+      queryParameters: {'query': query, 'page': page},
     );
     return PersonListResponse.fromJson(response.data as Map<String, dynamic>);
   }
 }
 
-final celebrityRemoteDataSourceProvider = Provider<CelebrityRemoteDataSource>((ref) {
+final celebrityRemoteDataSourceProvider = Provider<CelebrityRemoteDataSource>((
+  ref,
+) {
   final dio = ref.watch(dioProvider);
   return CelebrityRemoteDataSourceImpl(dio);
 });

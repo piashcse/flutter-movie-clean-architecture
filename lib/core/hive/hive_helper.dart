@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_movie_clean_architecture/core/hive/favorite_model.dart';
 
@@ -9,10 +8,10 @@ class HiveHelper {
   static Future<void> init() async {
     // Initialize Hive
     await Hive.initFlutter();
-    
+
     // Register adapter
     Hive.registerAdapter(FavoriteAdapter());
-    
+
     // Open box
     _box = await Hive.openBox<Favorite>(_boxName);
   }

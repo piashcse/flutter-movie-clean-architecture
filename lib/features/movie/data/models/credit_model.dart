@@ -11,7 +11,8 @@ class CreditModel with _$CreditModel {
     List<Crew>? crew,
   }) = _CreditModel;
 
-  factory CreditModel.fromJson(Map<String, dynamic> json) => _$CreditModelFromJson(json);
+  factory CreditModel.fromJson(Map<String, dynamic> json) =>
+      _$CreditModelFromJson(json);
 }
 
 @freezed

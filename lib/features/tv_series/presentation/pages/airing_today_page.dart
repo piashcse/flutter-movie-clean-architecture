@@ -12,7 +12,8 @@ class AiringTodayPage extends ConsumerStatefulWidget {
   ConsumerState<AiringTodayPage> createState() => _AiringTodayPageState();
 }
 
-class _AiringTodayPageState extends PaginationConsumerState<TvSeries, AiringTodayPage> {
+class _AiringTodayPageState
+    extends PaginationConsumerState<TvSeries, AiringTodayPage> {
   @override
   Future<List<TvSeries>> fetchData(int page) async {
     return ref.read(airingTodayTvSeriesProvider(page).future);
