@@ -9,13 +9,16 @@
 
 Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that showcases movies and TV series fetched from TMDB API. It includes now playing, popular, top-rated, and upcoming Movies, TV series and Celebrity with support for pagination, search, and detailed views.
 <p align="center">
-  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/home.png" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/detail.png" />
+  <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_1.png" />
+  <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_2.png" />
 </p>
-<br>
 <p align="center">
-  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/search.png" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <img width="35%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/artist.png" />
+  <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_3.png" />
+  <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_4.png" />
+</p>
+<p align="center">
+  <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_5.png" />
+  <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_6.png" />
 </p>
 
 
