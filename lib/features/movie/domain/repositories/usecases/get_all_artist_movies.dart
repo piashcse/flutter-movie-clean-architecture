@@ -6,5 +6,6 @@ class GetAllArtistMovies {
 
   GetAllArtistMovies(this.repository);
 
-  Future<CreditModel> call(int artistId) => repository.getArtistAllMovies(artistId);
+  Future<CreditModel> call(int artistId) =>
+      repository.getArtistAllMovies(artistId);
 }

@@ -9,13 +9,11 @@ import 'package:go_router/go_router.dart';
 class UniversalSearchWidget extends ConsumerStatefulWidget {
   final VoidCallback onClose;
 
-  const UniversalSearchWidget({
-    super.key,
-    required this.onClose,
-  });
+  const UniversalSearchWidget({super.key, required this.onClose});
 
   @override
-  ConsumerState<UniversalSearchWidget> createState() => _UniversalSearchWidgetState();
+  ConsumerState<UniversalSearchWidget> createState() =>
+      _UniversalSearchWidgetState();
 }
 
 class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
@@ -64,7 +62,8 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
         _searchResults = result.map<Map<String, dynamic>>((tvSeries) {
           return {
             'id': tvSeries.id.toString() ?? '',
-            'title': tvSeries.name ?? '', // TV series use 'name' instead of 'title'
+            'title':
+                tvSeries.name ?? '', // TV series use 'name' instead of 'title'
             'image': '$IMAGE_URL${tvSeries.posterPath ?? ''}',
             'type': 'tv',
           };
@@ -157,9 +156,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
     final limitedResults = _searchResults.take(4).toList();
 
     return Container(
-      constraints: const BoxConstraints(
-        maxHeight: 400,
-      ),
+      constraints: const BoxConstraints(maxHeight: 400),
       child: ListView.builder(
         shrinkWrap: true,
         itemCount: limitedResults.length,
@@ -180,7 +177,10 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
               }
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
               child: Row(
                 children: [
                   ClipRRect(
@@ -191,7 +191,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                       height: 100,
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.broken_image, size: 70),
+                          const Icon(Icons.broken_image, size: 70),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -233,7 +233,10 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                 children: [
                   // AppBar-like header
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8.0,
+                      vertical: 4.0,
+                    ),
                     child: Row(
                       children: [
                         Expanded(
@@ -241,7 +244,8 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                             controller: _searchController,
                             autofocus: true,
                             decoration: const InputDecoration(
-                              hintText: 'Search movies, TV series, and celebrities...',
+                              hintText:
+                                  'Search movies, TV series, and celebrities...',
                               border: InputBorder.none,
                             ),
                             onChanged: _performSearch,
@@ -249,17 +253,21 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                         ),
                         _isLoading
                             ? const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        )
+                                padding: EdgeInsets.all(12.0),
+                                child: SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                ),
+                              )
                             : IconButton(
-                          icon: const Icon(Icons.close),
-                          onPressed: _searchController.text.isNotEmpty ? _clearSearch : widget.onClose,
-                        ),
+                                icon: const Icon(Icons.close),
+                                onPressed: _searchController.text.isNotEmpty
+                                    ? _clearSearch
+                                    : widget.onClose,
+                              ),
                       ],
                     ),
                   ),
@@ -290,8 +298,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                   ),
                   const SizedBox(height: 8),
                   // Search Results
-                  if (_searchController.text.isNotEmpty)
-                    _buildSearchResults(),
+                  if (_searchController.text.isNotEmpty) _buildSearchResults(),
                 ],
               ),
             ),
@@ -299,9 +306,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
             Expanded(
               child: GestureDetector(
                 onTap: widget.onClose,
-                child: Container(
-                  color: Colors.transparent,
-                ),
+                child: Container(color: Colors.transparent),
               ),
             ),
           ],

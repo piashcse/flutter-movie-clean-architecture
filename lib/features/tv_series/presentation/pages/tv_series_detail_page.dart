@@ -18,7 +18,9 @@ class TvSeriesDetailPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tvSeriesDetailAsync = ref.watch(tvSeriesDetailProvider(tvSeriesId));
-    final recommendedTvSeriesAsync = ref.watch(recommendedTvSeriesProvider(tvSeriesId));
+    final recommendedTvSeriesAsync = ref.watch(
+      recommendedTvSeriesProvider(tvSeriesId),
+    );
     final tvSeriesCreditsAsync = ref.watch(tvSeriesCreditsProvider(tvSeriesId));
 
     return Scaffold(
@@ -32,8 +34,12 @@ class TvSeriesDetailPage extends ConsumerWidget {
                 children: [
                   TvSeriesDetailInfoSection(tvSeries: tvSeries),
                   TvSeriesDescriptionSection(tvSeries: tvSeries),
-                  RecommendedTvSeriesSection(recommendedTvSeriesAsync: recommendedTvSeriesAsync),
-                  TvSeriesCastSection(tvSeriesCreditsAsync: tvSeriesCreditsAsync),
+                  RecommendedTvSeriesSection(
+                    recommendedTvSeriesAsync: recommendedTvSeriesAsync,
+                  ),
+                  TvSeriesCastSection(
+                    tvSeriesCreditsAsync: tvSeriesCreditsAsync,
+                  ),
                 ],
               ),
             ),
@@ -48,12 +54,16 @@ class TvSeriesDetailPage extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Error loading TV series details',
-                  style: Theme.of(context).textTheme.headlineSmall),
+              Text(
+                'Error loading TV series details',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SizedBox(height: 8),
-              Text(error.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.grey)),
+              Text(
+                error.toString(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey),
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -73,7 +83,8 @@ class TvSeriesDetailHeader extends ConsumerStatefulWidget {
   const TvSeriesDetailHeader({super.key, required this.tvSeries});
 
   @override
-  ConsumerState<TvSeriesDetailHeader> createState() => _TvSeriesDetailHeaderState();
+  ConsumerState<TvSeriesDetailHeader> createState() =>
+      _TvSeriesDetailHeaderState();
 }
 
 class _TvSeriesDetailHeaderState extends ConsumerState<TvSeriesDetailHeader> {
@@ -150,24 +161,27 @@ class _TvSeriesDetailHeaderState extends ConsumerState<TvSeriesDetailHeader> {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Colors.grey[300],
-                      child:
-                          const Icon(Icons.movie, size: 64, color: Colors.grey),
+                      child: const Icon(
+                        Icons.movie,
+                        size: 64,
+                        color: Colors.grey,
+                      ),
                     ),
                   )
                 : Container(
                     color: Colors.grey[300],
-                    child:
-                        const Icon(Icons.movie, size: 64, color: Colors.grey),
+                    child: const Icon(
+                      Icons.movie,
+                      size: 64,
+                      color: Colors.grey,
+                    ),
                   ),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.7),
-                  ],
+                  colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
                 ),
               ),
             ),
@@ -236,25 +250,39 @@ class TvSeriesDetailInfoSection extends StatelessWidget {
                 Row(
                   children: [
                     _buildInfoItem(
-                        'Duration',
-                        formatTvDuration(tvSeries.episodeRunTime)),
-                    _buildInfoItem('First Air Date', tvSeries.firstAirDate ?? 'N/A'),
+                      'Duration',
+                      formatTvDuration(tvSeries.episodeRunTime),
+                    ),
+                    _buildInfoItem(
+                      'First Air Date',
+                      tvSeries.firstAirDate ?? 'N/A',
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildInfoItem('Language',
-                        tvSeries.originalLanguage?.toUpperCase() ?? 'N/A'),
-                    _buildInfoItem('Rating',
-                        tvSeries.voteAverage?.toStringAsFixed(1) ?? 'N/A'),
+                    _buildInfoItem(
+                      'Language',
+                      tvSeries.originalLanguage?.toUpperCase() ?? 'N/A',
+                    ),
+                    _buildInfoItem(
+                      'Rating',
+                      tvSeries.voteAverage?.toStringAsFixed(1) ?? 'N/A',
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildInfoItem('Episodes', tvSeries.numberOfEpisodes?.toString() ?? 'N/A'),
-                    _buildInfoItem('Seasons', tvSeries.numberOfSeasons?.toString() ?? 'N/A'),
+                    _buildInfoItem(
+                      'Episodes',
+                      tvSeries.numberOfEpisodes?.toString() ?? 'N/A',
+                    ),
+                    _buildInfoItem(
+                      'Seasons',
+                      tvSeries.numberOfSeasons?.toString() ?? 'N/A',
+                    ),
                   ],
                 ),
               ],
@@ -272,10 +300,7 @@ class TvSeriesDetailInfoSection extends StatelessWidget {
         children: [
           Text(label),
           const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(color: Colors.grey),
-          ),
+          Text(value, style: const TextStyle(color: Colors.grey)),
         ],
       ),
     );
@@ -314,8 +339,9 @@ class TvSeriesDescriptionSection extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           GestureDetector(
-            onTap: () => ref.read(tvDescriptionExpandedProvider.notifier).state =
-                !isExpanded,
+            onTap: () =>
+                ref.read(tvDescriptionExpandedProvider.notifier).state =
+                    !isExpanded,
             child: RichText(
               text: TextSpan(
                 children: [
@@ -348,7 +374,10 @@ class TvSeriesDescriptionSection extends ConsumerWidget {
 class RecommendedTvSeriesSection extends StatelessWidget {
   final AsyncValue<List<dynamic>> recommendedTvSeriesAsync;
 
-  const RecommendedTvSeriesSection({super.key, required this.recommendedTvSeriesAsync});
+  const RecommendedTvSeriesSection({
+    super.key,
+    required this.recommendedTvSeriesAsync,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -511,9 +540,7 @@ class TvSeriesCastSection extends StatelessWidget {
       loading: () => const Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(
-          child: CircularProgressIndicator(
-            color: Color(0xFF7B2CBF),
-          ),
+          child: CircularProgressIndicator(color: Color(0xFF7B2CBF)),
         ),
       ),
       error: (error, _) => Padding(

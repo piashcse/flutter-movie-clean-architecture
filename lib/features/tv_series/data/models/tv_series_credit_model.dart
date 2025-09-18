@@ -11,7 +11,8 @@ class TvSeriesCreditModel with _$TvSeriesCreditModel {
     List<Crew>? crew,
   }) = _TvSeriesCreditModel;
 
-  factory TvSeriesCreditModel.fromJson(Map<String, dynamic> json) => _$TvSeriesCreditModelFromJson(json);
+  factory TvSeriesCreditModel.fromJson(Map<String, dynamic> json) =>
+      _$TvSeriesCreditModelFromJson(json);
 }
 
 @freezed

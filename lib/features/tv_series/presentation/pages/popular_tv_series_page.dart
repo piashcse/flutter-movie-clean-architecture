@@ -9,10 +9,12 @@ class PopularTvSeriesPage extends ConsumerStatefulWidget {
   const PopularTvSeriesPage({super.key});
 
   @override
-  ConsumerState<PopularTvSeriesPage> createState() => _PopularTvSeriesPageState();
+  ConsumerState<PopularTvSeriesPage> createState() =>
+      _PopularTvSeriesPageState();
 }
 
-class _PopularTvSeriesPageState extends PaginationConsumerState<TvSeries, PopularTvSeriesPage> {
+class _PopularTvSeriesPageState
+    extends PaginationConsumerState<TvSeries, PopularTvSeriesPage> {
   @override
   Future<List<TvSeries>> fetchData(int page) async {
     return ref.read(popularTvSeriesProvider(page).future);

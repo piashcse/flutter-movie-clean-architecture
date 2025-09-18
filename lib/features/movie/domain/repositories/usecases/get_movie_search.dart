@@ -6,5 +6,5 @@ class GetMovieSearch {
 
   GetMovieSearch(this.repository);
 
-  Future<List<Movie>> call(String query) => repository.getMovieSearch( query);
+  Future<List<Movie>> call(String query) => repository.getMovieSearch(query);
 }

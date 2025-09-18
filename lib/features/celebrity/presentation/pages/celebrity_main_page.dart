@@ -13,10 +13,7 @@ class CelebrityMainPage extends ConsumerStatefulWidget {
 class _CelebrityMainPageState extends ConsumerState<CelebrityMainPage> {
   int _selectedIndex = 0;
 
-  final _pages = [
-    const PopularPersonsPage(),
-    const TrendingPersonsPage(),
-  ];
+  final _pages = [const PopularPersonsPage(), const TrendingPersonsPage()];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -33,10 +30,7 @@ class _CelebrityMainPageState extends ConsumerState<CelebrityMainPage> {
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Popular',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Popular'),
           BottomNavigationBarItem(
             icon: Icon(Icons.trending_up),
             label: 'Trending',

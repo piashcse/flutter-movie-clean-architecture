@@ -14,7 +14,8 @@ class MainTabPage extends ConsumerStatefulWidget {
   ConsumerState<MainTabPage> createState() => _MainTabPageState();
 }
 
-class _MainTabPageState extends ConsumerState<MainTabPage> with SingleTickerProviderStateMixin {
+class _MainTabPageState extends ConsumerState<MainTabPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   bool _isSearching = false;
 
@@ -68,8 +69,7 @@ class _MainTabPageState extends ConsumerState<MainTabPage> with SingleTickerProv
               FavoritesPage(),
             ],
           ),
-          if (_isSearching)
-            UniversalSearchWidget(onClose: _closeSearch),
+          if (_isSearching) UniversalSearchWidget(onClose: _closeSearch),
         ],
       ),
       floatingActionButton: Padding(

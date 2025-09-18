@@ -4,7 +4,6 @@ import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entit
 import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/domain/repositories/entities/tv_series_repository.dart';
 
-
 class TvSeriesRepositoryImpl implements TvSeriesRepository {
   final TvSeriesRemoteDataSource remoteDataSource;
 
@@ -14,12 +13,14 @@ class TvSeriesRepositoryImpl implements TvSeriesRepository {
   Future<List<TvSeries>> getAiringToday(int page) async {
     final models = await remoteDataSource.getAiringToday(page);
     return models
-        .map((e) => TvSeries(
-              id: e.id,
-              name: e.name,
-              posterPath: e.posterPath,
-              overview: e.overview,
-            ))
+        .map(
+          (e) => TvSeries(
+            id: e.id,
+            name: e.name,
+            posterPath: e.posterPath,
+            overview: e.overview,
+          ),
+        )
         .toList();
   }
 
@@ -27,12 +28,14 @@ class TvSeriesRepositoryImpl implements TvSeriesRepository {
   Future<List<TvSeries>> getOnTheAir(int page) async {
     final models = await remoteDataSource.getOnTheAir(page);
     return models
-        .map((e) => TvSeries(
-              id: e.id,
-              name: e.name,
-              posterPath: e.posterPath,
-              overview: e.overview,
-            ))
+        .map(
+          (e) => TvSeries(
+            id: e.id,
+            name: e.name,
+            posterPath: e.posterPath,
+            overview: e.overview,
+          ),
+        )
         .toList();
   }
 
@@ -40,12 +43,14 @@ class TvSeriesRepositoryImpl implements TvSeriesRepository {
   Future<List<TvSeries>> getPopular(int page) async {
     final models = await remoteDataSource.getPopular(page);
     return models
-        .map((e) => TvSeries(
-              id: e.id,
-              name: e.name,
-              posterPath: e.posterPath,
-              overview: e.overview,
-            ))
+        .map(
+          (e) => TvSeries(
+            id: e.id,
+            name: e.name,
+            posterPath: e.posterPath,
+            overview: e.overview,
+          ),
+        )
         .toList();
   }
 
@@ -53,12 +58,14 @@ class TvSeriesRepositoryImpl implements TvSeriesRepository {
   Future<List<TvSeries>> getUpcoming(int page) async {
     final models = await remoteDataSource.getUpcoming(page);
     return models
-        .map((e) => TvSeries(
-              id: e.id,
-              name: e.name,
-              posterPath: e.posterPath,
-              overview: e.overview,
-            ))
+        .map(
+          (e) => TvSeries(
+            id: e.id,
+            name: e.name,
+            posterPath: e.posterPath,
+            overview: e.overview,
+          ),
+        )
         .toList();
   }
 
@@ -84,12 +91,14 @@ class TvSeriesRepositoryImpl implements TvSeriesRepository {
   Future<List<TvSeries>> searchTvSeries(String query) async {
     final models = await remoteDataSource.searchTvSeries(query);
     return models
-        .map((e) => TvSeries(
-              id: e.id,
-              name: e.name,
-              posterPath: e.posterPath,
-              overview: e.overview,
-            ))
+        .map(
+          (e) => TvSeries(
+            id: e.id,
+            name: e.name,
+            posterPath: e.posterPath,
+            overview: e.overview,
+          ),
+        )
         .toList();
   }
 
@@ -97,12 +106,14 @@ class TvSeriesRepositoryImpl implements TvSeriesRepository {
   Future<List<TvSeries>> getRecommendedTvSeries(int tvSeriesId) async {
     final models = await remoteDataSource.getRecommendedTvSeries(tvSeriesId);
     return models
-        .map((e) => TvSeries(
-              id: e.id,
-              name: e.name,
-              posterPath: e.posterPath,
-              overview: e.overview,
-            ))
+        .map(
+          (e) => TvSeries(
+            id: e.id,
+            name: e.name,
+            posterPath: e.posterPath,
+            overview: e.overview,
+          ),
+        )
         .toList();
   }
 

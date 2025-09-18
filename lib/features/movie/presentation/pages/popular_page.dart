@@ -12,7 +12,8 @@ class PopularPage extends ConsumerStatefulWidget {
   ConsumerState<PopularPage> createState() => _PopularMoviePageState();
 }
 
-class _PopularMoviePageState extends PaginationConsumerState<Movie, PopularPage> {
+class _PopularMoviePageState
+    extends PaginationConsumerState<Movie, PopularPage> {
   @override
   Future<List<Movie>> fetchData(int page) async {
     return ref.read(popularMoviesProvider(page).future);

@@ -33,7 +33,8 @@ class MovieDetailPage extends ConsumerWidget {
                   MovieDetailInfoSection(movie: movie),
                   MovieDescriptionSection(movie: movie),
                   RecommendedMoviesSection(
-                      recommendMovieAsync: recommendMovieAsync),
+                    recommendMovieAsync: recommendMovieAsync,
+                  ),
                   MovieCreditsSection(movieCreditAsync: movieCreditAsync),
                 ],
               ),
@@ -49,12 +50,16 @@ class MovieDetailPage extends ConsumerWidget {
             children: [
               const Icon(Icons.error_outline, size: 64, color: Colors.red),
               const SizedBox(height: 16),
-              Text('Error loading movie details',
-                  style: Theme.of(context).textTheme.headlineSmall),
+              Text(
+                'Error loading movie details',
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
               const SizedBox(height: 8),
-              Text(error.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.grey)),
+              Text(
+                error.toString(),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.grey),
+              ),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -151,24 +156,27 @@ class _MovieDetailHeaderState extends ConsumerState<MovieDetailHeader> {
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Colors.grey[300],
-                      child:
-                          const Icon(Icons.movie, size: 64, color: Colors.grey),
+                      child: const Icon(
+                        Icons.movie,
+                        size: 64,
+                        color: Colors.grey,
+                      ),
                     ),
                   )
                 : Container(
                     color: Colors.grey[300],
-                    child:
-                        const Icon(Icons.movie, size: 64, color: Colors.grey),
+                    child: const Icon(
+                      Icons.movie,
+                      size: 64,
+                      color: Colors.grey,
+                    ),
                   ),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.7),
-                  ],
+                  colors: [Colors.transparent, Colors.black.withOpacity(0.7)],
                 ),
               ),
             ),
@@ -237,20 +245,25 @@ class MovieDetailInfoSection extends StatelessWidget {
                 Row(
                   children: [
                     _buildInfoItem(
-                        'Duration',
-                        movie.runtime != null
-                            ? formatDuration(movie.runtime!)
-                            : 'N/A'),
+                      'Duration',
+                      movie.runtime != null
+                          ? formatDuration(movie.runtime!)
+                          : 'N/A',
+                    ),
                     _buildInfoItem('Release Date', movie.releaseDate ?? 'N/A'),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildInfoItem('Language',
-                        movie.originalLanguage?.toUpperCase() ?? 'N/A'),
-                    _buildInfoItem('Rating',
-                        movie.voteAverage?.toStringAsFixed(1) ?? 'N/A'),
+                    _buildInfoItem(
+                      'Language',
+                      movie.originalLanguage?.toUpperCase() ?? 'N/A',
+                    ),
+                    _buildInfoItem(
+                      'Rating',
+                      movie.voteAverage?.toStringAsFixed(1) ?? 'N/A',
+                    ),
                   ],
                 ),
               ],
@@ -268,10 +281,7 @@ class MovieDetailInfoSection extends StatelessWidget {
         children: [
           Text(label),
           const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(color: Colors.grey),
-          ),
+          Text(value, style: const TextStyle(color: Colors.grey)),
         ],
       ),
     );
@@ -344,8 +354,10 @@ class MovieDescriptionSection extends ConsumerWidget {
 class RecommendedMoviesSection extends StatelessWidget {
   final AsyncValue<List<dynamic>> recommendMovieAsync;
 
-  const RecommendedMoviesSection(
-      {super.key, required this.recommendMovieAsync});
+  const RecommendedMoviesSection({
+    super.key,
+    required this.recommendMovieAsync,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -510,9 +522,7 @@ class MovieCreditsSection extends StatelessWidget {
       loading: () => const Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(
-          child: CircularProgressIndicator(
-            color: Color(0xFF7B2CBF),
-          ),
+          child: CircularProgressIndicator(color: Color(0xFF7B2CBF)),
         ),
       ),
       error: (error, _) => Padding(

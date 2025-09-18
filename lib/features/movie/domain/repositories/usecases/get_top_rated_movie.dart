@@ -6,5 +6,5 @@ class GetTopRated {
 
   GetTopRated(this.repository);
 
-  Future<List<Movie>> call(int page) => repository.getTopRated( page);
+  Future<List<Movie>> call(int page) => repository.getTopRated(page);
 }

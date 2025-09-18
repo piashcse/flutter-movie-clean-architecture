@@ -9,32 +9,40 @@ class TvSeriesRemoteDataSource {
   TvSeriesRemoteDataSource(this.dio);
 
   Future<List<TvSeriesModel>> getAiringToday(int page) async {
-    final response =
-        await dio.get('tv/airing_today', queryParameters: {'page': page});
+    final response = await dio.get(
+      'tv/airing_today',
+      queryParameters: {'page': page},
+    );
     return (response.data['results'] as List)
         .map((e) => TvSeriesModel.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
   Future<List<TvSeriesModel>> getOnTheAir(int page) async {
-    final response =
-        await dio.get('tv/on_the_air', queryParameters: {'page': page});
+    final response = await dio.get(
+      'tv/on_the_air',
+      queryParameters: {'page': page},
+    );
     return (response.data['results'] as List)
         .map((e) => TvSeriesModel.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
   Future<List<TvSeriesModel>> getPopular(int page) async {
-    final response =
-        await dio.get('tv/popular', queryParameters: {'page': page});
+    final response = await dio.get(
+      'tv/popular',
+      queryParameters: {'page': page},
+    );
     return (response.data['results'] as List)
         .map((e) => TvSeriesModel.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
   Future<List<TvSeriesModel>> getUpcoming(int page) async {
-    final response =
-        await dio.get('tv/upcoming', queryParameters: {'page': page});
+    final response = await dio.get(
+      'tv/upcoming',
+      queryParameters: {'page': page},
+    );
     return (response.data['results'] as List)
         .map((e) => TvSeriesModel.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -45,7 +53,9 @@ class TvSeriesRemoteDataSource {
     if (response.statusCode == 200 &&
         response.data != null &&
         response.data is Map<String, dynamic>) {
-      return TvSeriesDetailModel.fromJson(response.data as Map<String, dynamic>);
+      return TvSeriesDetailModel.fromJson(
+        response.data as Map<String, dynamic>,
+      );
     } else {
       throw Exception('Failed to load TV series detail: Invalid response');
     }
@@ -54,9 +64,7 @@ class TvSeriesRemoteDataSource {
   Future<List<TvSeriesModel>> searchTvSeries(String query) async {
     final response = await dio.get(
       'search/tv',
-      queryParameters: {
-        'query': query,
-      },
+      queryParameters: {'query': query},
     );
     return (response.data['results'] as List)
         .map((e) => TvSeriesModel.fromJson(e as Map<String, dynamic>))

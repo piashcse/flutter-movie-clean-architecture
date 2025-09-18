@@ -6,10 +6,7 @@ import 'package:go_router/go_router.dart';
 
 final router = GoRouter(
   routes: [
-    GoRoute(
-      path: '/',
-      builder: (_, __) => const MainTabPage(),
-    ),
+    GoRoute(path: '/', builder: (_, __) => const MainTabPage()),
     GoRoute(
       path: '/movie/:id',
       builder: (context, state) {

@@ -4,8 +4,5 @@ class Artistallmovies {
   final int id;
   final List<MovieModel> cast;
 
-  Artistallmovies({
-    required this.id,
-    required this.cast,
-  });
+  Artistallmovies({required this.id, required this.cast});
 }

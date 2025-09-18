@@ -9,10 +9,12 @@ class TrendingPersonsPage extends ConsumerStatefulWidget {
   const TrendingPersonsPage({super.key});
 
   @override
-  ConsumerState<TrendingPersonsPage> createState() => _TrendingPersonsPageState();
+  ConsumerState<TrendingPersonsPage> createState() =>
+      _TrendingPersonsPageState();
 }
 
-class _TrendingPersonsPageState extends PaginationConsumerState<Person, TrendingPersonsPage> {
+class _TrendingPersonsPageState
+    extends PaginationConsumerState<Person, TrendingPersonsPage> {
   @override
   Future<List<Person>> fetchData(int page) async {
     return ref.read(trendingPersonsProvider(page).future);

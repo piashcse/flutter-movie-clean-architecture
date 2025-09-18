@@ -12,7 +12,8 @@ class NowPlayingPage extends ConsumerStatefulWidget {
   ConsumerState<NowPlayingPage> createState() => _MovieHomePageState();
 }
 
-class _MovieHomePageState extends PaginationConsumerState<Movie, NowPlayingPage> {
+class _MovieHomePageState
+    extends PaginationConsumerState<Movie, NowPlayingPage> {
   @override
   Future<List<Movie>> fetchData(int page) async {
     return ref.read(nowPlayingMoviesProvider(page).future);

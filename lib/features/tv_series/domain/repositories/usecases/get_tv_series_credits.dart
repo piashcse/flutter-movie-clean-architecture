@@ -6,5 +6,6 @@ class GetTvSeriesCredits {
 
   GetTvSeriesCredits(this.repository);
 
-  Future<TvSeriesCreditModel> call(int tvSeriesId) => repository.getTvSeriesCredits(tvSeriesId);
+  Future<TvSeriesCreditModel> call(int tvSeriesId) =>
+      repository.getTvSeriesCredits(tvSeriesId);
 }

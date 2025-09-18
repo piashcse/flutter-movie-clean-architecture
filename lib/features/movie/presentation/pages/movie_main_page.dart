@@ -42,14 +42,8 @@ class _MovieMainPageState extends ConsumerState<MovieMainPage> {
             icon: Icon(Icons.play_circle_fill),
             label: 'Now Playing',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Popular',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.star),
-            label: 'Top Rated',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Popular'),
+          BottomNavigationBarItem(icon: Icon(Icons.star), label: 'Top Rated'),
           BottomNavigationBarItem(
             icon: Icon(Icons.upcoming),
             label: 'Upcoming',
