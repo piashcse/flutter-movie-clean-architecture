@@ -1,4 +1,4 @@
-# Flutter Movie & TV Series
+# Flutter Movie
 [![Flutter](https://img.shields.io/badge/Flutter-3.8.1-blue.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.3.1-blue.svg?logo=dart)](https://dart.dev)
 [![Riverpod](https://img.shields.io/badge/Riverpod-2.5.1-brightgreen?logo=flutter)](https://riverpod.dev)
@@ -11,16 +11,13 @@ Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that sho
 <p align="center">
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_1.png" />
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_2.png" />
+   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_3.png" />
 </p>
 <p align="center">
-  <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_3.png" />
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_4.png" />
-</p>
-<p align="center">
-  <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_5.png" />
+   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_5.png" />
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_6.png" />
 </p>
-
 
 # ✨ Features
 
