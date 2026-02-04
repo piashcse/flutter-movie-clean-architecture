@@ -7,6 +7,7 @@ import 'package:flutter_movie_clean_architecture/features/tv_series/presentation
 import 'package:flutter_movie_clean_architecture/presentation/widgets/universal_search.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../core/theme/theme_toggle_widget.dart';
 
 class MainTabPage extends ConsumerStatefulWidget {
   const MainTabPage({super.key});
@@ -48,23 +49,26 @@ class _MainTabPageState extends ConsumerState<MainTabPage> with SingleTickerProv
     return Scaffold(
       appBar: AppBar(
         title: Text(context.translate('app_title')),
+        actions: const [
+          ThemeToggleWidget(),
+        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: [
             Tab(
-              icon: const Icon(Icons.movie), 
+              icon: const Icon(Icons.movie),
               text: context.translate('movies'),
             ),
             Tab(
-              icon: const Icon(Icons.tv), 
+              icon: const Icon(Icons.tv),
               text: context.translate('tv_series'),
             ),
             Tab(
-              icon: const Icon(Icons.people), 
+              icon: const Icon(Icons.people),
               text: context.translate('celebrities'),
             ),
             Tab(
-              icon: const Icon(Icons.favorite), 
+              icon: const Icon(Icons.favorite),
               text: context.translate('favorites'),
             ),
           ],
