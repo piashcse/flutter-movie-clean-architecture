@@ -1,9 +1,10 @@
 import 'package:flutter_movie_clean_architecture/features/movie/data/datasources/movie_remote_data_source.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart' as credit_model;
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/artist_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/entities/movie_repository.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/credit_entity.dart' as credit_entity;
+import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/movie_repository.dart';
 
 class MovieRepositoryImpl implements MovieRepository {
   final MovieRemoteDataSource remoteDataSource;
@@ -110,12 +111,25 @@ class MovieRepositoryImpl implements MovieRepository {
   }
 
   @override
-  Future<CreditModel> getMovieCredits(int movieId) async {
+  Future<credit_entity.CreditEntity> getMovieCredits(int movieId) async {
     final model = await remoteDataSource.getMovieCredits(movieId);
-    return CreditModel(
+    return credit_entity.CreditEntity(
       id: model.id,
-      cast: model.cast,
-      crew: model.crew,
+      cast: model.cast?.map((cast) => credit_entity.Cast(
+        id: cast.id ?? 0,
+        character: cast.character,
+        name: cast.name,
+        profilePath: cast.profilePath,
+        castId: cast.castId,
+        order: cast.order,
+      )).toList() ?? [],
+      crew: model.crew?.map((crew) => credit_entity.Crew(
+        id: crew.id ?? 0,
+        name: crew.name,
+        profilePath: crew.profilePath,
+        job: crew.job,
+        department: crew.department,
+      )).toList() ?? [],
     );
   }
 
@@ -133,12 +147,25 @@ class MovieRepositoryImpl implements MovieRepository {
     );
   }
 
-  Future<CreditModel> getArtistAllMovies(int artistId) async {
+  Future<credit_entity.CreditEntity> getArtistAllMovies(int artistId) async {
     final model = await remoteDataSource.getArtistAllMovies(artistId);
-    return CreditModel(
+    return credit_entity.CreditEntity(
       id: model.id,
-      cast: model.cast,
-      crew: model.crew,
+      cast: model.cast?.map((cast) => credit_entity.Cast(
+        id: cast.id ?? 0,
+        character: cast.character,
+        name: cast.name,
+        profilePath: cast.profilePath,
+        castId: cast.castId,
+        order: cast.order,
+      )).toList() ?? [],
+      crew: model.crew?.map((crew) => credit_entity.Crew(
+        id: crew.id ?? 0,
+        name: crew.name,
+        profilePath: crew.profilePath,
+        job: crew.job,
+        department: crew.department,
+      )).toList() ?? [],
     );
   }
 }

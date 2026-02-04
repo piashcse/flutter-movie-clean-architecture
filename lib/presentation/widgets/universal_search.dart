@@ -37,7 +37,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
           return {
             'id': movie.id.toString() ?? '',
             'title': movie.title ?? '',
-            'image': '$IMAGE_URL${movie.posterPath ?? ''}',
+            'image': '$imageUrl${movie.posterPath ?? ''}',
             'type': 'movie',
           };
         }).toList();
@@ -66,7 +66,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
           return {
             'id': tvSeries.id.toString() ?? '',
             'title': tvSeries.name ?? '', // TV series use 'name' instead of 'title'
-            'image': '$IMAGE_URL${tvSeries.posterPath ?? ''}',
+            'image': '$imageUrl${tvSeries.posterPath ?? ''}',
             'type': 'tv',
           };
         }).toList();
@@ -95,7 +95,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
           return {
             'id': person.id.toString() ?? '',
             'title': person.name ?? '',
-            'image': '$IMAGE_URL${person.profilePath ?? ''}',
+            'image': '$imageUrl${person.profilePath ?? ''}',
             'type': 'celebrity',
           };
         }).toList();
@@ -223,7 +223,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black.withOpacity(0.5),
+      backgroundColor: Colors.black.withValues(alpha: 0.5),
       body: SafeArea(
         child: Column(
           children: [

@@ -115,7 +115,7 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                             borderRadius: BorderRadius.circular(8),
                             image: artist.profilePath != null
                                 ? DecorationImage(
-                              image: NetworkImage("$IMAGE_URL${artist.profilePath}"),
+                              image: NetworkImage("$imageUrl${artist.profilePath}"),
                               fit: BoxFit.cover,
                             )
                                 : null,
@@ -287,7 +287,7 @@ class ArtistMoviesSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: item.posterPath != null
                           ? Image.network(
-                        '$IMAGE_URL${item.posterPath}',
+                        '$imageUrl${item.posterPath}',
                         width: 110,
                         height: 160,
                         fit: BoxFit.cover,

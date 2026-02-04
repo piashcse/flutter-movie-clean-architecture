@@ -1,9 +1,9 @@
-import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/artist_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/credit_entity.dart';
 
-abstract class  MovieRepository {
+abstract class MovieRepository {
   Future<List<Movie>> getNowPlaying(int page);
   Future<List<Movie>> getPopular(int page);
   Future<List<Movie>> getTopRated(int page);
@@ -11,7 +11,7 @@ abstract class  MovieRepository {
   Future<MovieDetail> getMovieDetail(int movieId);
   Future<List<Movie>> getMovieSearch(String query);
   Future<List<Movie>> getRecommendedMovie(int movieId);
-  Future<CreditModel> getMovieCredits(int movieId);
+  Future<CreditEntity> getMovieCredits(int movieId);
   Future<Artistdetail> getArtistDetail(int artistId);
-  Future<CreditModel> getArtistAllMovies(int artistId);
+  Future<CreditEntity> getArtistAllMovies(int artistId);
 }

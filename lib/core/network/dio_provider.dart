@@ -5,9 +5,9 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(BaseOptions(
-    baseUrl: BASE_URL,
+    baseUrl: baseUrl,
     queryParameters: {
-      'api_key': API_KEY,
+      'api_key': apiKey,
     },
   ));
   dio.interceptors.add(PrettyDioLogger(

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_movie_clean_architecture/core/hive/hive_helper.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/app_localizations.dart';
 import 'package:flutter_movie_clean_architecture/core/theme/app_theme.dart';
-import 'package:flutter_movie_clean_architecture/core/theme/theme_provider.dart';
+import 'package:flutter_movie_clean_architecture/core/theme/theme_providers.dart';
 import 'routing/app_router.dart';
 
 void main() async {
