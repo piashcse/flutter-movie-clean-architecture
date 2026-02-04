@@ -1,6 +1,6 @@
-# Flutter Movie
+# Flutter Movie Clean Architecture
 [![Flutter](https://img.shields.io/badge/Flutter-3.24.1-blue.svg?logo=flutter)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.6.0-blue.svg?logo=dart)](https://dart.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.8.0-blue.svg?logo=dart)](https://dart.dev)
 [![Riverpod](https://img.shields.io/badge/Riverpod-2.6.1-brightgreen?logo=flutter)](https://riverpod.dev)
 [![Localization](https://img.shields.io/badge/Localization-English_&_Spanish-blue)](https://flutter.dev/docs/development/accessibility-and-localization/internationalization)
 ![badge-Android](https://img.shields.io/badge/Platform-Android-brightgreen)
@@ -9,6 +9,7 @@
 <a href="https://github.com/piashcse"><img alt="GitHub" src="https://img.shields.io/static/v1?label=GitHub&message=piashcse&color=C51162"/></a>
 
 Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that showcases movies and TV series fetched from TMDB API. It includes now playing, popular, top-rated, and upcoming Movies, TV series and Celebrity with support for pagination, search, and detailed views.
+
 <p align="center">
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_1.png" />
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_2.png" />
@@ -20,7 +21,7 @@ Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that sho
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_6.png" />
 </p>
 
-# ✨ Features
+## ✨ Features
 
 ### Movies
 - 🎞 Now Playing, Popular, Top Rated & Upcoming movie sections
@@ -55,32 +56,49 @@ Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that sho
 - 🚀 Smooth UX with loading indicators
 - ❤️ Favorite Management with Local Storage (Hive)
 
-## Architecture
+## 🏗️ Architecture
+
+This project follows Clean Architecture principles with clear separation of concerns:
 
 <p align="center">
   </br>
   <img width="80%" height="80%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter-clean-architecture.png" />
 </p>
 <p align="center">
-<b>Fig.  Clean Architecture </b>
+<b>Fig. Clean Architecture </b>
 </p>
 
-## Project Directory
+### Layers:
+- **Presentation Layer**: UI components, state management, and user interactions
+- **Domain Layer**: Business logic, entities, and use cases
+- **Data Layer**: External data sources (APIs, databases)
+
+## 📁 Project Structure
 
 ```
 flutter_movie_clean_architecture/
 ├── lib/
 │   ├── core/
 │   │   ├── config/
-│   │   │   └── app_constant.dart
+│   │   │   └── app_constant.dart          # Application constants (API keys, URLs)
+│   │   ├── hive/
+│   │   │   ├── favorite_model.dart        # Favorite item model
+│   │   │   ├── favorite_model.g.dart      # Generated Hive adapter
+│   │   │   └── hive_helper.dart           # Hive database helper
+│   │   ├── localization/
+│   │   │   ├── app_localizations.dart     # Localization setup
+│   │   │   └── localization_helper.dart   # Localization helper
 │   │   ├── network/
-│   │   │   └── dio_provider.dart
-│   │   ├── utils/
-│   │   │   └── utils.dart
-│   │   └── hive/
-│   │       ├── favorite_model.dart
-│   │       ├── favorite_model.g.dart
-│   │       └── hive_helper.dart
+│   │   │   └── dio_provider.dart          # Dio HTTP client configuration
+│   │   ├── theme/
+│   │   │   ├── app_theme.dart             # Theme definitions
+│   │   │   ├── theme_providers.dart       # Theme state management
+│   │   │   ├── theme_toggle_widget.dart   # Theme toggle widget
+│   │   │   └── repository/
+│   │   │       └── theme_repository.dart  # Theme repository interface
+│   │   └── utils/
+│   │       ├── pagination_consumer_state.dart # Pagination state management
+│   │       └── utils.dart                 # Utility functions
 │   ├── features/
 │   │   ├── celebrity/
 │   │   │   ├── data/
@@ -110,6 +128,8 @@ flutter_movie_clean_architecture/
 │   │   │       │   └── celebrity_provider.dart
 │   │   │       └── widgets/
 │   │   │           └── person_card.dart
+│   │   ├── favorites/
+│   │   │   └── favorites_page.dart
 │   │   ├── movie/
 │   │   │   ├── data/
 │   │   │   │   ├── datasources/
@@ -124,7 +144,7 @@ flutter_movie_clean_architecture/
 │   │   │   │   ├── entities/
 │   │   │   │   │   ├── movie.dart
 │   │   │   │   │   ├── movie_detail.dart
-│   │   │   │   │   ├── credit.dart
+│   │   │   │   │   ├── credit_entity.dart
 │   │   │   │   │   └── artist_detail.dart
 │   │   │   │   ├── repositories/
 │   │   │   │   │   └── movie_repository.dart
@@ -142,7 +162,6 @@ flutter_movie_clean_architecture/
 │   │   │   └── presentation/
 │   │   │       ├── pages/
 │   │   │       │   ├── artist_detail_page.dart
-│   │   │       │   ├── artist_list_page.dart
 │   │   │       │   ├── movie_detail_page.dart
 │   │   │       │   ├── movie_main_page.dart
 │   │   │       │   ├── now_playing_page.dart
@@ -151,86 +170,98 @@ flutter_movie_clean_architecture/
 │   │   │       │   └── up_coming_page.dart
 │   │   │       ├── providers/
 │   │   │       │   ├── movie_provider.dart
+│   │   │       │   └── favorite_provider.dart
 │   │   │       └── widgets/
-│   │   │           ├── movie_card.dart
-│   │   │           └── movie_search.dart
-│   │   ├── tv_series/
-│   │   │   ├── data/
-│   │   │   │   ├── datasources/
-│   │   │   │   │   └── tv_series_remote_data_source.dart
-│   │   │   │   ├── models/
-│   │   │   │   │   ├── tv_series_detail_model.dart
-│   │   │   │   │   ├── tv_series_model.dart
-│   │   │   │   │   └── tv_series_credit_model.dart
-│   │   │   │   └── repositories/
-│   │   │   │       └── tv_series_repository_impl.dart
-│   │   │   ├── domain/
-│   │   │   │   ├── entities/
-│   │   │   │   │   ├── tv_series.dart
-│   │   │   │   │   └── tv_series_detail.dart
-│   │   │   │   ├── repositories/
-│   │   │   │   │   └── tv_series_repository.dart
-│   │   │   │   └── usecases/
-│   │   │   │       ├── get_airing_today.dart
-│   │   │   │       ├── get_on_the_air.dart
-│   │   │   │       ├── get_popular_tv_series.dart
-│   │   │   │       ├── get_upcoming_tv_series.dart
-│   │   │   │       ├── get_tv_series_detail.dart
-│   │   │   │       ├── get_tv_series_credits.dart
-│   │   │   │       ├── get_recommended_tv_series.dart
-│   │   │   │       └── get_tv_series_search.dart
-│   │   │   └── presentation/
-│   │   │       ├── pages/
-│   │   │       │   ├── airing_today_page.dart
-│   │   │       │   ├── on_the_air_page.dart
-│   │   │       │   ├── popular_tv_series_page.dart
-│   │   │       │   ├── tv_series_detail_page.dart
-│   │   │       │   ├── tv_series_main_page.dart
-│   │   │       │   └── upcoming_tv_series_page.dart
-│   │   │       ├── providers/
-│   │   │       │   ├── tv_series_provider.dart
-│   │   │       └── widgets/
-│   │   │           └── tv_series_card.dart
-│   │   └── favorites/
-│   │       └── favorites_page.dart
+│   │   │           └── movie_card.dart
+│   │   └── tv_series/
+│   │       ├── data/
+│   │       │   ├── datasources/
+│   │       │   │   └── tv_series_remote_data_source.dart
+│   │       │   ├── models/
+│   │       │   │   ├── tv_series_detail_model.dart
+│   │       │   │   ├── tv_series_model.dart
+│   │       │   │   └── tv_series_credit_model.dart
+│   │       │   └── repositories/
+│   │       │       └── tv_series_repository_impl.dart
+│   │       ├── domain/
+│   │       │   ├── entities/
+│   │       │   │   ├── tv_series.dart
+│   │       │   │   ├── tv_series_detail.dart
+│   │       │   │   └── tv_series_credit_entity.dart
+│   │       │   ├── repositories/
+│   │       │   │   └── tv_series_repository.dart
+│   │       │   └── usecases/
+│   │       │       ├── get_airing_today.dart
+│   │       │       ├── get_on_the_air.dart
+│   │       │       ├── get_popular_tv_series.dart
+│   │       │       ├── get_upcoming_tv_series.dart
+│   │       │       ├── get_tv_series_detail.dart
+│   │       │       ├── get_tv_series_credits.dart
+│   │       │       ├── get_recommended_tv_series.dart
+│   │       │       └── get_tv_series_search.dart
+│   │       └── presentation/
+│   │           ├── pages/
+│   │           │   ├── airing_today_page.dart
+│   │           │   ├── on_the_air_page.dart
+│   │           │   ├── popular_tv_series_page.dart
+│   │           │   ├── tv_series_detail_page.dart
+│   │           │   ├── tv_series_main_page.dart
+│   │           │   └── upcoming_tv_series_page.dart
+│   │           ├── providers/
+│   │           │   └── tv_series_provider.dart
+│   │           └── widgets/
+│           │       └── tv_series_card.dart
+│   ├── presentation/
+│   │   ├── pages/
+│   │   │   └── main_tab_page.dart
+│   │   └── widgets/
+│   │       └── universal_search.dart
 │   ├── routing/
 │   │   └── app_router.dart
 │   └── main.dart
+├── android/
+├── assets/
+├── build/
 ├── ios/
 ├── screen_shots/
 ├── test/
-├── .flutter-plugins
-├── .flutter-plugins-dependencies
-├── .gitignore
-├── .metadata
+├── pubspec.yaml
+├── pubspec.lock
 ├── analysis_options.yaml
-└── flutter_movie_clean_architecture.iml
+├── .gitignore
+└── README.md
 ```
 
-## Clone the repository
+## 🚀 Getting Started
 
+### Prerequisites
+- Flutter SDK (3.24.1 or higher)
+- Dart SDK (3.8.0 or higher)
+- Git
+
+### Installation
+
+1. Clone the repository:
 ```bash
 git clone git@github.com:piashcse/flutter-movie-clean-architecture.git
+cd flutter-movie-clean-architecture
 ```
 
-## Install dependencies
-
+2. Install dependencies:
 ```bash
 flutter pub get
 ```
-## Generate code (build runner)
 
+3. Generate code (build runner):
 ```bash
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 This command generates code for:
-- Freezed models (immutable data classes)
 - JsonSerializable (JSON serialization/deserialization)
 - Hive adapters (local database models)
 
-## Run the app
-
+4. Run the app:
 ```bash
 flutter run
 ```
@@ -241,20 +272,20 @@ After running the app, you can:
 - Save your favorite items using the heart icon on detail pages
 - Access your saved favorites through the Favorites tab
 
+## 🛠️ Built With
 
-## Built With 🛠
-- [Flutter](https://flutter.dev) - Google's UI toolkit for building natively compiled applications for mobile, web, and desktop from a single codebase.
-- [Riverpod](https://riverpod.dev) - A simple, composable, and testable state management solution for Flutter.
-- [GoRouter](https://pub.dev/packages/go_router) - Declarative routing package for Flutter, designed to work seamlessly with state management and deep linking.
-- [Dio](https://pub.dev/packages/dio) - A powerful HTTP client for Dart, supporting interceptors, global configuration, FormData, request cancellation, and more.
-- [Freezed](https://pub.dev/packages/freezed) - A code generator for immutable classes that helps with union types/pattern matching in Dart.
-- [JsonSerializable](https://pub.dev/packages/json_serializable) - Generates code for converting between Dart objects and JSON, making serialization easy.
-- [Flutter Localizations](https://flutter.dev/docs/development/accessibility-and-localization/internationalization) - Internationalization and localization support for multi-language applications.
-- [Logger / DioLogger](https://pub.dev/packages/logger) - Easy and pretty logging package for debugging; use `DioLogger` to log Dio HTTP requests and responses.
-- [Hive](https://pub.dev/packages/hive) - Lightweight and blazing fast key-value database written in pure Dart.
-- [Hive Flutter](https://pub.dev/packages/hive_flutter) - Extension for Hive that enables Flutter specific features.
+- [Flutter](https://flutter.dev) - Google's UI toolkit for building natively compiled applications for mobile, web, and desktop from a single codebase
+- [Riverpod](https://riverpod.dev) - A simple, composable, and testable state management solution for Flutter
+- [GoRouter](https://pub.dev/packages/go_router) - Declarative routing package for Flutter, designed to work seamlessly with state management and deep linking
+- [Dio](https://pub.dev/packages/dio) - A powerful HTTP client for Dart, supporting interceptors, global configuration, FormData, request cancellation, and more
+- [JsonSerializable](https://pub.dev/packages/json_serializable) - Generates code for converting between Dart objects and JSON, making serialization easy
+- [Flutter Localizations](https://flutter.dev/docs/development/accessibility-and-localization/internationalization) - Internationalization and localization support for multi-language applications
+- [PrettyDioLogger](https://pub.dev/packages/pretty_dio_logger) - Pretty logging for Dio HTTP requests and responses
+- [Hive](https://pub.dev/packages/hive) - Lightweight and blazing fast key-value database written in pure Dart
+- [Hive Flutter](https://pub.dev/packages/hive_flutter) - Extension for Hive that enables Flutter specific features
+- [CachedNetworkImage](https://pub.dev/packages/cached_network_image) - Displays network images with caching and placeholder support
 
-## 👨 Developed By
+## 👨‍💻 Developed By
 
 <a href="https://twitter.com/piashcse" target="_blank">
   <img src="https://avatars.githubusercontent.com/piashcse" width="80" align="left">
@@ -268,7 +299,8 @@ After running the app, you can:
 [![Web](https://img.shields.io/badge/-Web-0073E6?logo=appveyor&logoColor=white&style=for-the-badge)](https://piashcse.github.io/)
 [![Blog](https://img.shields.io/badge/-Blog-0077B5?logo=readme&logoColor=white&style=for-the-badge)](https://piashcse.blogspot.com)
 
-# License
+## 📄 License
+
 ```
 Copyright 2025 piashcse (Mehedi Hassan Piash)
 
