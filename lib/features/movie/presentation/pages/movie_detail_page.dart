@@ -23,7 +23,7 @@ class MovieDetailPage extends ConsumerWidget {
     final movieCreditAsync = ref.watch(movieCreditsProvider(movieId));
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: movieDetailAsync.when(
         data: (movie) => CustomScrollView(
           slivers: [
@@ -41,8 +41,8 @@ class MovieDetailPage extends ConsumerWidget {
             ),
           ],
         ),
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: Color(0xFF7B2CBF)),
+        loading: () => Center(
+          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)),
         ),
         error: (error, _) => Center(
           child: Column(
@@ -55,7 +55,7 @@ class MovieDetailPage extends ConsumerWidget {
               const SizedBox(height: 8),
               Text(error.toString(),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.grey)),
+                  style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
@@ -124,7 +124,7 @@ class _MovieDetailHeaderState extends ConsumerState<MovieDetailHeader> {
     return SliverAppBar(
       expandedHeight: 300,
       pinned: true,
-      backgroundColor: const Color(0xFF7B2CBF),
+      backgroundColor: Theme.of(context).primaryColor,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.white),
         onPressed: () => Navigator.pop(context),
@@ -151,15 +151,15 @@ class _MovieDetailHeaderState extends ConsumerState<MovieDetailHeader> {
                     '$IMAGE_URL${widget.movie.posterPath}',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
-                      color: Colors.grey[300],
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                       child:
-                          const Icon(Icons.movie, size: 64, color: Colors.grey),
+                          Icon(Icons.movie, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
                   )
                 : Container(
-                    color: Colors.grey[300],
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
                     child:
-                        const Icon(Icons.movie, size: 64, color: Colors.grey),
+                        Icon(Icons.movie, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
             Container(
               decoration: BoxDecoration(
@@ -211,13 +211,13 @@ class MovieDetailInfoSection extends StatelessWidget {
                       '$IMAGE_URL${movie.posterPath}',
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
-                        color: Colors.grey[300],
-                        child: const Icon(Icons.movie, color: Colors.grey),
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        child: Icon(Icons.movie, color: Theme.of(context).colorScheme.onSurfaceVariant),
                       ),
                     )
                   : Container(
-                      color: Colors.grey[300],
-                      child: const Icon(Icons.movie, color: Colors.grey),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      child: Icon(Icons.movie, color: Theme.of(context).colorScheme.onSurfaceVariant),
                     ),
             ),
           ),
@@ -228,29 +228,30 @@ class MovieDetailInfoSection extends StatelessWidget {
               children: [
                 Text(
                   movie.title ?? 'Unknown Title',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
                     _buildInfoItem(
+                        context,
                         'Duration',
                         movie.runtime != null
                             ? formatDuration(movie.runtime!)
                             : 'N/A'),
-                    _buildInfoItem('Release Date', movie.releaseDate ?? 'N/A'),
+                    _buildInfoItem(context, 'Release Date', movie.releaseDate ?? 'N/A'),
                   ],
                 ),
                 const SizedBox(height: 16),
                 Row(
                   children: [
-                    _buildInfoItem('Language',
+                    _buildInfoItem(context, 'Language',
                         movie.originalLanguage?.toUpperCase() ?? 'N/A'),
-                    _buildInfoItem('Rating',
+                    _buildInfoItem(context, 'Rating',
                         movie.voteAverage?.toStringAsFixed(1) ?? 'N/A'),
                   ],
                 ),
@@ -262,7 +263,7 @@ class MovieDetailInfoSection extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoItem(String label, String value) {
+  Widget _buildInfoItem(BuildContext context, String label, String value) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,7 +272,7 @@ class MovieDetailInfoSection extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             value,
-            style: const TextStyle(color: Colors.grey),
+            style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
         ],
       ),
@@ -388,9 +389,9 @@ class RecommendedMoviesSection extends StatelessWidget {
                               width: 110,
                               height: 160,
                               fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => _errorPlaceholder(),
+                              errorBuilder: (context, _, __) => _errorPlaceholder(context),
                             )
-                          : _errorPlaceholder(),
+                          : _errorPlaceholder(context),
                     ),
                   );
                 },
@@ -414,12 +415,12 @@ class RecommendedMoviesSection extends StatelessWidget {
     );
   }
 
-  Widget _errorPlaceholder() {
+  Widget _errorPlaceholder(BuildContext context) {
     return Container(
       width: 100,
       height: 160,
-      color: Colors.grey[300],
-      child: const Icon(Icons.movie, size: 48, color: Colors.grey),
+      color: Theme.of(context).colorScheme.onSurfaceVariant,
+      child: Icon(Icons.movie, size: 48, color: Theme.of(context).colorScheme.onSurfaceVariant),
     );
   }
 }
@@ -480,10 +481,10 @@ class MovieCreditsSection extends StatelessWidget {
                                     width: 70,
                                     height: 70,
                                     fit: BoxFit.cover,
-                                    errorBuilder: (_, __, ___) =>
-                                        _placeholder(),
+                                    errorBuilder: (context, _, __) =>
+                                        _placeholder(context),
                                   )
-                                : _placeholder(),
+                                : _placeholder(context),
                           ),
                           const SizedBox(height: 8),
                           Text(
@@ -491,10 +492,10 @@ class MovieCreditsSection extends StatelessWidget {
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.w500,
-                              color: Colors.black87,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -508,11 +509,11 @@ class MovieCreditsSection extends StatelessWidget {
           ],
         );
       },
-      loading: () => const Padding(
+      loading: () => Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(
           child: CircularProgressIndicator(
-            color: Color(0xFF7B2CBF),
+            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           ),
         ),
       ),
@@ -526,15 +527,15 @@ class MovieCreditsSection extends StatelessWidget {
     );
   }
 
-  Widget _placeholder() {
+  Widget _placeholder(BuildContext context) {
     return Container(
       width: 70,
       height: 70,
       decoration: BoxDecoration(
-        color: Colors.grey[300],
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
         shape: BoxShape.circle,
       ),
-      child: const Icon(Icons.person, color: Colors.grey, size: 35),
+      child: Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 35),
     );
   }
 }

@@ -23,7 +23,7 @@ class TvSeriesDetailPage extends ConsumerWidget {
     final tvSeriesCreditsAsync = ref.watch(tvSeriesCreditsProvider(tvSeriesId));
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: tvSeriesDetailAsync.when(
         data: (tvSeries) => CustomScrollView(
           slivers: [
@@ -40,8 +40,8 @@ class TvSeriesDetailPage extends ConsumerWidget {
             ),
           ],
         ),
-        loading: () => const Center(
-          child: CircularProgressIndicator(color: Color(0xFF7B2CBF)),
+        loading: () => Center(
+          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)),
         ),
         error: (error, _) => Center(
           child: Column(
@@ -509,11 +509,11 @@ class TvSeriesCastSection extends StatelessWidget {
           ],
         );
       },
-      loading: () => const Padding(
+      loading: () => Padding(
         padding: EdgeInsets.symmetric(vertical: 24),
         child: Center(
           child: CircularProgressIndicator(
-            color: Color(0xFF7B2CBF),
+            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           ),
         ),
       ),

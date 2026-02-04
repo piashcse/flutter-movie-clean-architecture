@@ -64,13 +64,13 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
     final artistAllMoviesAsync = ref.watch(artistDetailAllMoviesProvider(widget.artistId));
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: artistDetailAsync.when(
         data: (artist) => CustomScrollView(
           slivers: [
             // Silver AppBar
             SliverAppBar(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               foregroundColor: Colors.black,
               elevation: 0,
               pinned: true,
