@@ -1,18 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'theme_repository.dart';
 
-const String _themeBoxName = 'settings';
-const String _themeKey = 'theme_mode';
+class ThemeRepositoryImpl implements ThemeRepository {
+  static const String _themeBoxName = 'settings';
+  static const String _themeKey = 'theme_mode';
 
-final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>(
-  (ref) => ThemeModeNotifier(),
-);
-
-class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  ThemeModeNotifier() : super(_getSavedThemeMode());
-
-  static ThemeMode _getSavedThemeMode() {
+  @override
+  Future<ThemeMode> getThemeMode() async {
     try {
       final box = Hive.box(_themeBoxName);
       final savedValue = box.get(_themeKey, defaultValue: 'system');
@@ -32,7 +27,8 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
     }
   }
 
-  void _saveThemeMode(ThemeMode themeMode) async {
+  @override
+  Future<void> saveThemeMode(ThemeMode themeMode) async {
     try {
       final box = Hive.box(_themeBoxName);
       String themeValue;
@@ -53,27 +49,28 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
       await box.put(_themeKey, themeValue);
     } catch (e) {
       // Handle error silently or log if needed
-      print('Error saving theme mode: $e');
+      // print('Error saving theme mode: $e'); // Commented out for production
     }
   }
 
-  void toggleTheme() {
-    state = state == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    _saveThemeMode(state);
-  }
+  @override
+  Future<void> toggleThemeMode() async {
+    final currentMode = await getThemeMode();
+    ThemeMode newMode;
 
-  void setLightTheme() {
-    state = ThemeMode.light;
-    _saveThemeMode(state);
-  }
+    switch (currentMode) {
+      case ThemeMode.light:
+        newMode = ThemeMode.dark;
+        break;
+      case ThemeMode.dark:
+        newMode = ThemeMode.light;
+        break;
+      case ThemeMode.system:
+        // If currently system, switch to light as default
+        newMode = ThemeMode.light;
+        break;
+    }
 
-  void setDarkTheme() {
-    state = ThemeMode.dark;
-    _saveThemeMode(state);
-  }
-
-  void setSystemTheme() {
-    state = ThemeMode.system;
-    _saveThemeMode(state);
+    await saveThemeMode(newMode);
   }
 }

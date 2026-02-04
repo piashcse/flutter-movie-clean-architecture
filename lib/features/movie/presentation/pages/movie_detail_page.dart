@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
 import 'package:flutter_movie_clean_architecture/core/hive/favorite_model.dart';
-import 'package:flutter_movie_clean_architecture/core/hive/hive_helper.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/utils.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/favorite_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -21,26 +21,34 @@ class MovieDetailPage extends ConsumerWidget {
     final movieDetailAsync = ref.watch(movieDetailProvider(movieId));
     final recommendMovieAsync = ref.watch(recommendMovieProvider(movieId));
     final movieCreditAsync = ref.watch(movieCreditsProvider(movieId));
+    final favorites = ref.watch(favoritesProvider);
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: movieDetailAsync.when(
-        data: (movie) => CustomScrollView(
-          slivers: [
-            MovieDetailHeader(movie: movie),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  MovieDetailInfoSection(movie: movie),
-                  MovieDescriptionSection(movie: movie),
-                  RecommendedMoviesSection(
-                      recommendMovieAsync: recommendMovieAsync),
-                  MovieCreditsSection(movieCreditAsync: movieCreditAsync),
-                ],
+        data: (movie) {
+          // Check if movie is favorited
+          final isFavorite = favorites.any(
+            (fav) => fav.itemId == movie.id && fav.type == 'movie',
+          );
+
+          return CustomScrollView(
+            slivers: [
+              MovieDetailHeader(movie: movie, isFavorite: isFavorite),
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    MovieDetailInfoSection(movie: movie),
+                    MovieDescriptionSection(movie: movie),
+                    RecommendedMoviesSection(
+                        recommendMovieAsync: recommendMovieAsync),
+                    MovieCreditsSection(movieCreditAsync: movieCreditAsync),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        },
         loading: () => Center(
           child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)),
         ),
@@ -69,58 +77,30 @@ class MovieDetailPage extends ConsumerWidget {
   }
 }
 
-class MovieDetailHeader extends ConsumerStatefulWidget {
+class MovieDetailHeader extends ConsumerWidget {
   final dynamic movie;
+  final bool isFavorite;
 
-  const MovieDetailHeader({super.key, required this.movie});
-
-  @override
-  ConsumerState<MovieDetailHeader> createState() => _MovieDetailHeaderState();
-}
-
-class _MovieDetailHeaderState extends ConsumerState<MovieDetailHeader> {
-  bool _isFavorite = false;
+  const MovieDetailHeader({super.key, required this.movie, required this.isFavorite});
 
   @override
-  void initState() {
-    super.initState();
-    _checkIfFavorite();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favoritesNotifier = ref.read(favoritesProvider.notifier);
 
-  Future<void> _checkIfFavorite() async {
-    final isFavorite = await HiveHelper.isFavorite(widget.movie.id, 'movie');
-    if (mounted) {
-      setState(() {
-        _isFavorite = isFavorite;
-      });
-    }
-  }
-
-  Future<void> _toggleFavorite() async {
-    if (_isFavorite) {
-      // Remove from favorites
-      await HiveHelper.deleteFavorite(widget.movie.id, 'movie');
-    } else {
-      // Add to favorites
+    void toggleFavorite() {
       final favorite = Favorite(
         id: DateTime.now().millisecondsSinceEpoch,
-        itemId: widget.movie.id,
-        title: widget.movie.title ?? 'Unknown Title',
-        posterPath: widget.movie.posterPath ?? '',
+        itemId: movie.id,
+        title: movie.title ?? 'Unknown Title',
+        posterPath: movie.posterPath ?? '',
         type: 'movie',
-        overview: widget.movie.overview,
-        releaseDate: widget.movie.releaseDate,
+        overview: movie.overview,
+        releaseDate: movie.releaseDate,
       );
-      await HiveHelper.insertFavorite(favorite);
+
+      favoritesNotifier.toggleFavorite(favorite);
     }
 
-    setState(() {
-      _isFavorite = !_isFavorite;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
     return SliverAppBar(
       expandedHeight: 300,
       pinned: true,
@@ -136,19 +116,19 @@ class _MovieDetailHeaderState extends ConsumerState<MovieDetailHeader> {
       actions: [
         IconButton(
           icon: Icon(
-            _isFavorite ? Icons.favorite : Icons.favorite_border,
-            color: _isFavorite ? Colors.red : Colors.white,
+            isFavorite ? Icons.favorite : Icons.favorite_border,
+            color: isFavorite ? Colors.red : Colors.white,
           ),
-          onPressed: _toggleFavorite,
+          onPressed: toggleFavorite,
         ),
       ],
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,
           children: [
-            widget.movie.posterPath != null
+            movie.posterPath != null
                 ? Image.network(
-                    '$IMAGE_URL${widget.movie.posterPath}',
+                    '$imageUrl${movie.posterPath}',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -168,7 +148,7 @@ class _MovieDetailHeaderState extends ConsumerState<MovieDetailHeader> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withValues(alpha: 0.7),
                   ],
                 ),
               ),
@@ -200,7 +180,7 @@ class MovieDetailInfoSection extends StatelessWidget {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -208,7 +188,7 @@ class MovieDetailInfoSection extends StatelessWidget {
               ),
               child: movie.posterPath != null
                   ? Image.network(
-                      '$IMAGE_URL${movie.posterPath}',
+                      '$imageUrl${movie.posterPath}',
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -385,7 +365,7 @@ class RecommendedMoviesSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: movie.posterPath != null
                           ? Image.network(
-                              '$IMAGE_URL${movie.posterPath}',
+                              '$imageUrl${movie.posterPath}',
                               width: 110,
                               height: 160,
                               fit: BoxFit.cover,
@@ -460,8 +440,8 @@ class MovieCreditsSection extends StatelessWidget {
                 separatorBuilder: (_, __) => const SizedBox(width: 4),
                 itemBuilder: (context, index) {
                   final cast = castList[index];
-                  final imageUrl = cast.profilePath != null
-                      ? '$IMAGE_URL${cast.profilePath}'
+                  final castImageUrl = cast.profilePath != null
+                      ? '$imageUrl${cast.profilePath}'
                       : null;
 
                   return InkWell(

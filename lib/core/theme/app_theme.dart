@@ -75,7 +75,7 @@ class AppTheme {
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
-        color: lightOnSurface.withOpacity(0.7),
+        color: lightOnSurface.withValues(alpha: 0.7),
       ),
     ),
     colorScheme: ColorScheme.fromSeed(
@@ -144,7 +144,7 @@ class AppTheme {
       ),
       bodyMedium: TextStyle(
         fontSize: 14,
-        color: darkOnSurface.withOpacity(0.8), // Better contrast for readability
+        color: darkOnSurface.withValues(alpha: 0.8), // Better contrast for readability
       ),
     ),
     colorScheme: ColorScheme.fromSeed(

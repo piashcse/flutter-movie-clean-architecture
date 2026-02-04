@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'theme_provider.dart';
+import 'theme_providers.dart';
 
 class ThemeToggleWidget extends ConsumerWidget {
   const ThemeToggleWidget({super.key});
@@ -11,14 +11,14 @@ class ThemeToggleWidget extends ConsumerWidget {
 
     return PopupMenuButton<ThemeMode>(
       icon: Icon(
-        themeMode == ThemeMode.dark 
-          ? Icons.dark_mode 
-          : (themeMode == ThemeMode.light 
-              ? Icons.light_mode 
+        themeMode == ThemeMode.dark
+          ? Icons.dark_mode
+          : (themeMode == ThemeMode.light
+              ? Icons.light_mode
               : Icons.brightness_auto),
       ),
       onSelected: (ThemeMode mode) {
-        ref.read(themeModeProvider.notifier).state = mode;
+        ref.read(themeModeProvider.notifier).setTheme(mode);
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<ThemeMode>>[
         PopupMenuItem<ThemeMode>(

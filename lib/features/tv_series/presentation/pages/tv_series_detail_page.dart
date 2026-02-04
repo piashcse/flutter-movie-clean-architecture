@@ -4,7 +4,7 @@ import 'package:flutter_movie_clean_architecture/core/hive/favorite_model.dart';
 import 'package:flutter_movie_clean_architecture/core/hive/hive_helper.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/utils.dart';
-import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/tv_series_credit_model.dart';
+import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series_credit_entity.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/providers/tv_series_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -147,7 +147,7 @@ class _TvSeriesDetailHeaderState extends ConsumerState<TvSeriesDetailHeader> {
           children: [
             widget.tvSeries.posterPath != null
                 ? Image.network(
-                    '$IMAGE_URL${widget.tvSeries.posterPath}',
+                    '$imageUrl${widget.tvSeries.posterPath}',
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Colors.grey[300],
@@ -167,7 +167,7 @@ class _TvSeriesDetailHeaderState extends ConsumerState<TvSeriesDetailHeader> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.transparent,
-                    Colors.black.withOpacity(0.7),
+                    Colors.black.withValues(alpha: 0.7),
                   ],
                 ),
               ),
@@ -199,7 +199,7 @@ class TvSeriesDetailInfoSection extends StatelessWidget {
               decoration: BoxDecoration(
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
+                    color: Colors.black.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -207,7 +207,7 @@ class TvSeriesDetailInfoSection extends StatelessWidget {
               ),
               child: tvSeries.posterPath != null
                   ? Image.network(
-                      '$IMAGE_URL${tvSeries.posterPath}',
+                      '$imageUrl${tvSeries.posterPath}',
                       fit: BoxFit.cover,
                       errorBuilder: (_, __, ___) => Container(
                         color: Colors.grey[300],
@@ -387,7 +387,7 @@ class RecommendedTvSeriesSection extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                       child: tvSeries.posterPath != null
                           ? Image.network(
-                              '$IMAGE_URL${tvSeries.posterPath}',
+                              '$imageUrl${tvSeries.posterPath}',
                               width: 110,
                               height: 160,
                               fit: BoxFit.cover,
@@ -428,7 +428,7 @@ class RecommendedTvSeriesSection extends StatelessWidget {
 }
 
 class TvSeriesCastSection extends StatelessWidget {
-  final AsyncValue<TvSeriesCreditModel> tvSeriesCreditsAsync;
+  final AsyncValue<TvSeriesCreditEntity> tvSeriesCreditsAsync;
 
   const TvSeriesCastSection({super.key, required this.tvSeriesCreditsAsync});
 
@@ -462,8 +462,8 @@ class TvSeriesCastSection extends StatelessWidget {
                 separatorBuilder: (_, __) => const SizedBox(width: 4),
                 itemBuilder: (context, index) {
                   final cast = castList[index];
-                  final imageUrl = cast.profilePath != null
-                      ? '$IMAGE_URL${cast.profilePath}'
+                  final castImageUrl = cast.profilePath != null
+                      ? '$imageUrl${cast.profilePath}'
                       : null;
 
                   return GestureDetector(

@@ -1,6 +1,6 @@
 import 'package:flutter_movie_clean_architecture/core/network/dio_provider.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/data/datasources/tv_series_remote_data_source.dart';
-import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/tv_series_credit_model.dart';
+import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series_credit_entity.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/data/repositories/tv_series_repository_impl.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series_detail.dart';
@@ -90,6 +90,6 @@ final getTvSeriesCreditsProvider = Provider(
 );
 
 final tvSeriesCreditsProvider =
-    FutureProvider.family<TvSeriesCreditModel, int>((ref, tvSeriesId) async {
+    FutureProvider.family<TvSeriesCreditEntity, int>((ref, tvSeriesId) async {
   return ref.watch(getTvSeriesCreditsProvider).call(tvSeriesId);
 });
