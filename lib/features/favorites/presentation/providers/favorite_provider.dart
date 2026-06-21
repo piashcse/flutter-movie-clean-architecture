@@ -3,13 +3,15 @@ import 'package:flutter_movie_clean_architecture/core/hive/hive_helper.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_model.dart';
 
 // State provider to track favorites
-final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<Favorite>>(
-  (ref) => FavoritesNotifier(),
+final favoritesProvider = NotifierProvider<FavoritesNotifier, List<Favorite>>(
+  FavoritesNotifier.new,
 );
 
-class FavoritesNotifier extends StateNotifier<List<Favorite>> {
-  FavoritesNotifier() : super(const []) {
+class FavoritesNotifier extends Notifier<List<Favorite>> {
+  @override
+  List<Favorite> build() {
     loadFavorites();
+    return const [];
   }
 
   Future<void> loadFavorites() async {

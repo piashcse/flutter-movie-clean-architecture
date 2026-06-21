@@ -4,7 +4,7 @@ part 'tv_series_credit_model.freezed.dart';
 part 'tv_series_credit_model.g.dart';
 
 @freezed
-class TvSeriesCreditModel with _$TvSeriesCreditModel {
+sealed class TvSeriesCreditModel with _$TvSeriesCreditModel {
   const factory TvSeriesCreditModel({
     required int id,
     List<Cast>? cast,
@@ -15,7 +15,7 @@ class TvSeriesCreditModel with _$TvSeriesCreditModel {
 }
 
 @freezed
-class Cast with _$Cast {
+sealed class Cast with _$Cast {
   const factory Cast({
     required int id,
     bool? adult,
@@ -36,7 +36,7 @@ class Cast with _$Cast {
 }
 
 @freezed
-class Crew with _$Crew {
+sealed class Crew with _$Crew {
   const factory Crew({
     required int id,
     bool? adult,

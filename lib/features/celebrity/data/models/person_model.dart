@@ -4,7 +4,7 @@ part 'person_model.freezed.dart';
 part 'person_model.g.dart';
 
 @freezed
-class PersonModel with _$PersonModel {
+sealed class PersonModel with _$PersonModel {
   const factory PersonModel({
     required bool adult,
     @JsonKey(name: 'gender') required int gender,

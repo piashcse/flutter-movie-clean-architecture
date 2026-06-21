@@ -10,7 +10,14 @@ import 'package:flutter_movie_clean_architecture/features/tv_series/presentation
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-final tvDescriptionExpandedProvider = StateProvider<bool>((ref) => false);
+class _TvDescriptionNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+}
+
+final tvDescriptionExpandedProvider = NotifierProvider<_TvDescriptionNotifier, bool>(
+  _TvDescriptionNotifier.new,
+);
 
 class TvSeriesDetailPage extends ConsumerWidget {
   final int tvSeriesId;
@@ -35,7 +42,10 @@ class TvSeriesDetailPage extends ConsumerWidget {
                   TvSeriesDetailInfoSection(tvSeries: tvSeries),
                   DescriptionSection(
                     overview: tvSeries.overview ?? '',
-                    expandedProvider: tvDescriptionExpandedProvider,
+                    isExpanded: ref.watch(tvDescriptionExpandedProvider),
+                    onToggle: () =>
+                        ref.read(tvDescriptionExpandedProvider.notifier).state =
+                        !ref.read(tvDescriptionExpandedProvider.notifier).state,
                   ),
                   RecommendationsSection(
                     itemsAsync: recommendedTvSeriesAsync,
