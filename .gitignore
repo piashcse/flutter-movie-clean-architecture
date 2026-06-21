@@ -47,3 +47,4 @@ app.*.map.json
 # Freezed and JSON Serializable generated files
 *.freezed.dart
 *.g.dart
+.env

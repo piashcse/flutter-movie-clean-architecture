@@ -1,9 +1,9 @@
 import 'package:flutter_movie_clean_architecture/features/movie/data/datasources/movie_remote_data_source.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart' as credit_model;
+import 'package:flutter_movie_clean_architecture/core/entities/credit_entity.dart' as credit_entity;
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/artist_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/credit_entity.dart' as credit_entity;
 import 'package:flutter_movie_clean_architecture/features/movie/domain/repositories/movie_repository.dart';
 
 class MovieRepositoryImpl implements MovieRepository {

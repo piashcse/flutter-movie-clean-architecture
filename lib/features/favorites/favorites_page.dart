@@ -1,26 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
-import 'package:flutter_movie_clean_architecture/core/hive/favorite_model.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/presentation/providers/favorite_provider.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
-import 'package:flutter_movie_clean_architecture/features/favorites/favorites_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class FavoritesPage extends ConsumerWidget {
+class FavoritesPage extends ConsumerStatefulWidget {
   const FavoritesPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final favoritesAsync = ref.watch(favoritesPageProvider);
+  ConsumerState<FavoritesPage> createState() => _FavoritesPageState();
+}
+
+class _FavoritesPageState extends ConsumerState<FavoritesPage> {
+  Future<void> _refresh() async {
+    await ref.read(favoritesProvider.notifier).loadFavorites();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final favorites = ref.watch(favoritesProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(context.translate('favorites')),
       ),
-      body: favoritesAsync.when(
-        data: (favorites) {
-          if (favorites.isEmpty) {
-            return Center(
+      body: favorites.isEmpty
+          ? Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -38,145 +45,108 @@ class FavoritesPage extends ConsumerWidget {
                   ),
                 ],
               ),
-            );
-          }
-
-          return RefreshIndicator(
-            onRefresh: () async {
-              ref.refresh(favoritesPageProvider);
-            },
-            child: GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.7,
-              ),
-              itemCount: favorites.length,
-              itemBuilder: (context, index) {
-                final favorite = favorites[index];
-                return Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: InkWell(
-                    onTap: () {
-                      switch (favorite.type) {
-                        case 'movie':
-                          context.push('/movie/${favorite.itemId}');
-                          break;
-                        case 'tv':
-                          context.push('/tv/${favorite.itemId}');
-                          break;
-                        case 'celebrity':
-                          context.push('/artistId/${favorite.itemId}');
-                          break;
-                      }
-                    },
-                    borderRadius: BorderRadius.circular(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: ClipRRect(
-                            borderRadius: const BorderRadius.vertical(
-                              top: Radius.circular(12),
-                            ),
-                            child: favorite.posterPath.isNotEmpty
-                                ? Image.network(
-                                    '$imageUrl${favorite.posterPath}',
-                                    fit: BoxFit.cover,
-                                    width: double.infinity,
-                                    errorBuilder: (_, __, ___) =>
-                                        _buildPlaceholderImage(),
-                                  )
-                                : _buildPlaceholderImage(),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                favorite.title,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    favorite.type.toUpperCase(),
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                      fontSize: 10,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.favorite,
-                                      color: Colors.red,
-                                      size: 18,
-                                    ),
-                                    padding: EdgeInsets.zero,
-                                    onPressed: () async {
-                                      ref.read(favoritesPageProvider.notifier)
-                                          .removeFavorite(favorite.itemId, favorite.type);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+            )
+          : RefreshIndicator(
+              onRefresh: _refresh,
+              child: GridView.builder(
+                padding: const EdgeInsets.all(16),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 0.7,
+                ),
+                itemCount: favorites.length,
+                itemBuilder: (context, index) {
+                  final favorite = favorites[index];
+                  return Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ),
-                );
-              },
-            ),
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stack) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text(
-                context.translate('error_loading_favorites', args: [error.toString()]),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () {
-                  ref.invalidate(favoritesPageProvider);
+                    child: InkWell(
+                      onTap: () {
+                        switch (favorite.type) {
+                          case 'movie':
+                            context.push('/movie/${favorite.itemId}');
+                            break;
+                          case 'tv':
+                            context.push('/tv/${favorite.itemId}');
+                            break;
+                          case 'celebrity':
+                            context.push('/artistId/${favorite.itemId}');
+                            break;
+                        }
+                      },
+                      borderRadius: BorderRadius.circular(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: const BorderRadius.vertical(
+                                top: Radius.circular(12),
+                              ),
+                              child: CachedImage(
+                                imageUrl: favorite.posterPath.isNotEmpty
+                                    ? '$imageUrl${favorite.posterPath}'
+                                    : null,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                errorIcon: Icons.image,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  favorite.title,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      favorite.type.toUpperCase(),
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 10,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.favorite,
+                                        color: Colors.red,
+                                        size: 18,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        ref.read(favoritesProvider.notifier)
+                                            .removeFavorite(favorite.itemId, favorite.type);
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
                 },
-                child: Text(context.translate('retry')),
               ),
-            ],
-          ),
-        ),
-      ),
+            ),
     );
   }
 
-  Widget _buildPlaceholderImage() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: Colors.grey[300],
-      child: const Icon(Icons.image, color: Colors.grey),
-    );
-  }
 }

@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
 import 'package:flutter_movie_clean_architecture/features/celebrity/presentation/providers/celebrity_provider.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/providers/tv_series_provider.dart';
@@ -23,7 +26,8 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
   bool _isLoading = false;
   final TextEditingController _searchController = TextEditingController();
   List<Map<String, dynamic>> _searchResults = [];
-  int _activeTab = 0; // 0 for movies, 1 for TV series, 2 for celebrities
+  int _activeTab = 0;
+  Timer? _debounce;
 
   Future<void> _movieSearch(String query) async {
     setState(() {
@@ -65,7 +69,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
         _searchResults = result.map<Map<String, dynamic>>((tvSeries) {
           return {
             'id': tvSeries.id.toString() ?? '',
-            'title': tvSeries.name ?? '', // TV series use 'name' instead of 'title'
+            'title': tvSeries.name ?? '',
             'image': '$imageUrl${tvSeries.posterPath ?? ''}',
             'type': 'tv',
           };
@@ -112,23 +116,31 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
     }
   }
 
-  void _performSearch(String query) {
-    if (query.trim().isNotEmpty) {
-      if (_activeTab == 0) {
-        _movieSearch(query);
-      } else if (_activeTab == 1) {
-        _tvSeriesSearch(query);
-      } else {
-        _celebritySearch(query);
-      }
-    } else {
+  void _onSearchChanged(String query) {
+    _debounce?.cancel();
+    if (query.trim().isEmpty) {
       setState(() {
         _searchResults.clear();
       });
+      return;
+    }
+    _debounce = Timer(const Duration(milliseconds: 400), () {
+      _performSearch(query);
+    });
+  }
+
+  void _performSearch(String query) {
+    if (_activeTab == 0) {
+      _movieSearch(query);
+    } else if (_activeTab == 1) {
+      _tvSeriesSearch(query);
+    } else {
+      _celebritySearch(query);
     }
   }
 
   void _clearSearch() {
+    _debounce?.cancel();
     _searchController.clear();
     setState(() {
       _searchResults.clear();
@@ -139,7 +151,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
     setState(() {
       _activeTab = index;
       if (_searchController.text.isNotEmpty) {
-        _performSearch(_searchController.text);
+        _onSearchChanged(_searchController.text);
       }
     });
   }
@@ -154,7 +166,6 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
       );
     }
 
-    // Limit to maximum 4 items
     final limitedResults = _searchResults.take(4).toList();
 
     return Container(
@@ -177,23 +188,19 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                 } else if (item['type'] == 'celebrity') {
                   context.push('/artistId/$id');
                 }
-                widget.onClose(); // Close search after navigation
+                widget.onClose();
               }
             },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Row(
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      item['image']!,
-                      width: 70,
-                      height: 100,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.broken_image, size: 70),
-                    ),
+                  CachedImage(
+                    imageUrl: item['image'],
+                    width: 70,
+                    height: 100,
+                    fit: BoxFit.cover,
+                    borderRadius: 8,
                   ),
                   const SizedBox(width: 16),
                   Expanded(
@@ -216,6 +223,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
 
   @override
   void dispose() {
+    _debounce?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -227,12 +235,10 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
       body: SafeArea(
         child: Column(
           children: [
-            // Search Bar
             Container(
               color: Theme.of(context).scaffoldBackgroundColor,
               child: Column(
                 children: [
-                  // AppBar-like header
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                     child: Row(
@@ -245,7 +251,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                               hintText: context.translate('search'),
                               border: InputBorder.none,
                             ),
-                            onChanged: _performSearch,
+                            onChanged: _onSearchChanged,
                           ),
                         ),
                         _isLoading
@@ -264,7 +270,6 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                       ],
                     ),
                   ),
-                  // Tab selector for movies/TV series/celebrities
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
@@ -290,13 +295,11 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  // Search Results
                   if (_searchController.text.isNotEmpty)
                     _buildSearchResults(),
                 ],
               ),
             ),
-            // Expanded area to capture taps and close search
             Expanded(
               child: GestureDetector(
                 onTap: widget.onClose,

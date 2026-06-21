@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_movie_clean_architecture/core/hive/hive_helper.dart';
-import 'package:flutter_movie_clean_architecture/core/hive/favorite_model.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_model.dart';
 
 // State provider to track favorites
 final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<Favorite>>(
@@ -9,15 +9,14 @@ final favoritesProvider = StateNotifierProvider<FavoritesNotifier, List<Favorite
 
 class FavoritesNotifier extends StateNotifier<List<Favorite>> {
   FavoritesNotifier() : super(const []) {
-    _loadFavorites();
+    loadFavorites();
   }
 
-  Future<void> _loadFavorites() async {
+  Future<void> loadFavorites() async {
     try {
       final favorites = await HiveHelper.getAllFavorites();
       state = List.unmodifiable(favorites);
     } catch (e) {
-      // Handle error - maybe log or show error state
       state = const [];
     }
   }

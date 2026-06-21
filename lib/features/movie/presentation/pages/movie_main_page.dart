@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/popular_page.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/top_rated_page.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/up_coming_page.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/upcoming_movies_page.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'now_playing_page.dart';

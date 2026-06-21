@@ -1,75 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'repository/theme_repository.dart';
-import 'repository/theme_repository_impl.dart';
-import 'usecases/get_theme_mode.dart';
-import 'usecases/save_theme_mode.dart';
-import 'usecases/toggle_theme_mode.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-// Repository Provider
-final themeRepositoryProvider = Provider<ThemeRepository>((ref) {
-  return ThemeRepositoryImpl();
-});
-
-// Use Case Providers
-final getThemeModeProvider = Provider((ref) {
-  return GetThemeMode(ref.watch(themeRepositoryProvider));
-});
-
-final saveThemeModeProvider = Provider((ref) {
-  return SaveThemeMode(ref.watch(themeRepositoryProvider));
-});
-
-final toggleThemeModeProvider = Provider((ref) {
-  return ToggleThemeMode(ref.watch(themeRepositoryProvider));
-});
-
-// State Notifier Provider for Theme Mode
 final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>(
-  (ref) => ThemeModeNotifier(ref),
+  (ref) => ThemeModeNotifier(),
 );
 
 class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  final Ref ref;
+  static const _boxName = 'settings';
+  static const _key = 'theme_mode';
 
-  ThemeModeNotifier(this.ref) : super(ThemeMode.system) {
-    _initializeTheme();
+  ThemeModeNotifier() : super(ThemeMode.system) {
+    _init();
   }
 
-  Future<void> _initializeTheme() async {
+  Future<void> _init() async {
     try {
-      final getThemeMode = ref.read(getThemeModeProvider);
-      final themeMode = await getThemeMode.call();
-      state = themeMode;
-    } catch (e) {
-      // If initialization fails, default to system theme
+      final box = Hive.box(_boxName);
+      final saved = box.get(_key, defaultValue: 'system') as String;
+      state = switch (saved) {
+        'light' => ThemeMode.light,
+        'dark' => ThemeMode.dark,
+        _ => ThemeMode.system,
+      };
+    } catch (_) {
       state = ThemeMode.system;
     }
   }
 
   Future<void> toggleTheme() async {
-    try {
-      final toggleThemeMode = ref.read(toggleThemeModeProvider);
-      await toggleThemeMode.call();
-
-      // Refresh the theme mode after toggling
-      final getThemeMode = ref.read(getThemeModeProvider);
-      final newThemeMode = await getThemeMode.call();
-      state = newThemeMode;
-    } catch (e) {
-      // Handle error - maybe log it
-      // print('Error toggling theme: $e'); // Commented out for production
-    }
+    final newMode = switch (state) {
+      ThemeMode.light => ThemeMode.dark,
+      ThemeMode.dark => ThemeMode.light,
+      ThemeMode.system => ThemeMode.light,
+    };
+    await _save(newMode);
   }
 
   Future<void> setTheme(ThemeMode themeMode) async {
+    await _save(themeMode);
+  }
+
+  Future<void> _save(ThemeMode themeMode) async {
     try {
-      final saveThemeMode = ref.read(saveThemeModeProvider);
-      await saveThemeMode.call(themeMode);
+      final box = Hive.box(_boxName);
+      final value = switch (themeMode) {
+        ThemeMode.light => 'light',
+        ThemeMode.dark => 'dark',
+        ThemeMode.system => 'system',
+      };
+      await box.put(_key, value);
       state = themeMode;
-    } catch (e) {
-      // Handle error - maybe log it
-      // print('Error setting theme: $e'); // Commented out for production
-    }
+    } catch (_) {}
   }
 }

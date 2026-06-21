@@ -1,7 +1,7 @@
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/artist_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/movie_detail.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/credit_entity.dart';
+import 'package:flutter_movie_clean_architecture/core/entities/credit_entity.dart';
 
 abstract class MovieRepository {
   Future<List<Movie>> getNowPlaying(int page);
