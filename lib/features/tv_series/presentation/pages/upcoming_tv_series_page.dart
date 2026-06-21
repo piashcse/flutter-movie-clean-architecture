@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/pagination_consumer_state.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/media_card.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/providers/tv_series_provider.dart';
-import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/widgets/tv_series_card.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class UpcomingTvSeriesPage extends ConsumerStatefulWidget {
   const UpcomingTvSeriesPage({super.key});
@@ -22,7 +23,10 @@ class _UpcomingTvSeriesPageState extends PaginationConsumerState<TvSeries, Upcom
   Widget build(BuildContext context) {
     return buildContent(
       context: context,
-      itemBuilder: (tvSeries) => TvSeriesCardWidget(tvSeries: tvSeries),
+      itemBuilder: (tvSeries) => MediaCard(
+        imagePath: tvSeries.posterPath,
+        onTap: () => context.push('/tv/${tvSeries.id}'),
+      ),
     );
   }
 }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
-import 'package:flutter_movie_clean_architecture/core/hive/favorite_model.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/utils.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/detail_sections.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_model.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/presentation/providers/favorite_provider.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/favorite_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -27,7 +27,6 @@ class MovieDetailPage extends ConsumerWidget {
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: movieDetailAsync.when(
         data: (movie) {
-          // Check if movie is favorited
           final isFavorite = favorites.any(
             (fav) => fav.itemId == movie.id && fav.type == 'movie',
           );
@@ -39,10 +38,19 @@ class MovieDetailPage extends ConsumerWidget {
                 child: Column(
                   children: [
                     MovieDetailInfoSection(movie: movie),
-                    MovieDescriptionSection(movie: movie),
-                    RecommendedMoviesSection(
-                        recommendMovieAsync: recommendMovieAsync),
-                    MovieCreditsSection(movieCreditAsync: movieCreditAsync),
+                    DescriptionSection(
+                      overview: movie.overview ?? '',
+                      expandedProvider: descriptionExpandedProvider,
+                    ),
+                    RecommendationsSection(
+                      itemsAsync: recommendMovieAsync,
+                      titleKey: 'recommended_movies',
+                      errorKey: 'failed_to_load_recommended_movies',
+                      idGetter: (item) => item.id.toString(),
+                      posterPathGetter: (item) => item.posterPath,
+                      routePrefix: '/movie',
+                    ),
+                    CreditsSection(creditsAsync: movieCreditAsync),
                   ],
                 ),
               ),
@@ -66,7 +74,7 @@ class MovieDetailPage extends ConsumerWidget {
                   style: TextStyle(color: Theme.of(context).colorScheme.onSurfaceVariant)),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => context.pop(),
                 child: Text(context.translate('go_back')),
               ),
             ],
@@ -107,7 +115,7 @@ class MovieDetailHeader extends ConsumerWidget {
       backgroundColor: Theme.of(context).primaryColor,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back, color: Colors.white),
-        onPressed: () => Navigator.pop(context),
+        onPressed: () => context.pop(),
       ),
       title: const Text(
         'Movie Detail',
@@ -260,262 +268,4 @@ class MovieDetailInfoSection extends StatelessWidget {
   }
 }
 
-class MovieDescriptionSection extends ConsumerWidget {
-  final dynamic movie;
 
-  const MovieDescriptionSection({super.key, required this.movie});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isExpanded = ref.watch(descriptionExpandedProvider);
-    final overview = movie.overview ?? context.translate('no_description_available');
-    const maxLength = 95;
-
-    final displayText = isExpanded || overview.length <= maxLength
-        ? overview
-        : overview.substring(0, maxLength).trimRight();
-
-    final toggleText = isExpanded ? ' ${context.translate('show_less')}' : ' ${context.translate('show_more')}';
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.translate('description'),
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
-            ),
-          ),
-          const SizedBox(height: 12),
-          GestureDetector(
-            onTap: () => ref.read(descriptionExpandedProvider.notifier).state =
-                !isExpanded,
-            child: RichText(
-              text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: displayText,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black54,
-                      height: 1.5,
-                    ),
-                  ),
-                  TextSpan(
-                    text: toggleText,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF00BCD4),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class RecommendedMoviesSection extends StatelessWidget {
-  final AsyncValue<List<dynamic>> recommendMovieAsync;
-
-  const RecommendedMoviesSection(
-      {super.key, required this.recommendMovieAsync});
-
-  @override
-  Widget build(BuildContext context) {
-    return recommendMovieAsync.when(
-      data: (recommendedMovies) {
-        if (recommendedMovies.isEmpty) return const SizedBox.shrink();
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              child: Text(
-                context.translate('recommended_movies'),
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 160,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: recommendedMovies.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
-                itemBuilder: (context, index) {
-                  final movie = recommendedMovies[index];
-                  return GestureDetector(
-                    onTap: () => context.push('/movie/${movie.id}'),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: movie.posterPath != null
-                          ? Image.network(
-                              '$imageUrl${movie.posterPath}',
-                              width: 110,
-                              height: 160,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, _, __) => _errorPlaceholder(context),
-                            )
-                          : _errorPlaceholder(context),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 12),
-          ],
-        );
-      },
-      loading: () => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      error: (error, _) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Text(
-            context.translate('failed_to_load_recommended_movies'),
-            style: TextStyle(color: Colors.red[400]),
-          ),
-      ),
-    );
-  }
-
-  Widget _errorPlaceholder(BuildContext context) {
-    return Container(
-      width: 100,
-      height: 160,
-      color: Theme.of(context).colorScheme.onSurfaceVariant,
-      child: Icon(Icons.movie, size: 48, color: Theme.of(context).colorScheme.onSurfaceVariant),
-    );
-  }
-}
-
-class MovieCreditsSection extends StatelessWidget {
-  final AsyncValue movieCreditAsync;
-
-  const MovieCreditsSection({super.key, required this.movieCreditAsync});
-
-  @override
-  Widget build(BuildContext context) {
-    return movieCreditAsync.when(
-      data: (credits) {
-        final castList = credits?.cast ?? <Cast>[];
-        if (castList.isEmpty) return const SizedBox.shrink();
-
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 0, 16, 8),
-              child: Text(
-                'Cast',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 140, // Increased height to accommodate names
-              child: ListView.separated(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                scrollDirection: Axis.horizontal,
-                itemCount: castList.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 4),
-                itemBuilder: (context, index) {
-                  final cast = castList[index];
-                  final castImageUrl = cast.profilePath != null
-                      ? '$imageUrl${cast.profilePath}'
-                      : null;
-
-                  return InkWell(
-                    onTap: () {
-                      // Navigate to artist detail using GoRouter
-                      context.push('/artistId/${cast.id}');
-                    },
-                    borderRadius: BorderRadius.circular(50),
-                    child: SizedBox(
-                      width: 80, // Fixed width for consistent layout
-                      child: Column(
-                        children: [
-                          ClipOval(
-                            child: imageUrl != null
-                                ? Image.network(
-                                    imageUrl,
-                                    width: 70,
-                                    height: 70,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, _, __) =>
-                                        _placeholder(context),
-                                  )
-                                : _placeholder(context),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            cast.name ?? 'Unknown',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 16),
-          ],
-        );
-      },
-      loading: () => Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
-        child: Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-          ),
-        ),
-      ),
-      error: (error, _) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Text(
-          context.translate('failed_to_load_cast'),
-          style: TextStyle(color: Colors.red[400]),
-        ),
-      ),
-    );
-  }
-
-  Widget _placeholder(BuildContext context) {
-    return Container(
-      width: 70,
-      height: 70,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-        shape: BoxShape.circle,
-      ),
-      child: Icon(Icons.person, color: Theme.of(context).colorScheme.onSurfaceVariant, size: 35),
-    );
-  }
-}

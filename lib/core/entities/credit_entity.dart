@@ -1,5 +1,3 @@
-import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/artist_detail.dart';
-
 class CreditEntity {
   final int id;
   final List<Cast> cast;

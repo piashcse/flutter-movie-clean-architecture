@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_movie_clean_architecture/core/hive/favorite_model.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_model.dart';
 
 class HiveHelper {
   static const String _favoritesBoxName = 'favorites_box';
