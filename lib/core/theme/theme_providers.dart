@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>(
-  (ref) => ThemeModeNotifier(),
+final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(
+  ThemeModeNotifier.new,
 );
 
-class ThemeModeNotifier extends StateNotifier<ThemeMode> {
+class ThemeModeNotifier extends Notifier<ThemeMode> {
   static const _boxName = 'settings';
   static const _key = 'theme_mode';
 
-  ThemeModeNotifier() : super(ThemeMode.system) {
+  @override
+  ThemeMode build() {
     _init();
+    return ThemeMode.system;
   }
 
   Future<void> _init() async {

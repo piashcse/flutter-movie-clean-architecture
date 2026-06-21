@@ -6,19 +6,20 @@ import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart'
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class DescriptionSection extends ConsumerWidget {
+class DescriptionSection extends StatelessWidget {
   final String overview;
-  final StateProvider<bool> expandedProvider;
+  final bool isExpanded;
+  final VoidCallback onToggle;
 
   const DescriptionSection({
     super.key,
     required this.overview,
-    required this.expandedProvider,
+    required this.isExpanded,
+    required this.onToggle,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isExpanded = ref.watch(expandedProvider);
+  Widget build(BuildContext context) {
     final text = overview.isNotEmpty
         ? overview
         : context.translate('no_description_available');
@@ -47,8 +48,7 @@ class DescriptionSection extends ConsumerWidget {
           ),
           const SizedBox(height: 12),
           GestureDetector(
-            onTap: () =>
-                ref.read(expandedProvider.notifier).state = !isExpanded,
+            onTap: onToggle,
             child: RichText(
               text: TextSpan(
                 children: [

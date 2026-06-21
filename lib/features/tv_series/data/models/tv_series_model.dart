@@ -4,7 +4,7 @@ part 'tv_series_model.freezed.dart';
 part 'tv_series_model.g.dart';
 
 @freezed
-class TvSeriesModel with _$TvSeriesModel {
+sealed class TvSeriesModel with _$TvSeriesModel {
   const factory TvSeriesModel({
     required int id,
     required String name,

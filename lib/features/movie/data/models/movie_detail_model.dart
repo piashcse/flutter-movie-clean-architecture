@@ -4,7 +4,7 @@ part 'movie_detail_model.freezed.dart';
 part 'movie_detail_model.g.dart';
 
 @freezed
-class MovieDetailModel with _$MovieDetailModel {
+sealed class MovieDetailModel with _$MovieDetailModel {
   const factory MovieDetailModel({
     required int id,
     required String title,
@@ -23,7 +23,7 @@ class MovieDetailModel with _$MovieDetailModel {
 }
 
 @freezed
-class Genre with _$Genre {
+sealed class Genre with _$Genre {
   const factory Genre({
     required int id,
     required String? name,
@@ -33,7 +33,7 @@ class Genre with _$Genre {
 }
 
 @freezed
-class ProductionCompany with _$ProductionCompany {
+sealed class ProductionCompany with _$ProductionCompany {
   const factory ProductionCompany({
     required int id,
     String? name,

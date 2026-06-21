@@ -10,7 +10,14 @@ import 'package:flutter_movie_clean_architecture/features/movie/presentation/pro
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-final descriptionExpandedProvider = StateProvider<bool>((ref) => false);
+class _MovieDescriptionNotifier extends Notifier<bool> {
+  @override
+  bool build() => false;
+}
+
+final movieDescriptionExpandedProvider = NotifierProvider<_MovieDescriptionNotifier, bool>(
+  _MovieDescriptionNotifier.new,
+);
 
 class MovieDetailPage extends ConsumerWidget {
   final int movieId;
@@ -41,7 +48,10 @@ class MovieDetailPage extends ConsumerWidget {
                     MovieDetailInfoSection(movie: movie),
                     DescriptionSection(
                       overview: movie.overview ?? '',
-                      expandedProvider: descriptionExpandedProvider,
+                      isExpanded: ref.watch(movieDescriptionExpandedProvider),
+                      onToggle: () =>
+                          ref.read(movieDescriptionExpandedProvider.notifier).state =
+                          !ref.read(movieDescriptionExpandedProvider.notifier).state,
                     ),
                     RecommendationsSection(
                       itemsAsync: recommendMovieAsync,
