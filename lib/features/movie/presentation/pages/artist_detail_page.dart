@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
-import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_model.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/presentation/providers/favorite_provider.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
@@ -60,17 +60,13 @@ class ArtistMoviesSection extends StatelessWidget {
                         context.push('/movie/${item.id}');
                       }
                     },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: item.posterPath != null
-                          ? Image.network(
-                        '$imageUrl${item.posterPath}',
-                        width: 110,
-                        height: 160,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _errorPlaceholder(),
-                      )
-                          : _errorPlaceholder(),
+                    child: CachedImage(
+                      imageUrl: item.posterPath != null ? '$imageUrl${item.posterPath}' : null,
+                      width: 110,
+                      height: 160,
+                      fit: BoxFit.cover,
+                      borderRadius: 12,
+                      errorIcon: Icons.movie,
                     ),
                   );
                 },
@@ -94,14 +90,6 @@ class ArtistMoviesSection extends StatelessWidget {
     );
   }
 
-  Widget _errorPlaceholder() {
-    return Container(
-      width: 100,
-      height: 160,
-      color: Colors.grey[300],
-      child: const Icon(Icons.movie, size: 48, color: Colors.grey),
-    );
-  }
 }
 
 class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
@@ -171,22 +159,12 @@ class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
+                          CachedImage(
+                            imageUrl: artist.profilePath != null ? '$imageUrl${artist.profilePath}' : null,
                             width: 140,
                             height: 200,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8),
-                              image: artist.profilePath != null
-                                  ? DecorationImage(
-                                image: NetworkImage("$imageUrl${artist.profilePath}"),
-                                fit: BoxFit.cover,
-                              )
-                                  : null,
-                              color: artist.profilePath == null ? Colors.grey[300] : null,
-                            ),
-                            child: artist.profilePath == null
-                                ? const Icon(Icons.person, color: Colors.grey, size: 60)
-                                : null,
+                            borderRadius: 8,
+                            errorIcon: Icons.person,
                           ),
                           const SizedBox(width: 18),
                           Expanded(

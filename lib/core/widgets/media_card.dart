@@ -1,6 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
 
 class MediaCard extends StatelessWidget {
   final String? imagePath;
@@ -23,15 +23,11 @@ class MediaCard extends StatelessWidget {
       child: Column(
         children: [
           Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: imagePath != null
-                  ? CachedNetworkImage(
-                      imageUrl: '$imageUrl$imagePath',
-                      fit: BoxFit.cover,
-                      errorWidget: (context, url, error) => _placeholder(context),
-                    )
-                  : _placeholder(context),
+            child: CachedImage(
+              imageUrl: imagePath != null ? '$imageUrl$imagePath' : null,
+              fit: BoxFit.cover,
+              borderRadius: 12,
+              errorIcon: isPerson ? Icons.person : Icons.movie,
             ),
           ),
           if (title != null) ...[
@@ -48,17 +44,6 @@ class MediaCard extends StatelessWidget {
             ),
           ],
         ],
-      ),
-    );
-  }
-
-  Widget _placeholder(BuildContext context) {
-    return Container(
-      color: Colors.grey[300],
-      child: Icon(
-        isPerson ? Icons.person : Icons.movie,
-        color: Colors.grey,
-        size: 40,
       ),
     );
   }

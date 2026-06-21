@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
-import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_model.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/presentation/providers/favorite_provider.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -87,15 +87,14 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
                               borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(12),
                               ),
-                              child: favorite.posterPath.isNotEmpty
-                                  ? Image.network(
-                                      '$imageUrl${favorite.posterPath}',
-                                      fit: BoxFit.cover,
-                                      width: double.infinity,
-                                      errorBuilder: (_, __, ___) =>
-                                          _buildPlaceholderImage(),
-                                    )
-                                  : _buildPlaceholderImage(),
+                              child: CachedImage(
+                                imageUrl: favorite.posterPath.isNotEmpty
+                                    ? '$imageUrl${favorite.posterPath}'
+                                    : null,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                errorIcon: Icons.image,
+                              ),
                             ),
                           ),
                           Padding(
@@ -150,12 +149,4 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
     );
   }
 
-  Widget _buildPlaceholderImage() {
-    return Container(
-      width: double.infinity,
-      height: double.infinity,
-      color: Colors.grey[300],
-      child: const Icon(Icons.image, color: Colors.grey),
-    );
-  }
 }

@@ -1,8 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
 import 'package:flutter_movie_clean_architecture/core/entities/credit_entity.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -131,17 +131,13 @@ class RecommendationsSection extends StatelessWidget {
                   final posterPath = posterPathGetter(item);
                   return GestureDetector(
                     onTap: () => context.push('$routePrefix/${idGetter(item)}'),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: posterPath != null
-                          ? CachedNetworkImage(
-                              imageUrl: '$imageUrl$posterPath',
-                              width: 110,
-                              height: 160,
-                              fit: BoxFit.cover,
-                              errorWidget: (_, __, ___) => _errorPlaceholder(context),
-                            )
-                          : _errorPlaceholder(context),
+                    child: CachedImage(
+                      imageUrl: posterPath != null ? '$imageUrl$posterPath' : null,
+                      width: 110,
+                      height: 160,
+                      fit: BoxFit.cover,
+                      borderRadius: 12,
+                      errorIcon: errorIcon,
                     ),
                   );
                 },
@@ -162,15 +158,6 @@ class RecommendationsSection extends StatelessWidget {
           style: TextStyle(color: Colors.red[400]),
         ),
       ),
-    );
-  }
-
-  Widget _errorPlaceholder(BuildContext context) {
-    return Container(
-      width: 100,
-      height: 160,
-      color: Theme.of(context).colorScheme.onSurfaceVariant,
-      child: Icon(errorIcon, size: 48, color: Theme.of(context).colorScheme.onSurfaceVariant),
     );
   }
 }
@@ -221,16 +208,13 @@ class CreditsSection extends StatelessWidget {
                       width: 80,
                       child: Column(
                         children: [
-                          ClipOval(
-                            child: castImageUrl != null
-                                ? CachedNetworkImage(
-                                    imageUrl: castImageUrl,
-                                    width: 70,
-                                    height: 70,
-                                    fit: BoxFit.cover,
-                                    errorWidget: (_, __, ___) => _placeholder(context),
-                                  )
-                                : _placeholder(context),
+                          CachedImage(
+                            imageUrl: castImageUrl,
+                            width: 70,
+                            height: 70,
+                            fit: BoxFit.cover,
+                            isCircular: true,
+                            errorIcon: Icons.person,
                           ),
                           const SizedBox(height: 8),
                           Text(
@@ -269,18 +253,6 @@ class CreditsSection extends StatelessWidget {
           style: TextStyle(color: Colors.red[400]),
         ),
       ),
-    );
-  }
-
-  Widget _placeholder(BuildContext context) {
-    return Container(
-      width: 70,
-      height: 70,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onSurfaceVariant,
-        shape: BoxShape.circle,
-      ),
-      child: const Icon(Icons.person, size: 35),
     );
   }
 }

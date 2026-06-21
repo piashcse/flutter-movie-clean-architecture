@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/utils.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/detail_sections.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_model.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/presentation/providers/favorite_provider.dart';
@@ -134,21 +135,11 @@ class MovieDetailHeader extends ConsumerWidget {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            movie.posterPath != null
-                ? Image.network(
-                    '$imageUrl${movie.posterPath}',
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Container(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      child:
-                          Icon(Icons.movie, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                    ),
-                  )
-                : Container(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    child:
-                        Icon(Icons.movie, size: 64, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                  ),
+            CachedImage(
+              imageUrl: movie.posterPath != null ? '$imageUrl${movie.posterPath}' : null,
+              fit: BoxFit.cover,
+              errorIcon: Icons.movie,
+            ),
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -194,19 +185,11 @@ class MovieDetailInfoSection extends StatelessWidget {
                   ),
                 ],
               ),
-              child: movie.posterPath != null
-                  ? Image.network(
-                      '$imageUrl${movie.posterPath}',
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => Container(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        child: Icon(Icons.movie, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                      ),
-                    )
-                  : Container(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      child: Icon(Icons.movie, color: Theme.of(context).colorScheme.onSurfaceVariant),
-                    ),
+              child: CachedImage(
+                imageUrl: movie.posterPath != null ? '$imageUrl${movie.posterPath}' : null,
+                fit: BoxFit.cover,
+                errorIcon: Icons.movie,
+              ),
             ),
           ),
           const SizedBox(width: 16),
