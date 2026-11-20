@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_adapter.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_model.dart';
 
 class HiveHelper {

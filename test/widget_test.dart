@@ -1,30 +1,32 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
+import 'package:flutter_movie_clean_architecture/core/theme/app_theme.dart';
+import 'package:flutter_movie_clean_architecture/core/utils/utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flutter_movie_clean_architecture/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('formatDuration', () {
+    test('formats minutes into hours and minutes', () {
+      expect(formatDuration(130), '2h 10m');
+      expect(formatDuration(45), '0h 45m');
+      expect(formatDuration(60), '1h 0m');
+    });
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  group('formatTvDuration', () {
+    test('returns N/A when runtime is missing', () {
+      expect(formatTvDuration(null), 'N/A');
+      expect(formatTvDuration(const []), 'N/A');
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    test('returns the average episode runtime', () {
+      expect(formatTvDuration(const [30, 40, 50]), '40m');
+    });
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  group('AppTheme', () {
+    test('exposes light and dark themes', () {
+      expect(AppTheme.lightTheme.brightness, Brightness.light);
+      expect(AppTheme.darkTheme.brightness, Brightness.dark);
+    });
   });
 }
