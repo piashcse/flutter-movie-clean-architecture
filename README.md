@@ -5,7 +5,8 @@
 [![Riverpod](https://img.shields.io/badge/Riverpod-3.5-brightgreen)](https://riverpod.dev)
 [![CI](https://github.com/piashcse/flutter-movie-clean-architecture/actions/workflows/ci.yml/badge.svg)](https://github.com/piashcse/flutter-movie-clean-architecture/actions/workflows/ci.yml)
 [![Localization](https://img.shields.io/badge/Localization-English_%26_Spanish-blue)](https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
+<a href="https://github.com/piashcse"><img alt="GitHub" src="https://img.shields.io/static/v1?label=GitHub&message=piashcse&color=C51162"/></a>
 
 A TMDB client for movies, TV series and celebrities built with Flutter,
 Riverpod, go_router and a pragmatic Clean Architecture. It supports paginated
@@ -171,6 +172,34 @@ debug logger never prints query strings, headers or bodies.
 suite with coverage and a debug APK build on every push and pull request.
 Dependabot keeps pub and GitHub Actions dependencies up to date.
 
-## License
+## 👨‍💻 Developed By
 
-[Apache 2.0](LICENSE)
+<a href="https://twitter.com/piashcse" target="_blank">
+  <img src="https://avatars.githubusercontent.com/piashcse" width="80" align="left">
+</a>
+
+**Mehedi Hassan Piash**
+
+[![Twitter](https://img.shields.io/badge/-Twitter-1DA1F2?logo=x&logoColor=white&style=for-the-badge)](https://twitter.com/piashcse)
+[![Medium](https://img.shields.io/badge/-Medium-00AB6C?logo=medium&logoColor=white&style=for-the-badge)](https://medium.com/@piashcse)
+[![Linkedin](https://img.shields.io/badge/-LinkedIn-0077B5?logo=linkedin&logoColor=white&style=for-the-badge)](https://www.linkedin.com/in/piashcse/)
+[![Web](https://img.shields.io/badge/-Web-0073E6?logo=appveyor&logoColor=white&style=for-the-badge)](https://piashcse.github.io/)
+[![Blog](https://img.shields.io/badge/-Blog-0077B5?logo=readme&logoColor=white&style=for-the-badge)](https://piashcse.blogspot.com)
+
+## 📄 License
+
+```
+Copyright 2025 piashcse (Mehedi Hassan Piash)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
