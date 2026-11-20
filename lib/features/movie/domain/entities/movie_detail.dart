@@ -13,7 +13,5 @@ abstract class MovieDetail with _$MovieDetail {
     @Default(0) double voteAverage,
     @Default(0) int runtime,
     @Default('') String originalLanguage,
-    @Default(<String>[]) List<String> genres,
-    @Default(<String>[]) List<String> productionCompanies,
   }) = _MovieDetail;
 }

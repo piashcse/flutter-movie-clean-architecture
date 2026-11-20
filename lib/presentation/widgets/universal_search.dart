@@ -6,6 +6,8 @@ import 'package:flutter_movie_clean_architecture/core/entities/search_result.dar
 import 'package:flutter_movie_clean_architecture/core/error/failure_messages.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/inline_error.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/shimmer_placeholders.dart';
 import 'package:flutter_movie_clean_architecture/presentation/providers/search_provider.dart';
 import 'package:flutter_movie_clean_architecture/routing/app_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -105,21 +107,16 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
                     child: Wrap(
                       spacing: 8,
                       children: [
-                        _categoryChip(
-                          label: l10n.movies,
-                          category: SearchCategory.movies,
-                          selected: category == SearchCategory.movies,
-                        ),
-                        _categoryChip(
-                          label: l10n.tvSeries,
-                          category: SearchCategory.tvSeries,
-                          selected: category == SearchCategory.tvSeries,
-                        ),
-                        _categoryChip(
-                          label: l10n.celebrities,
-                          category: SearchCategory.celebrities,
-                          selected: category == SearchCategory.celebrities,
-                        ),
+                        for (final (label, value) in [
+                          (l10n.movies, SearchCategory.movies),
+                          (l10n.tvSeries, SearchCategory.tvSeries),
+                          (l10n.celebrities, SearchCategory.celebrities),
+                        ])
+                          _categoryChip(
+                            label: label,
+                            category: value,
+                            selected: category == value,
+                          ),
                       ],
                     ),
                   ),
@@ -182,26 +179,10 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
             ),
           );
         },
-        loading: () => const Padding(
-          padding: EdgeInsets.all(16),
-          child: LinearProgressIndicator(),
-        ),
-        error: (error, _) => Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Icon(
-                Icons.error_outline,
-                color: Theme.of(context).colorScheme.error,
-              ),
-              const SizedBox(width: 8),
-              Expanded(child: Text(failureMessage(context, error))),
-              TextButton(
-                onPressed: () => ref.invalidate(searchResultsProvider),
-                child: Text(l10n.retry),
-              ),
-            ],
-          ),
+        loading: SearchResultsSkeleton.new,
+        error: (error, _) => InlineError(
+          message: failureMessage(context, error),
+          onRetry: () => ref.invalidate(searchResultsProvider),
         ),
       ),
     );
@@ -232,7 +213,7 @@ class _SearchResultTile extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       leading: CachedImage(
-        imageUrl: tmdbImage(result.imagePath),
+        imageUrl: tmdbImage(result.imagePath, size: 'w185'),
         width: 48,
         height: 64,
         borderRadius: 6,

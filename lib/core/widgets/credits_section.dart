@@ -3,6 +3,8 @@ import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
 import 'package:flutter_movie_clean_architecture/core/entities/credit_entity.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/inline_error.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/shimmer_placeholders.dart';
 import 'package:flutter_movie_clean_architecture/routing/app_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -54,7 +56,10 @@ class CreditsSection extends StatelessWidget {
                         child: Column(
                           children: [
                             CachedImage(
-                              imageUrl: tmdbImage(member.profilePath),
+                              imageUrl: tmdbImage(
+                                member.profilePath,
+                                size: 'w185',
+                              ),
                               width: 70,
                               height: 70,
                               isCircular: true,
@@ -81,30 +86,9 @@ class CreditsSection extends StatelessWidget {
           ],
         );
       },
-      loading: () => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
-        child: Center(
-          child: SizedBox.square(
-            dimension: 24,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ),
-      ),
-      error: (error, _) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        child: Row(
-          children: [
-            Icon(
-              Icons.error_outline,
-              color: Theme.of(context).colorScheme.error,
-            ),
-            const SizedBox(width: 8),
-            Expanded(child: Text(context.l10n.failedToLoadCast)),
-            if (onRetry != null)
-              TextButton(onPressed: onRetry, child: Text(context.l10n.retry)),
-          ],
-        ),
-      ),
+      loading: CreditsSkeleton.new,
+      error: (error, _) =>
+          InlineError(message: context.l10n.failedToLoadCast, onRetry: onRetry),
     );
   }
 }

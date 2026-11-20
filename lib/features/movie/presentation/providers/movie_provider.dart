@@ -16,36 +16,29 @@ final movieRepositoryProvider = Provider<MovieRepository>(
   (ref) => MovieRepositoryImpl(ref.watch(movieRemoteDataSourceProvider)),
 );
 
-// Paginated listings are cached per page; they are cheap immutable results and
-// keeping them avoids re-fetching when scrolling back.
+// Paginated listings are auto-disposed after each read: the grid widget owns
+// the accumulated items, so caching every visited page in a provider would
+// double memory for no benefit.
 
-final nowPlayingMoviesProvider = FutureProvider.family<List<Movie>, int>((
-  ref,
-  page,
-) async {
-  return ref.watch(movieRepositoryProvider).getNowPlaying(page);
-});
+final nowPlayingMoviesProvider = FutureProvider.autoDispose
+    .family<List<Movie>, int>((ref, page) async {
+      return ref.watch(movieRepositoryProvider).getNowPlaying(page);
+    });
 
-final popularMoviesProvider = FutureProvider.family<List<Movie>, int>((
-  ref,
-  page,
-) async {
-  return ref.watch(movieRepositoryProvider).getPopular(page);
-});
+final popularMoviesProvider = FutureProvider.autoDispose
+    .family<List<Movie>, int>((ref, page) async {
+      return ref.watch(movieRepositoryProvider).getPopular(page);
+    });
 
-final topRatedMoviesProvider = FutureProvider.family<List<Movie>, int>((
-  ref,
-  page,
-) async {
-  return ref.watch(movieRepositoryProvider).getTopRated(page);
-});
+final topRatedMoviesProvider = FutureProvider.autoDispose
+    .family<List<Movie>, int>((ref, page) async {
+      return ref.watch(movieRepositoryProvider).getTopRated(page);
+    });
 
-final upcomingMoviesProvider = FutureProvider.family<List<Movie>, int>((
-  ref,
-  page,
-) async {
-  return ref.watch(movieRepositoryProvider).getUpcoming(page);
-});
+final upcomingMoviesProvider = FutureProvider.autoDispose
+    .family<List<Movie>, int>((ref, page) async {
+      return ref.watch(movieRepositoryProvider).getUpcoming(page);
+    });
 
 // Detail and search providers are auto-disposed so leaving a screen or
 // changing the query releases the result immediately.

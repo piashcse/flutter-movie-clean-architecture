@@ -16,7 +16,6 @@ abstract class TvSeriesDetailModel with _$TvSeriesDetailModel {
     @JsonKey(name: 'episode_run_time')
     @Default(<int>[])
     List<int> episodeRunTime,
-    @JsonKey(name: 'last_air_date') String? lastAirDate,
     @JsonKey(name: 'number_of_episodes') @Default(0) int numberOfEpisodes,
     @JsonKey(name: 'number_of_seasons') @Default(0) int numberOfSeasons,
   }) = _TvSeriesDetailModel;

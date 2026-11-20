@@ -16,44 +16,39 @@ class CelebrityMainPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
 
+    MediaHubTab tab(
+      String label,
+      IconData icon,
+      PageFetcher<Person> fetchPage,
+    ) {
+      return MediaHubTab(
+        label: label,
+        icon: icon,
+        page: PagedMediaGrid<Person>(
+          fetchPage: fetchPage,
+          itemBuilder: (context, person) => MediaCard(
+            imagePath: person.profilePath,
+            title: person.name,
+            isPerson: true,
+            onTap: () => context.push(AppRoutes.artist(person.id)),
+          ),
+        ),
+      );
+    }
+
     return MediaHubPage(
       tabs: [
-        MediaHubTab(
-          label: l10n.popular,
-          icon: Icons.favorite,
-          page: _PersonGrid(
-            fetchPage: (ref, page) =>
-                ref.read(popularPersonsProvider(page).future),
-          ),
+        tab(
+          l10n.popular,
+          Icons.favorite,
+          (ref, page) => ref.read(popularPersonsProvider(page).future),
         ),
-        MediaHubTab(
-          label: l10n.trending,
-          icon: Icons.trending_up,
-          page: _PersonGrid(
-            fetchPage: (ref, page) =>
-                ref.read(trendingPersonsProvider(page).future),
-          ),
+        tab(
+          l10n.trending,
+          Icons.trending_up,
+          (ref, page) => ref.read(trendingPersonsProvider(page).future),
         ),
       ],
-    );
-  }
-}
-
-class _PersonGrid extends StatelessWidget {
-  const _PersonGrid({required this.fetchPage});
-
-  final Future<List<Person>> Function(WidgetRef ref, int page) fetchPage;
-
-  @override
-  Widget build(BuildContext context) {
-    return PagedMediaGrid<Person>(
-      fetchPage: fetchPage,
-      itemBuilder: (context, person) => MediaCard(
-        imagePath: person.profilePath,
-        title: person.name,
-        isPerson: true,
-        onTap: () => context.push(AppRoutes.artist(person.id)),
-      ),
     );
   }
 }

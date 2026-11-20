@@ -16,59 +16,48 @@ class TvSeriesMainPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
 
+    MediaHubTab tab(
+      String label,
+      IconData icon,
+      PageFetcher<TvSeries> fetchPage,
+    ) {
+      return MediaHubTab(
+        label: label,
+        icon: icon,
+        page: PagedMediaGrid<TvSeries>(
+          fetchPage: fetchPage,
+          itemBuilder: (context, series) => MediaCard(
+            imagePath: series.posterPath,
+            title: series.name,
+            onTap: () => context.push(AppRoutes.tv(series.id)),
+          ),
+        ),
+      );
+    }
+
     return MediaHubPage(
       tabs: [
-        MediaHubTab(
-          label: l10n.airingToday,
-          icon: Icons.today,
-          page: _TvSeriesGrid(
-            fetchPage: (ref, page) =>
-                ref.read(airingTodayTvSeriesProvider(page).future),
-          ),
+        tab(
+          l10n.airingToday,
+          Icons.today,
+          (ref, page) => ref.read(airingTodayTvSeriesProvider(page).future),
         ),
-        MediaHubTab(
-          label: l10n.onTheAir,
-          icon: Icons.live_tv,
-          page: _TvSeriesGrid(
-            fetchPage: (ref, page) =>
-                ref.read(onTheAirTvSeriesProvider(page).future),
-          ),
+        tab(
+          l10n.onTheAir,
+          Icons.live_tv,
+          (ref, page) => ref.read(onTheAirTvSeriesProvider(page).future),
         ),
-        MediaHubTab(
-          label: l10n.popular,
-          icon: Icons.favorite,
-          page: _TvSeriesGrid(
-            fetchPage: (ref, page) =>
-                ref.read(popularTvSeriesProvider(page).future),
-          ),
+        tab(
+          l10n.popular,
+          Icons.favorite,
+          (ref, page) => ref.read(popularTvSeriesProvider(page).future),
         ),
-        MediaHubTab(
-          label: l10n.upcoming,
-          icon: Icons.upcoming,
-          page: _TvSeriesGrid(
-            fetchPage: (ref, page) =>
-                ref.read(upcomingTvSeriesProvider(page).future),
-          ),
+        tab(
+          l10n.upcoming,
+          Icons.upcoming,
+          (ref, page) => ref.read(upcomingTvSeriesProvider(page).future),
         ),
       ],
-    );
-  }
-}
-
-class _TvSeriesGrid extends StatelessWidget {
-  const _TvSeriesGrid({required this.fetchPage});
-
-  final Future<List<TvSeries>> Function(WidgetRef ref, int page) fetchPage;
-
-  @override
-  Widget build(BuildContext context) {
-    return PagedMediaGrid<TvSeries>(
-      fetchPage: fetchPage,
-      itemBuilder: (context, series) => MediaCard(
-        imagePath: series.posterPath,
-        title: series.name,
-        onTap: () => context.push(AppRoutes.tv(series.id)),
-      ),
     );
   }
 }

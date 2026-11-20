@@ -4,6 +4,7 @@ import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/layout.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/app_status_views.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/shimmer_placeholders.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/domain/entities/favorite_item.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/presentation/favorite_actions.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/presentation/providers/favorite_provider.dart';
@@ -55,7 +56,7 @@ class FavoritesPage extends ConsumerWidget {
             ),
           );
         },
-        loading: AppLoadingView.new,
+        loading: MediaGridSkeleton.new,
         error: (error, _) => AppErrorView(
           error: error,
           onRetry: () => ref.invalidate(favoritesProvider),

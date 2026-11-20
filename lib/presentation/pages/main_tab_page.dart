@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/language_toggle_widget.dart';
 import 'package:flutter_movie_clean_architecture/core/theme/theme_toggle_widget.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/keep_alive_page.dart';
 import 'package:flutter_movie_clean_architecture/features/celebrity/presentation/pages/celebrity_main_page.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/favorites_page.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/pages/movie_main_page.dart';
@@ -58,7 +59,7 @@ class _MainTabPageState extends ConsumerState<MainTabPage>
               MovieMainPage(),
               TvSeriesMainPage(),
               CelebrityMainPage(),
-              FavoritesPage(),
+              KeepAlivePage(child: FavoritesPage()),
             ],
           ),
           if (_isSearching)

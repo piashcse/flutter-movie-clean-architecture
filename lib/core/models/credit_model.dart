@@ -24,8 +24,6 @@ abstract class CastModel with _$CastModel {
     String? character,
     @JsonKey(name: 'profile_path') String? profilePath,
     @JsonKey(name: 'poster_path') String? posterPath,
-    @JsonKey(name: 'cast_id') int? castId,
-    int? order,
     @JsonKey(name: 'media_type') String? mediaType,
   }) = _CastModel;
 

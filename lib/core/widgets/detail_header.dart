@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/domain/entities/favorite_item.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/presentation/favorite_button.dart';
 import 'package:flutter_movie_clean_architecture/routing/navigation.dart';
 
 /// Shared collapsing header used by the movie and TV detail screens.
@@ -9,21 +10,18 @@ class DetailHeader extends StatelessWidget {
     super.key,
     required this.title,
     required this.imageUrl,
-    required this.isFavorite,
-    required this.onToggleFavorite,
+    required this.favorite,
     this.fallbackIcon = Icons.movie,
   });
 
   final String title;
   final String? imageUrl;
-  final bool isFavorite;
-  final VoidCallback onToggleFavorite;
+  final FavoriteItem favorite;
   final IconData fallbackIcon;
 
   @override
   Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
-    final l10n = context.l10n;
 
     return SliverAppBar(
       expandedHeight: 320,
@@ -43,13 +41,7 @@ class DetailHeader extends StatelessWidget {
           context,
         ).textTheme.titleMedium?.copyWith(color: colors.onPrimary),
       ),
-      actions: [
-        IconButton(
-          tooltip: isFavorite ? l10n.removeFromFavorites : l10n.addToFavorites,
-          icon: Icon(isFavorite ? Icons.favorite : Icons.favorite_border),
-          onPressed: onToggleFavorite,
-        ),
-      ],
+      actions: [FavoriteButton(item: favorite)],
       flexibleSpace: FlexibleSpaceBar(
         background: Stack(
           fit: StackFit.expand,

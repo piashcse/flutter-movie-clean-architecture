@@ -1,17 +1,16 @@
-# Flutter Movie — Clean Architecture
+# Flutter Movie Clean Architecture
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.44-blue.svg?logo=flutter)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.12-blue.svg?logo=dart)](https://dart.dev)
 [![Riverpod](https://img.shields.io/badge/Riverpod-3.5-brightgreen)](https://riverpod.dev)
 [![CI](https://github.com/piashcse/flutter-movie-clean-architecture/actions/workflows/ci.yml/badge.svg)](https://github.com/piashcse/flutter-movie-clean-architecture/actions/workflows/ci.yml)
 [![Localization](https://img.shields.io/badge/Localization-English_%26_Spanish-blue)](https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization)
+![badge-Android](https://img.shields.io/badge/Platform-Android-brightgreen)
+![badge-iOS](https://img.shields.io/badge/Platform-iOS-lightgray)
 [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
 <a href="https://github.com/piashcse"><img alt="GitHub" src="https://img.shields.io/static/v1?label=GitHub&message=piashcse&color=C51162"/></a>
 
-A TMDB client for movies, TV series and celebrities built with Flutter,
-Riverpod, go_router and a pragmatic Clean Architecture. It supports paginated
-browsing, universal search, favourites, light/dark/system theming and
-English/Spanish localisation.
+Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that showcases movies and TV series fetched from TMDB API. It includes now playing, popular, top-rated, and upcoming Movies, TV series and Celebrity with support for pagination, search, and detailed views.
 
 <p align="center">
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_1.png" />
@@ -24,29 +23,58 @@ English/Spanish localisation.
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_6.png" />
 </p>
 
-## Features
+## ✨ Features
 
-- **Movies** — now playing, popular, top rated and upcoming (infinite scroll),
-  details with cast/crew and recommendations.
-- **TV series** — airing today, on the air, popular and upcoming, details with
-  cast and recommendations.
-- **Celebrities** — popular and trending people, artist detail with combined
-  movie/TV credits.
-- **Universal search** — debounced, category-aware (movies / TV / people) and
-  fully typed.
-- **Favourites** — offline persistence with Hive, optimistic updates with
-  rollback on storage failure.
-- **Theming** — light/dark/system preference persisted locally; all colours come
-  from the Material 3 `ColorScheme`.
-- **Localisation** — generated `AppLocalizations` (ARB) for English and Spanish
-  with an in-app language switcher.
+### Movies
+- 🎞 Now Playing, Popular, Top Rated & Upcoming movie sections (paginated)
+- 🔍 Movie Detail Pages with Cast & Crew
+- 🎯 Recommended Movies
+- 🔍 Search Movies (debounced)
+- 👤 Artist/Actor Detail Page with navigation from movie cast
+- ❤️ Favorite Movies (saved locally using Hive database)
 
-## Architecture
+### TV Series
+- 📺 Airing Today, On The Air, Popular & Upcoming TV series sections (paginated)
+- 🔍 TV Series Detail Pages with Cast & Crew
+- 🎯 Recommended TV Series
+- 🔍 Search TV Series (debounced)
+- 👤 Artist/Actor Detail Page with navigation from TV series cast
+- ❤️ Favorite TV Series (saved locally using Hive database)
 
-```
-presentation  →  domain  ←  data
-   (UI, Riverpod)   (entities, repositories)   (datasources, models, repository impls)
-```
+### Celebrity
+- 🌟 Popular and Trending Celebrities/Persons sections (paginated)
+- 🔍 Celebrity Search functionality (debounced)
+- 👤 Celebrity Detail Page with navigation from movie/tv cast
+- ❤️ Favorite Celebrities (saved locally using Hive database)
+
+### Common Features
+- 📃 Infinite Scroll Pagination across all list views
+- 🔄 Bottom Navigation with tab switching
+- 🌐 Multi-language Support with Localization (English & Spanish)
+- 🧭 Declarative Routing with GoRouter
+- 🧱 Clean Architecture (Presentation / Domain / Data) — no empty abstraction layers
+- 🧪 Riverpod State Management
+- 🌐 Network layer using Dio with Logging
+- 🚀 Smooth UX with loading indicators and cached images
+- ❤️ Favorite Management with Local Storage (Hive)
+- 🎨 Dark/Light/System Theme Toggle (persisted)
+- 🔍 Unified Universal Search with debounced API calls
+
+## 🏗️ Architecture
+
+<p align="center">
+  <img width="95%" src="screen_shots/flutter-clean-architecture.svg" alt="Clean Architecture diagram: Presentation depends on Domain contracts, Data implements them and connects to TMDB through Dio and Hive, and Core is shared by every layer" />
+</p>
+
+### Layers
+
+- **Presentation** — Flutter pages/widgets and Riverpod providers. Depends only
+  on domain entities and repository contracts.
+- **Domain** — framework-independent entities and repository interfaces.
+- **Data** — repository implementations, Dio/Hive data sources, freezed models
+  and the `toEntity()` mappers.
+- **Core** — configuration, typed failures, networking, storage, theming,
+  localization and shared widgets.
 
 Key decisions:
 
@@ -62,8 +90,8 @@ Key decisions:
   `CreditsSection` remove duplicated screens across features.
 - **Favourites have domain/data layers** (`FavoriteItem` + repository), so the
   UI never touches Hive models.
-- **Configuration is injected** with `--dart-define`; nothing sensitive is
-  bundled as an asset.
+- **Configuration is injected** with `--dart-define` (CI/release) or the
+  optional, git-ignored `assets/config/env.json` for local runs.
 
 ### Project structure
 

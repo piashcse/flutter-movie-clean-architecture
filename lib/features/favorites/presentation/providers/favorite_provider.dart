@@ -24,43 +24,30 @@ class FavoritesNotifier extends AsyncNotifier<List<FavoriteItem>> {
   Future<List<FavoriteItem>> build() =>
       ref.watch(favoritesRepositoryProvider).getAll();
 
-  bool isFavorite(int itemId, FavoriteType type) =>
-      (state.value ?? const <FavoriteItem>[]).any(
-        (item) => item.itemId == itemId && item.type == type,
-      );
-
+  /// Optimistically toggles [item], rolling back if storage fails.
   Future<void> toggle(FavoriteItem item) async {
-    final exists = isFavorite(item.itemId, item.type);
-    await (exists ? _remove(item) : _add(item));
-  }
-
-  Future<void> _add(FavoriteItem item) async {
     final previous = state.value ?? const <FavoriteItem>[];
-    state = AsyncData(List.unmodifiable([...previous, item]));
-
-    try {
-      await ref.read(favoritesRepositoryProvider).save(item);
-    } catch (error, stackTrace) {
-      state = AsyncData(previous);
-      throw mapError(error, stackTrace);
-    }
-  }
-
-  Future<void> _remove(FavoriteItem item) async {
-    final previous = state.value ?? const <FavoriteItem>[];
-    state = AsyncData(
-      List.unmodifiable(
-        previous.where(
-          (candidate) =>
-              candidate.itemId != item.itemId || candidate.type != item.type,
-        ),
-      ),
+    final exists = previous.any(
+      (candidate) =>
+          candidate.itemId == item.itemId && candidate.type == item.type,
     );
 
+    final updated = exists
+        ? previous.where(
+            (candidate) =>
+                candidate.itemId != item.itemId || candidate.type != item.type,
+          )
+        : <FavoriteItem>[...previous, item];
+
+    state = AsyncData(List.unmodifiable(updated));
+
     try {
-      await ref
-          .read(favoritesRepositoryProvider)
-          .remove(item.itemId, item.type);
+      final repository = ref.read(favoritesRepositoryProvider);
+      if (exists) {
+        await repository.remove(item.itemId, item.type);
+      } else {
+        await repository.save(item);
+      }
     } catch (error, stackTrace) {
       state = AsyncData(previous);
       throw mapError(error, stackTrace);

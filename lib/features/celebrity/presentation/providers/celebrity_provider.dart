@@ -14,19 +14,15 @@ final celebrityRepositoryProvider = Provider<CelebrityRepository>(
       CelebrityRepositoryImpl(ref.watch(celebrityRemoteDataSourceProvider)),
 );
 
-final popularPersonsProvider = FutureProvider.family<List<Person>, int>((
-  ref,
-  page,
-) async {
-  return ref.watch(celebrityRepositoryProvider).getPopularPersons(page);
-});
+final popularPersonsProvider = FutureProvider.autoDispose
+    .family<List<Person>, int>((ref, page) async {
+      return ref.watch(celebrityRepositoryProvider).getPopularPersons(page);
+    });
 
-final trendingPersonsProvider = FutureProvider.family<List<Person>, int>((
-  ref,
-  page,
-) async {
-  return ref.watch(celebrityRepositoryProvider).getTrendingPersons(page);
-});
+final trendingPersonsProvider = FutureProvider.autoDispose
+    .family<List<Person>, int>((ref, page) async {
+      return ref.watch(celebrityRepositoryProvider).getTrendingPersons(page);
+    });
 
 final searchPersonsProvider = FutureProvider.autoDispose
     .family<List<Person>, String>((ref, query) async {

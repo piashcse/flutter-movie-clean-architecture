@@ -8,7 +8,5 @@ abstract class Person with _$Person {
     required int id,
     @Default('') String name,
     String? profilePath,
-    @Default('') String knownForDepartment,
-    @Default(0) double popularity,
   }) = _Person;
 }

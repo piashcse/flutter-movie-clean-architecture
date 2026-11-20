@@ -13,7 +13,6 @@ abstract class TvSeriesDetail with _$TvSeriesDetail {
     @Default('') String firstAirDate,
     @Default('') String originalLanguage,
     @Default(<int>[]) List<int> episodeRunTime,
-    String? lastAirDate,
     @Default(0) int numberOfEpisodes,
     @Default(0) int numberOfSeasons,
   }) = _TvSeriesDetail;

@@ -3,15 +3,6 @@ import 'package:flutter_movie_clean_architecture/core/error/app_failure.dart';
 import 'package:flutter_movie_clean_architecture/core/error/failure_messages.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 
-class AppLoadingView extends StatelessWidget {
-  const AppLoadingView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: CircularProgressIndicator());
-  }
-}
-
 class AppEmptyView extends StatelessWidget {
   const AppEmptyView({
     super.key,

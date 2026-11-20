@@ -2,13 +2,7 @@ import '../../domain/entities/person.dart';
 import 'person_model.dart';
 
 extension PersonModelMapper on PersonModel {
-  Person toEntity() => Person(
-    id: id,
-    name: name,
-    profilePath: profilePath,
-    knownForDepartment: knownForDepartment,
-    popularity: popularity,
-  );
+  Person toEntity() => Person(id: id, name: name, profilePath: profilePath);
 }
 
 extension PersonModelListMapper on List<PersonModel> {

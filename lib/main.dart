@@ -30,7 +30,7 @@ Future<void> _bootstrap() async {
     return true;
   };
 
-  await AppConfig.load();
+  await Future.wait([AppConfig.load(), HiveHelper.init()]);
 
   if (!hasTmdbApiKey) {
     debugPrint(

@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/shimmer_placeholders.dart';
 
 class CachedImage extends StatelessWidget {
   const CachedImage({
@@ -35,9 +35,10 @@ class CachedImage extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
-        placeholder: (_, _) => _shimmerPlaceholder(
-          colors.surfaceContainerHighest,
-          colors.surfaceContainerLow,
+        fadeInDuration: const Duration(milliseconds: 200),
+        fadeOutDuration: const Duration(milliseconds: 100),
+        placeholder: (_, _) => ShimmerSkeleton(
+          child: SkeletonBox(width: width, height: height, borderRadius: 0),
         ),
         errorWidget: (_, _, _) => _staticPlaceholder(colors),
         imageBuilder: (context, imageProvider) => Image(
@@ -62,14 +63,6 @@ class CachedImage extends StatelessWidget {
       );
     }
     return imageWidget;
-  }
-
-  Widget _shimmerPlaceholder(Color base, Color highlight) {
-    return Shimmer.fromColors(
-      baseColor: base,
-      highlightColor: highlight,
-      child: SizedBox(width: width, height: height),
-    );
   }
 
   Widget _staticPlaceholder(ColorScheme colors) {
