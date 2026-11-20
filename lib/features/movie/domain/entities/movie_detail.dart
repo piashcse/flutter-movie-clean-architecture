@@ -1,25 +1,19 @@
-class MovieDetail {
-  final int id;
-  final String title;
-  final String overview;
-  final String posterPath;
-  final String releaseDate;
-  final double voteAverage;
-  final int runtime;
-  final String originalLanguage;
-  final List<String> genres;
-  final List<String> productionCompanies;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  MovieDetail({
-    required this.id,
-    required this.title,
-    required this.overview,
-    required this.posterPath,
-    required this.releaseDate,
-    required this.voteAverage,
-    required this.runtime,
-    required this.originalLanguage,
-    required this.genres,
-    required this.productionCompanies,
-  });
+part 'movie_detail.freezed.dart';
+
+@freezed
+abstract class MovieDetail with _$MovieDetail {
+  const factory MovieDetail({
+    required int id,
+    @Default('') String title,
+    @Default('') String overview,
+    String? posterPath,
+    @Default('') String releaseDate,
+    @Default(0) double voteAverage,
+    @Default(0) int runtime,
+    @Default('') String originalLanguage,
+    @Default(<String>[]) List<String> genres,
+    @Default(<String>[]) List<String> productionCompanies,
+  }) = _MovieDetail;
 }

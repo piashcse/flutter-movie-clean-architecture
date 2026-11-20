@@ -47,4 +47,17 @@ app.*.map.json
 # Freezed and JSON Serializable generated files
 *.freezed.dart
 *.g.dart
+
+# Generated localisations (run `flutter gen-l10n`)
+lib/l10n/app_localizations*.dart
+
+# Local secrets and signing material
+env.json
+assets/config/env.json
 .env
+android/key.properties
+*.jks
+*.keystore
+
+# Generated localisation metadata
+l10n_untranslated.json

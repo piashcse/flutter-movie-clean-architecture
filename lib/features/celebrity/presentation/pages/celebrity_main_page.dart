@@ -1,48 +1,58 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
-import 'package:flutter_movie_clean_architecture/features/celebrity/presentation/pages/popular_persons_page.dart';
-import 'package:flutter_movie_clean_architecture/features/celebrity/presentation/pages/trending_persons_page.dart';
+import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/media_card.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/media_hub_page.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/paged_media_grid.dart';
+import 'package:flutter_movie_clean_architecture/features/celebrity/domain/entities/person.dart';
+import 'package:flutter_movie_clean_architecture/features/celebrity/presentation/providers/celebrity_provider.dart';
+import 'package:flutter_movie_clean_architecture/routing/app_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class CelebrityMainPage extends ConsumerStatefulWidget {
+class CelebrityMainPage extends ConsumerWidget {
   const CelebrityMainPage({super.key});
 
   @override
-  ConsumerState<CelebrityMainPage> createState() => _CelebrityMainPageState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+
+    return MediaHubPage(
+      tabs: [
+        MediaHubTab(
+          label: l10n.popular,
+          icon: Icons.favorite,
+          page: _PersonGrid(
+            fetchPage: (ref, page) =>
+                ref.read(popularPersonsProvider(page).future),
+          ),
+        ),
+        MediaHubTab(
+          label: l10n.trending,
+          icon: Icons.trending_up,
+          page: _PersonGrid(
+            fetchPage: (ref, page) =>
+                ref.read(trendingPersonsProvider(page).future),
+          ),
+        ),
+      ],
+    );
+  }
 }
 
-class _CelebrityMainPageState extends ConsumerState<CelebrityMainPage> {
-  int _selectedIndex = 0;
+class _PersonGrid extends StatelessWidget {
+  const _PersonGrid({required this.fetchPage});
 
-  final _pages = [
-    const PopularPersonsPage(),
-    const TrendingPersonsPage(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  final Future<List<Person>> Function(WidgetRef ref, int page) fetchPage;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.favorite),
-            label: context.translate('popular'),
-          ),
-          BottomNavigationBarItem(
-            icon: const Icon(Icons.trending_up),
-            label: context.translate('trending'),
-          ),
-        ],
+    return PagedMediaGrid<Person>(
+      fetchPage: fetchPage,
+      itemBuilder: (context, person) => MediaCard(
+        imagePath: person.profilePath,
+        title: person.name,
+        isPerson: true,
+        onTap: () => context.push(AppRoutes.artist(person.id)),
       ),
     );
   }

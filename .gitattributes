@@ -1,0 +1,11 @@
+* text=auto eol=lf
+
+# Generated sources: exclude from diffs and language stats.
+*.g.dart linguist-generated=true
+*.freezed.dart linguist-generated=true
+lib/l10n/app_localizations*.dart linguist-generated=true
+
+# Binary assets
+*.png binary
+*.jpg binary
+*.jpeg binary

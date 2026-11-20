@@ -1,15 +1,14 @@
-class Person {
-  final int id;
-  final String name;
-  final String? profilePath;
-  final String knownForDepartment;
-  final double popularity;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Person({
-    required this.id,
-    required this.name,
-    required this.profilePath,
-    required this.knownForDepartment,
-    required this.popularity,
-  });
+part 'person.freezed.dart';
+
+@freezed
+abstract class Person with _$Person {
+  const factory Person({
+    required int id,
+    @Default('') String name,
+    String? profilePath,
+    @Default('') String knownForDepartment,
+    @Default(0) double popularity,
+  }) = _Person;
 }

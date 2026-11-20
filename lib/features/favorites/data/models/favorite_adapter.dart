@@ -18,14 +18,13 @@ class FavoriteAdapter extends TypeAdapter<Favorite> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Favorite(
-      id: fields[0] as int,
       itemId: fields[1] as int,
       title: fields[2] as String,
       posterPath: fields[3] as String,
       type: fields[4] as String,
       overview: fields[5] as String?,
       releaseDate: fields[6] as String?,
-    );
+    )..id = fields[0] as int;
   }
 
   @override

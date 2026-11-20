@@ -4,21 +4,16 @@ part 'artist_detail_model.freezed.dart';
 part 'artist_detail_model.g.dart';
 
 @freezed
-sealed class ArtistDetailModel with _$ArtistDetailModel{
+abstract class ArtistDetailModel with _$ArtistDetailModel {
   const factory ArtistDetailModel({
-    required bool adult,
-    @JsonKey(name: 'also_known_as') required List<String> alsoKnownAs,
-    required String biography,
-    String? birthday,
-    String? deathday,
-    required int gender,
-    String? homepage,
-    required int id,
-    @JsonKey(name: 'imdb_id') String? imdbId,
-    @JsonKey(name: 'known_for_department') required String knownForDepartment,
-    required String name,
+    @Default(0) int id,
+    @Default('') String name,
+    String? biography,
+    @JsonKey(name: 'known_for_department')
+    @Default('')
+    String knownForDepartment,
     @JsonKey(name: 'place_of_birth') String? placeOfBirth,
-    required double popularity,
+    String? birthday,
     @JsonKey(name: 'profile_path') String? profilePath,
   }) = _ArtistDetailModel;
 

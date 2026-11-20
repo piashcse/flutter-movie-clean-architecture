@@ -1,45 +1,38 @@
-class CreditEntity {
-  final int id;
-  final List<Cast> cast;
-  final List<Crew> crew;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  CreditEntity({
-    required this.id,
-    required this.cast,
-    required this.crew,
-  });
+part 'credit_entity.freezed.dart';
+
+/// Shared cast/crew aggregate reused by movies and TV series.
+@freezed
+abstract class CreditEntity with _$CreditEntity {
+  const factory CreditEntity({
+    required int id,
+    @Default(<CastMember>[]) List<CastMember> cast,
+    @Default(<CrewMember>[]) List<CrewMember> crew,
+  }) = _CreditEntity;
 }
 
-class Cast {
-  final int id;
-  final String? character;
-  final String? name;
-  final String? profilePath;
-  final int? castId;
-  final int? order;
-
-  Cast({
-    required this.id,
-    this.character,
-    this.name,
-    this.profilePath,
-    this.castId,
-    this.order,
-  });
+@freezed
+abstract class CastMember with _$CastMember {
+  const factory CastMember({
+    required int id,
+    @Default('') String name,
+    String? character,
+    String? profilePath,
+    String? posterPath,
+    int? castId,
+    int? order,
+    String? mediaType,
+  }) = _CastMember;
 }
 
-class Crew {
-  final int id;
-  final String? name;
-  final String? profilePath;
-  final String? job;
-  final String? department;
-
-  Crew({
-    required this.id,
-    this.name,
-    this.profilePath,
-    this.job,
-    this.department,
-  });
+@freezed
+abstract class CrewMember with _$CrewMember {
+  const factory CrewMember({
+    required int id,
+    @Default('') String name,
+    String? profilePath,
+    String? job,
+    String? department,
+  }) = _CrewMember;
 }

@@ -1,15 +1,17 @@
+/// Formats a movie runtime (in minutes) as `2h 10m`.
 String formatDuration(int minutes) {
   final hours = minutes ~/ 60;
   final remainingMinutes = minutes % 60;
   return '${hours}h ${remainingMinutes}m';
 }
 
-String formatTvDuration(List<int>? episodeRunTime) {
+/// Average episode runtime for a TV series, or `null` when TMDB has none.
+String? formatTvDuration(List<int>? episodeRunTime) {
   if (episodeRunTime == null || episodeRunTime.isEmpty) {
-    return 'N/A';
+    return null;
   }
-  
-  // For TV series, we'll show the average episode runtime
-  final avgRuntime = episodeRunTime.reduce((a, b) => a + b) ~/ episodeRunTime.length;
-  return '${avgRuntime}m';
+
+  final average =
+      episodeRunTime.reduce((a, b) => a + b) ~/ episodeRunTime.length;
+  return '${average}m';
 }
