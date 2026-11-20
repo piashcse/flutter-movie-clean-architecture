@@ -60,12 +60,21 @@ Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that sho
 - 🎨 Dark/Light/System Theme Toggle (persisted)
 - 🔍 Unified Universal Search with debounced API calls
 
-## Architecture
+## 🏗️ Architecture
 
-```
-presentation  →  domain  ←  data
-   (UI, Riverpod)   (entities, repositories)   (datasources, models, repository impls)
-```
+<p align="center">
+  <img width="95%" src="screen_shots/flutter-clean-architecture.svg" alt="Clean Architecture diagram: Presentation depends on Domain contracts, Data implements them and connects to TMDB through Dio and Hive, and Core is shared by every layer" />
+</p>
+
+### Layers
+
+- **Presentation** — Flutter pages/widgets and Riverpod providers. Depends only
+  on domain entities and repository contracts.
+- **Domain** — framework-independent entities and repository interfaces.
+- **Data** — repository implementations, Dio/Hive data sources, freezed models
+  and the `toEntity()` mappers.
+- **Core** — configuration, typed failures, networking, storage, theming,
+  localization and shared widgets.
 
 Key decisions:
 

@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="780" viewBox="0 0 1240 780" role="img" aria-labelledby="title desc">
+  <title id="title">Flutter Movie Clean Architecture</title>
+  <desc id="desc">Presentation depends on domain contracts, data implements them and talks to TMDB over Dio and Hive locally. Core is shared by all layers.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#49454F"/>
+    </marker>
+    <marker id="arrow-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#7A757F"/>
+    </marker>
+  </defs>
+
+  <rect width="1240" height="780" fill="#FAF8FF"/>
+  <text x="620" y="40" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="28" font-weight="700" fill="#1C1B1F">Flutter Movie — Clean Architecture</text>
+  <text x="620" y="66" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#49454F">UI depends on domain contracts · Data implements them · Core is shared by every layer</text>
+
+  <!-- Presentation -->
+  <rect x="40" y="98" width="360" height="300" rx="18" fill="#F3EDFF" stroke="#6750A4" stroke-width="2"/>
+  <rect x="60" y="114" width="152" height="32" rx="16" fill="#6750A4"/>
+  <text x="136" y="135" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Presentation</text>
+  <text x="76" y="172" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#49454F">Flutter widgets + Riverpod state</text>
+
+  <rect x="64" y="188" width="312" height="76" rx="12" fill="#FFFFFF" stroke="#6750A4" stroke-width="1.5"/>
+  <text x="220" y="218" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C1B1F">Pages &amp; Widgets</text>
+  <text x="220" y="242" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#49454F">hubs · detail · search · shared views</text>
+
+  <rect x="64" y="286" width="312" height="76" rx="12" fill="#FFFFFF" stroke="#6750A4" stroke-width="1.5"/>
+  <text x="220" y="316" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C1B1F">Riverpod Providers</text>
+  <text x="220" y="340" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#49454F">AsyncValue · autoDispose · family</text>
+
+  <!-- Domain -->
+  <rect x="440" y="148" width="360" height="250" rx="18" fill="#E4F6F2" stroke="#006A6A" stroke-width="2"/>
+  <rect x="460" y="164" width="112" height="32" rx="16" fill="#006A6A"/>
+  <text x="516" y="185" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Domain</text>
+  <text x="476" y="220" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#3F4948">Framework-independent</text>
+
+  <rect x="464" y="236" width="312" height="66" rx="12" fill="#FFFFFF" stroke="#006A6A" stroke-width="1.5"/>
+  <text x="620" y="264" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C1B1F">Entities</text>
+  <text x="620" y="286" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#49454F">Movie · TvSeries · Person · FavoriteItem</text>
+
+  <rect x="464" y="318" width="312" height="66" rx="12" fill="#FFFFFF" stroke="#006A6A" stroke-width="1.5"/>
+  <text x="620" y="346" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="700" fill="#1C1B1F">Repository Contracts</text>
+  <text x="620" y="368" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#49454F">abstract interfaces · domain-only types</text>
+
+  <!-- Data -->
+  <rect x="840" y="98" width="360" height="372" rx="18" fill="#FFF1DC" stroke="#8B5000" stroke-width="2"/>
+  <rect x="860" y="114" width="88" height="32" rx="16" fill="#8B5000"/>
+  <text x="904" y="135" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Data</text>
+  <text x="876" y="172" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#5F4200">Implementations + IO</text>
+
+  <rect x="864" y="186" width="312" height="56" rx="12" fill="#FFFFFF" stroke="#8B5000" stroke-width="1.5"/>
+  <text x="1020" y="212" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1C1B1F">Repository Implementations</text>
+  <text x="1020" y="230" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#49454F">single mapping point to entities</text>
+
+  <rect x="864" y="254" width="312" height="56" rx="12" fill="#FFFFFF" stroke="#8B5000" stroke-width="1.5"/>
+  <text x="1020" y="280" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1C1B1F">Remote Data Sources</text>
+  <text x="1020" y="298" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#49454F">TmdbClient · retries · typed failures</text>
+
+  <rect x="864" y="322" width="312" height="56" rx="12" fill="#FFFFFF" stroke="#8B5000" stroke-width="1.5"/>
+  <text x="1020" y="348" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1C1B1F">Local Data Sources</text>
+  <text x="1020" y="366" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#49454F">favorites box · settings store</text>
+
+  <rect x="864" y="390" width="312" height="56" rx="12" fill="#FFFFFF" stroke="#8B5000" stroke-width="1.5"/>
+  <text x="1020" y="416" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1C1B1F">Models + Mappers</text>
+  <text x="1020" y="434" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#49454F">freezed JSON models → toEntity()</text>
+
+  <!-- External services -->
+  <rect x="896" y="520" width="150" height="66" rx="12" fill="#E7ECFF" stroke="#3F51B5" stroke-width="1.8"/>
+  <text x="971" y="548" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1C1B1F">TMDB API</text>
+  <text x="971" y="568" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#49454F">HTTPS · JSON</text>
+
+  <rect x="1066" y="520" width="130" height="66" rx="12" fill="#FFEDEA" stroke="#B3261E" stroke-width="1.8"/>
+  <text x="1131" y="548" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="16" font-weight="700" fill="#1C1B1F">Hive</text>
+  <text x="1131" y="568" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#49454F">local boxes</text>
+
+  <!-- Core -->
+  <rect x="40" y="616" width="1160" height="128" rx="18" fill="#F4F4F4" stroke="#5F5F5F" stroke-width="2"/>
+  <rect x="60" y="632" width="86" height="32" rx="16" fill="#5F5F5F"/>
+  <text x="103" y="653" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#FFFFFF">Core</text>
+  <text x="160" y="653" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#49454F">shared infrastructure used by all layers</text>
+
+  <g font-family="Helvetica, Arial, sans-serif">
+    <rect x="64" y="676" width="168" height="50" rx="10" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1.3"/>
+    <text x="148" y="706" text-anchor="middle" font-size="13" font-weight="700" fill="#1C1B1F">Config</text>
+
+    <rect x="246" y="676" width="168" height="50" rx="10" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1.3"/>
+    <text x="330" y="706" text-anchor="middle" font-size="13" font-weight="700" fill="#1C1B1F">Failures</text>
+
+    <rect x="428" y="676" width="168" height="50" rx="10" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1.3"/>
+    <text x="512" y="706" text-anchor="middle" font-size="13" font-weight="700" fill="#1C1B1F">Networking</text>
+
+    <rect x="610" y="676" width="168" height="50" rx="10" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1.3"/>
+    <text x="694" y="706" text-anchor="middle" font-size="13" font-weight="700" fill="#1C1B1F">Storage</text>
+
+    <rect x="792" y="676" width="168" height="50" rx="10" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1.3"/>
+    <text x="876" y="706" text-anchor="middle" font-size="13" font-weight="700" fill="#1C1B1F">Theme + L10n</text>
+
+    <rect x="974" y="676" width="190" height="50" rx="10" fill="#FFFFFF" stroke="#9E9E9E" stroke-width="1.3"/>
+    <text x="1069" y="706" text-anchor="middle" font-size="13" font-weight="700" fill="#1C1B1F">Shared Widgets</text>
+  </g>
+
+  <!-- Connections -->
+  <line x1="400" y1="250" x2="436" y2="250" stroke="#49454F" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="404" y="240" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#49454F">uses</text>
+
+  <line x1="840" y1="250" x2="804" y2="250" stroke="#7A757F" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrow-muted)"/>
+
+  <line x1="960" y1="470" x2="960" y2="516" stroke="#49454F" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="968" y="498" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#49454F">Dio</text>
+
+  <line x1="1120" y1="470" x2="1120" y2="516" stroke="#49454F" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="1128" y="498" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#49454F">local</text>
+
+  <line x1="220" y1="398" x2="220" y2="612" stroke="#7A757F" stroke-width="1.6" stroke-dasharray="6 6" marker-end="url(#arrow-muted)"/>
+  <line x1="620" y1="398" x2="620" y2="612" stroke="#7A757F" stroke-width="1.6" stroke-dasharray="6 6" marker-end="url(#arrow-muted)"/>
+  <line x1="860" y1="470" x2="860" y2="612" stroke="#7A757F" stroke-width="1.6" stroke-dasharray="6 6" marker-end="url(#arrow-muted)"/>
+
+  <text x="620" y="770" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#6F6B75">Solid arrows = runtime calls · dashed arrows = dependencies / implementations</text>
+</svg>
