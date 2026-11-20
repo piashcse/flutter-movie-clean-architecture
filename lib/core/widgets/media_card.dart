@@ -23,38 +23,35 @@ class MediaCard extends StatelessWidget {
     return Semantics(
       button: true,
       label: title,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Column(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  width: double.infinity,
-                  child: CachedImage(
-                    imageUrl: tmdbImage(imagePath),
-                    borderRadius: 12,
-                    errorIcon: isPerson ? Icons.person : Icons.movie,
-                    semanticLabel: title,
-                  ),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Column(
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: double.infinity,
+                child: CachedImage(
+                  imageUrl: tmdbImage(imagePath),
+                  borderRadius: 12,
+                  errorIcon: isPerson ? Icons.person : Icons.movie,
+                  semanticLabel: title,
                 ),
               ),
-              if (title != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  title!,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+            ),
+            if (title != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                title!,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
                 ),
-              ],
+              ),
             ],
-          ),
+          ],
         ),
       ),
     );

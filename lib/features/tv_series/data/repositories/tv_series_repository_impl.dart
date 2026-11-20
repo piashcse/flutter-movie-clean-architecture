@@ -1,4 +1,5 @@
 import 'package:flutter_movie_clean_architecture/core/entities/credit_entity.dart';
+import 'package:flutter_movie_clean_architecture/core/models/credit_mappers.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/data/datasources/tv_series_remote_data_source.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/data/models/mappers.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series.dart';
@@ -40,5 +41,5 @@ class TvSeriesRepositoryImpl implements TvSeriesRepository {
 
   @override
   Future<CreditEntity> getTvSeriesCredits(int tvSeriesId) async =>
-      (await _remoteDataSource.getCredits(tvSeriesId)).toTvCreditEntity();
+      (await _remoteDataSource.getCredits(tvSeriesId)).toEntity();
 }

@@ -4,6 +4,9 @@ import 'package:flutter_movie_clean_architecture/core/utils/layout.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/app_status_views.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// Fetches one page of a paginated listing.
+typedef PageFetcher<T> = Future<List<T>> Function(WidgetRef ref, int page);
+
 /// A reusable, responsive, infinitely scrolling media grid.
 ///
 /// Owns pagination, refresh and error handling so feature pages stay tiny.
@@ -17,7 +20,7 @@ class PagedMediaGrid<T> extends ConsumerStatefulWidget {
     this.padding = const EdgeInsets.all(12),
   });
 
-  final Future<List<T>> Function(WidgetRef ref, int page) fetchPage;
+  final PageFetcher<T> fetchPage;
   final Widget Function(BuildContext context, T item) itemBuilder;
   final String? emptyMessage;
   final int pageSize;
@@ -67,12 +70,7 @@ class _PagedMediaGridState<T> extends ConsumerState<PagedMediaGrid<T>> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-      if (replace) {
-        _error = null;
-      }
-    });
+    setState(() => _isLoading = true);
 
     try {
       final items = await widget.fetchPage(ref, page);
@@ -87,16 +85,16 @@ class _PagedMediaGridState<T> extends ConsumerState<PagedMediaGrid<T>> {
         _page = page;
         _hasMore = items.length >= widget.pageSize;
         _error = null;
+        _isLoading = false;
       });
     } catch (error) {
       if (!mounted) {
         return;
       }
-      setState(() => _error = error);
-    } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      setState(() {
+        _error = error;
+        _isLoading = false;
+      });
     }
   }
 

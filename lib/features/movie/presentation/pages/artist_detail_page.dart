@@ -7,7 +7,7 @@ import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart'
 import 'package:flutter_movie_clean_architecture/core/widgets/description_section.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/recommendations_section.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/domain/entities/favorite_item.dart';
-import 'package:flutter_movie_clean_architecture/features/favorites/presentation/favorite_actions.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/presentation/favorite_button.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/artist_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
 import 'package:flutter_movie_clean_architecture/routing/app_routes.dart';
@@ -23,7 +23,6 @@ class ArtistDetailPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final detailAsync = ref.watch(artistDetailProvider(artistId));
     final creditsAsync = ref.watch(artistCreditsProvider(artistId));
-    final favorite = isFavorite(ref, artistId, FavoriteType.celebrity);
     final l10n = context.l10n;
 
     return Scaffold(
@@ -42,16 +41,7 @@ class ArtistDetailPage extends ConsumerWidget {
                 tooltip: MaterialLocalizations.of(context).backButtonTooltip,
                 onPressed: () => popOrGoHome(context),
               ),
-              actions: [
-                IconButton(
-                  tooltip: favorite
-                      ? l10n.removeFromFavorites
-                      : l10n.addToFavorites,
-                  icon: Icon(favorite ? Icons.favorite : Icons.favorite_border),
-                  onPressed: () =>
-                      toggleFavorite(context, ref, _toFavorite(artist)),
-                ),
-              ],
+              actions: [FavoriteButton(item: _toFavorite(artist))],
             ),
             SliverToBoxAdapter(
               child: Padding(

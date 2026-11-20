@@ -1,4 +1,5 @@
 import 'package:flutter_movie_clean_architecture/core/entities/credit_entity.dart';
+import 'package:flutter_movie_clean_architecture/core/models/credit_mappers.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/datasources/movie_remote_data_source.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/mappers.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/artist_detail.dart';

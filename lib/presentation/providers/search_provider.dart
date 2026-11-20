@@ -43,37 +43,49 @@ final searchResultsProvider = FutureProvider.autoDispose<List<SearchResult>>((
 
   switch (ref.watch(searchCategoryProvider)) {
     case SearchCategory.movies:
-      final movies = await ref.watch(movieSearchProvider(query).future);
-      return [
-        for (final movie in movies)
-          SearchResult(
-            id: movie.id,
-            title: movie.title,
-            type: SearchResultType.movie,
-            imagePath: movie.posterPath,
-          ),
-      ];
+      final items = await ref.watch(movieSearchProvider(query).future);
+      return _map(
+        items,
+        SearchResultType.movie,
+        (movie) => movie.id,
+        (movie) => movie.title,
+        (movie) => movie.posterPath,
+      );
     case SearchCategory.tvSeries:
-      final series = await ref.watch(tvSeriesSearchProvider(query).future);
-      return [
-        for (final item in series)
-          SearchResult(
-            id: item.id,
-            title: item.name,
-            type: SearchResultType.tv,
-            imagePath: item.posterPath,
-          ),
-      ];
+      final items = await ref.watch(tvSeriesSearchProvider(query).future);
+      return _map(
+        items,
+        SearchResultType.tv,
+        (series) => series.id,
+        (series) => series.name,
+        (series) => series.posterPath,
+      );
     case SearchCategory.celebrities:
-      final people = await ref.watch(searchPersonsProvider(query).future);
-      return [
-        for (final person in people)
-          SearchResult(
-            id: person.id,
-            title: person.name,
-            type: SearchResultType.celebrity,
-            imagePath: person.profilePath,
-          ),
-      ];
+      final items = await ref.watch(searchPersonsProvider(query).future);
+      return _map(
+        items,
+        SearchResultType.celebrity,
+        (person) => person.id,
+        (person) => person.name,
+        (person) => person.profilePath,
+      );
   }
 });
+
+List<SearchResult> _map<T>(
+  List<T> items,
+  SearchResultType type,
+  int Function(T item) id,
+  String Function(T item) title,
+  String? Function(T item) image,
+) {
+  return [
+    for (final item in items)
+      SearchResult(
+        id: id(item),
+        title: title(item),
+        type: type,
+        imagePath: image(item),
+      ),
+  ];
+}

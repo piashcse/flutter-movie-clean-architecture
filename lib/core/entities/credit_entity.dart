@@ -20,8 +20,6 @@ abstract class CastMember with _$CastMember {
     String? character,
     String? profilePath,
     String? posterPath,
-    int? castId,
-    int? order,
     String? mediaType,
   }) = _CastMember;
 }
