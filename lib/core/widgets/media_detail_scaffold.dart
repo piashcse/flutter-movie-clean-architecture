@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/app_status_views.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/shimmer_placeholders.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Scaffolds the common detail-page states (loading, error, data) around a
@@ -21,7 +22,7 @@ class MediaDetailScaffold<T> extends StatelessWidget {
     return Scaffold(
       body: detailAsync.when(
         data: (data) => builder(context, data),
-        loading: AppLoadingView.new,
+        loading: DetailSkeleton.new,
         error: (error, _) => AppErrorView(error: error, onRetry: onRetry),
       ),
     );

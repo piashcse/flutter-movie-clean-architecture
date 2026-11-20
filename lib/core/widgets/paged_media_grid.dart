@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/layout.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/app_status_views.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/shimmer_placeholders.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Fetches one page of a paginated listing.
@@ -104,7 +105,7 @@ class _PagedMediaGridState<T> extends ConsumerState<PagedMediaGrid<T>> {
   Widget build(BuildContext context) {
     if (_items.isEmpty) {
       if (_isLoading) {
-        return const AppLoadingView();
+        return const MediaGridSkeleton();
       }
       if (_error != null) {
         return AppErrorView(error: _error!, onRetry: _refresh);
@@ -141,15 +142,7 @@ class _PagedMediaGridState<T> extends ConsumerState<PagedMediaGrid<T>> {
                   onRetry: () => _load(page: _page + 1, replace: false),
                 );
               }
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: SizedBox.square(
-                    dimension: 24,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-                ),
-              );
+              return const MediaCardSkeleton();
             },
           );
         },

@@ -7,6 +7,7 @@ import 'package:flutter_movie_clean_architecture/core/error/failure_messages.dar
 import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/inline_error.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/shimmer_placeholders.dart';
 import 'package:flutter_movie_clean_architecture/presentation/providers/search_provider.dart';
 import 'package:flutter_movie_clean_architecture/routing/app_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -178,10 +179,7 @@ class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
             ),
           );
         },
-        loading: () => const Padding(
-          padding: EdgeInsets.all(16),
-          child: LinearProgressIndicator(),
-        ),
+        loading: SearchResultsSkeleton.new,
         error: (error, _) => InlineError(
           message: failureMessage(context, error),
           onRetry: () => ref.invalidate(searchResultsProvider),

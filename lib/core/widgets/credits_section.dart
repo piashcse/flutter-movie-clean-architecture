@@ -4,6 +4,7 @@ import 'package:flutter_movie_clean_architecture/core/entities/credit_entity.dar
 import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/inline_error.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/shimmer_placeholders.dart';
 import 'package:flutter_movie_clean_architecture/routing/app_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -85,15 +86,7 @@ class CreditsSection extends StatelessWidget {
           ],
         );
       },
-      loading: () => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
-        child: Center(
-          child: SizedBox.square(
-            dimension: 24,
-            child: CircularProgressIndicator(strokeWidth: 2),
-          ),
-        ),
-      ),
+      loading: CreditsSkeleton.new,
       error: (error, _) =>
           InlineError(message: context.l10n.failedToLoadCast, onRetry: onRetry),
     );

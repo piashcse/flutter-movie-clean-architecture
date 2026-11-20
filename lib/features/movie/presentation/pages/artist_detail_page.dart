@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
 import 'package:flutter_movie_clean_architecture/core/entities/credit_entity.dart';
 import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
-import 'package:flutter_movie_clean_architecture/core/widgets/app_status_views.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/description_section.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/media_detail_scaffold.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/recommendations_section.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/domain/entities/favorite_item.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/presentation/favorite_button.dart';
@@ -25,76 +25,71 @@ class ArtistDetailPage extends ConsumerWidget {
     final creditsAsync = ref.watch(artistCreditsProvider(artistId));
     final l10n = context.l10n;
 
-    return Scaffold(
-      body: detailAsync.when(
-        data: (artist) => CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              pinned: true,
-              title: Text(
-                artist.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back),
-                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
-                onPressed: () => popOrGoHome(context),
-              ),
-              actions: [FavoriteButton(item: _toFavorite(artist))],
+    return MediaDetailScaffold<ArtistDetail>(
+      detailAsync: detailAsync,
+      onRetry: () => ref.invalidate(artistDetailProvider(artistId)),
+      builder: (context, artist) => CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            pinned: true,
+            title: Text(
+              artist.name,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _ArtistHeader(artist: artist),
-                    const SizedBox(height: 16),
-                    if (artist.placeOfBirth.isNotEmpty)
-                      _InfoRow(
-                        icon: Icons.location_on_outlined,
-                        label: l10n.placeOfBirth,
-                        value: artist.placeOfBirth,
-                      ),
-                    if (artist.birthday.isNotEmpty)
-                      _InfoRow(
-                        icon: Icons.cake_outlined,
-                        label: l10n.birthday,
-                        value: artist.birthday,
-                      ),
-                    const SizedBox(height: 16),
-                    DescriptionSection(
-                      title: l10n.biography,
-                      text: artist.biography,
-                      emptyMessage: l10n.noBiographyAvailable,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+              onPressed: () => popOrGoHome(context),
+            ),
+            actions: [FavoriteButton(item: _toFavorite(artist))],
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _ArtistHeader(artist: artist),
+                  const SizedBox(height: 16),
+                  if (artist.placeOfBirth.isNotEmpty)
+                    _InfoRow(
+                      icon: Icons.location_on_outlined,
+                      label: l10n.placeOfBirth,
+                      value: artist.placeOfBirth,
                     ),
-                    RecommendationsSection<CastMember>(
-                      itemsAsync: creditsAsync.whenData(
-                        (credits) => credits.cast,
-                      ),
-                      title: l10n.moviesAndTvShows,
-                      errorText: l10n.failedToLoadMovies,
-                      imageOf: (credit) => credit.posterPath,
-                      routeOf: (credit) => credit.mediaType == 'tv'
-                          ? AppRoutes.tv(credit.id)
-                          : AppRoutes.movie(credit.id),
-                      itemLabelOf: (credit) => credit.character,
-                      onRetry: () =>
-                          ref.invalidate(artistCreditsProvider(artistId)),
+                  if (artist.birthday.isNotEmpty)
+                    _InfoRow(
+                      icon: Icons.cake_outlined,
+                      label: l10n.birthday,
+                      value: artist.birthday,
                     ),
-                    const SizedBox(height: 24),
-                  ],
-                ),
+                  const SizedBox(height: 16),
+                  DescriptionSection(
+                    title: l10n.biography,
+                    text: artist.biography,
+                    emptyMessage: l10n.noBiographyAvailable,
+                  ),
+                  RecommendationsSection<CastMember>(
+                    itemsAsync: creditsAsync.whenData(
+                      (credits) => credits.cast,
+                    ),
+                    title: l10n.moviesAndTvShows,
+                    errorText: l10n.failedToLoadMovies,
+                    imageOf: (credit) => credit.posterPath,
+                    routeOf: (credit) => credit.mediaType == 'tv'
+                        ? AppRoutes.tv(credit.id)
+                        : AppRoutes.movie(credit.id),
+                    itemLabelOf: (credit) => credit.character,
+                    onRetry: () =>
+                        ref.invalidate(artistCreditsProvider(artistId)),
+                  ),
+                  const SizedBox(height: 24),
+                ],
               ),
             ),
-          ],
-        ),
-        loading: AppLoadingView.new,
-        error: (error, _) => AppErrorView(
-          error: error,
-          onRetry: () => ref.invalidate(artistDetailProvider(artistId)),
-        ),
+          ),
+        ],
       ),
     );
   }
