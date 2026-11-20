@@ -54,7 +54,10 @@ class CreditsSection extends StatelessWidget {
                         child: Column(
                           children: [
                             CachedImage(
-                              imageUrl: tmdbImage(member.profilePath),
+                              imageUrl: tmdbImage(
+                                member.profilePath,
+                                size: 'w185',
+                              ),
                               width: 70,
                               height: 70,
                               isCircular: true,

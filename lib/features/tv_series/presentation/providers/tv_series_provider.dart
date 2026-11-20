@@ -15,33 +15,25 @@ final tvSeriesRepositoryProvider = Provider<TvSeriesRepository>(
   (ref) => TvSeriesRepositoryImpl(ref.watch(tvSeriesRemoteDataSourceProvider)),
 );
 
-final airingTodayTvSeriesProvider = FutureProvider.family<List<TvSeries>, int>((
-  ref,
-  page,
-) async {
-  return ref.watch(tvSeriesRepositoryProvider).getAiringToday(page);
-});
+final airingTodayTvSeriesProvider = FutureProvider.autoDispose
+    .family<List<TvSeries>, int>((ref, page) async {
+      return ref.watch(tvSeriesRepositoryProvider).getAiringToday(page);
+    });
 
-final onTheAirTvSeriesProvider = FutureProvider.family<List<TvSeries>, int>((
-  ref,
-  page,
-) async {
-  return ref.watch(tvSeriesRepositoryProvider).getOnTheAir(page);
-});
+final onTheAirTvSeriesProvider = FutureProvider.autoDispose
+    .family<List<TvSeries>, int>((ref, page) async {
+      return ref.watch(tvSeriesRepositoryProvider).getOnTheAir(page);
+    });
 
-final popularTvSeriesProvider = FutureProvider.family<List<TvSeries>, int>((
-  ref,
-  page,
-) async {
-  return ref.watch(tvSeriesRepositoryProvider).getPopular(page);
-});
+final popularTvSeriesProvider = FutureProvider.autoDispose
+    .family<List<TvSeries>, int>((ref, page) async {
+      return ref.watch(tvSeriesRepositoryProvider).getPopular(page);
+    });
 
-final upcomingTvSeriesProvider = FutureProvider.family<List<TvSeries>, int>((
-  ref,
-  page,
-) async {
-  return ref.watch(tvSeriesRepositoryProvider).getUpcoming(page);
-});
+final upcomingTvSeriesProvider = FutureProvider.autoDispose
+    .family<List<TvSeries>, int>((ref, page) async {
+      return ref.watch(tvSeriesRepositoryProvider).getUpcoming(page);
+    });
 
 final tvSeriesDetailProvider = FutureProvider.autoDispose
     .family<TvSeriesDetail, int>((ref, tvSeriesId) async {

@@ -158,6 +158,19 @@ Text(context.l10n.recommendedMovies)
 
 When adding a key, add it to **all** ARB files.
 
+## Performance
+
+- Media hubs build tabs **lazily on first visit** and keep visited tabs alive,
+  so startup loads one list instead of every category at once.
+- Hidden tabs have tickers disabled to pause shimmer animations.
+- Paginated providers are auto-disposed after each page is read; the grid widget
+  owns the accumulated items, keeping memory flat while scrolling.
+- Grid cards disable automatic keep-alives (they are stateless) and prefetch the
+  next page 600 px before the end.
+- Images are requested at the smallest useful TMDB size (`w185` thumbnails,
+  `w342` posters, `w780` headers) with short fade transitions.
+- Configuration and Hive boxes initialise in parallel at startup.
+
 ## Security
 
 TMDB's v3 key is sent as a query parameter and, like any value shipped in a

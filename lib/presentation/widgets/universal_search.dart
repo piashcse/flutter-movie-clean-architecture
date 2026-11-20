@@ -232,7 +232,7 @@ class _SearchResultTile extends StatelessWidget {
     return ListTile(
       onTap: onTap,
       leading: CachedImage(
-        imageUrl: tmdbImage(result.imagePath),
+        imageUrl: tmdbImage(result.imagePath, size: 'w185'),
         width: 48,
         height: 64,
         borderRadius: 6,

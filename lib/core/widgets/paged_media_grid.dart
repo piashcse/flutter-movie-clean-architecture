@@ -57,7 +57,7 @@ class _PagedMediaGridState<T> extends ConsumerState<PagedMediaGrid<T>> {
     }
 
     final position = _scrollController.position;
-    if (position.pixels >= position.maxScrollExtent - 400) {
+    if (position.pixels >= position.maxScrollExtent - 600) {
       _load(page: _page + 1, replace: false);
     }
   }
@@ -131,6 +131,7 @@ class _PagedMediaGridState<T> extends ConsumerState<PagedMediaGrid<T>> {
               mainAxisSpacing: 12,
             ),
             itemCount: _items.length + (_hasMore || _error != null ? 1 : 0),
+            addAutomaticKeepAlives: false,
             itemBuilder: (context, index) {
               if (index < _items.length) {
                 return widget.itemBuilder(context, _items[index]);
