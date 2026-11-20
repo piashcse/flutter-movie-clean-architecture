@@ -1,51 +1,40 @@
-import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_movie_clean_architecture/core/network/dio_provider.dart';
-import 'package:flutter_movie_clean_architecture/features/celebrity/data/models/person_list_response.dart';
+import 'package:flutter_movie_clean_architecture/core/network/tmdb_client.dart';
+import 'package:flutter_movie_clean_architecture/features/celebrity/data/models/person_model.dart';
 
-abstract class CelebrityRemoteDataSource {
-  Future<PersonListResponse> getPopularPersons(int page);
-  Future<PersonListResponse> getTrendingPersons(int page);
-  Future<PersonListResponse> searchPersons(String query, int page);
+abstract interface class CelebrityRemoteDataSource {
+  Future<List<PersonModel>> getPopularPersons(int page);
+
+  Future<List<PersonModel>> getTrendingPersons(int page);
+
+  Future<List<PersonModel>> searchPersons(String query, int page);
 }
 
 class CelebrityRemoteDataSourceImpl implements CelebrityRemoteDataSource {
-  final Dio dio;
+  const CelebrityRemoteDataSourceImpl(this._client);
 
-  CelebrityRemoteDataSourceImpl(this.dio);
+  final TmdbClient _client;
 
-  @override
-  Future<PersonListResponse> getPopularPersons(int page) async {
-    final response = await dio.get(
-      'person/popular',
-      queryParameters: {'page': page},
-    );
-    return PersonListResponse.fromJson(response.data as Map<String, dynamic>);
-  }
+  static const _pageKey = 'page';
 
   @override
-  Future<PersonListResponse> getTrendingPersons(int page) async {
-    final response = await dio.get(
-      'trending/person/week',
-      queryParameters: {'page': page},
-    );
-    return PersonListResponse.fromJson(response.data as Map<String, dynamic>);
-  }
+  Future<List<PersonModel>> getPopularPersons(int page) => _client.getList(
+    'person/popular',
+    PersonModel.fromJson,
+    query: {_pageKey: page},
+  );
 
   @override
-  Future<PersonListResponse> searchPersons(String query, int page) async {
-    final response = await dio.get(
-      'search/person',
-      queryParameters: {
-        'query': query,
-        'page': page,
-      },
-    );
-    return PersonListResponse.fromJson(response.data as Map<String, dynamic>);
-  }
+  Future<List<PersonModel>> getTrendingPersons(int page) => _client.getList(
+    'trending/person/week',
+    PersonModel.fromJson,
+    query: {_pageKey: page},
+  );
+
+  @override
+  Future<List<PersonModel>> searchPersons(String query, int page) =>
+      _client.getList(
+        'search/person',
+        PersonModel.fromJson,
+        query: {'query': query, _pageKey: page},
+      );
 }
-
-final celebrityRemoteDataSourceProvider = Provider<CelebrityRemoteDataSource>((ref) {
-  final dio = ref.watch(dioProvider);
-  return CelebrityRemoteDataSourceImpl(dio);
-});

@@ -4,14 +4,14 @@ part 'person_model.freezed.dart';
 part 'person_model.g.dart';
 
 @freezed
-sealed class PersonModel with _$PersonModel {
+abstract class PersonModel with _$PersonModel {
   const factory PersonModel({
-    required bool adult,
-    @JsonKey(name: 'gender') required int gender,
-    @JsonKey(name: 'id') required int id,
-    @JsonKey(name: 'known_for_department') required String knownForDepartment,
-    @JsonKey(name: 'name') required String name,
-    @JsonKey(name: 'popularity') required double popularity,
+    @Default(0) int id,
+    @Default('') String name,
+    @JsonKey(name: 'known_for_department')
+    @Default('')
+    String knownForDepartment,
+    @Default(0) double popularity,
     @JsonKey(name: 'profile_path') String? profilePath,
   }) = _PersonModel;
 

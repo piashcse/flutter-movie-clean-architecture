@@ -1,13 +1,13 @@
-class TvSeries {
-  final int id;
-  final String name;
-  final String? posterPath;
-  final String overview;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  TvSeries({
-    required this.id,
-    required this.name,
-    required this.posterPath,
-    required this.overview,
-  });
+part 'tv_series.freezed.dart';
+
+@freezed
+abstract class TvSeries with _$TvSeries {
+  const factory TvSeries({
+    required int id,
+    @Default('') String name,
+    String? posterPath,
+    @Default('') String overview,
+  }) = _TvSeries;
 }

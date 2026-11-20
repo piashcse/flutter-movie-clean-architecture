@@ -1,152 +1,152 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
+import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
+import 'package:flutter_movie_clean_architecture/core/utils/layout.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/app_status_views.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/domain/entities/favorite_item.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/presentation/favorite_actions.dart';
 import 'package:flutter_movie_clean_architecture/features/favorites/presentation/providers/favorite_provider.dart';
-import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
+import 'package:flutter_movie_clean_architecture/routing/app_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class FavoritesPage extends ConsumerStatefulWidget {
+class FavoritesPage extends ConsumerWidget {
   const FavoritesPage({super.key});
 
   @override
-  ConsumerState<FavoritesPage> createState() => _FavoritesPageState();
-}
-
-class _FavoritesPageState extends ConsumerState<FavoritesPage> {
-  Future<void> _refresh() async {
-    await ref.read(favoritesProvider.notifier).loadFavorites();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final favorites = ref.watch(favoritesProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
+    final favoritesAsync = ref.watch(favoritesProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(context.translate('favorites')),
-      ),
-      body: favorites.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.favorite_border, size: 64, color: Colors.grey),
-                  const SizedBox(height: 16),
-                  Text(
-                    context.translate('no_favorites_yet'),
-                    style: const TextStyle(fontSize: 18, color: Colors.grey),
+      appBar: AppBar(title: Text(l10n.favorites)),
+      body: favoritesAsync.when(
+        data: (favorites) {
+          if (favorites.isEmpty) {
+            return AppEmptyView(
+              message: l10n.noFavoritesYet,
+              description: l10n.startAddingFavorites,
+              icon: Icons.favorite_border,
+            );
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(favoritesProvider);
+              await ref.read(favoritesProvider.future);
+            },
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                return GridView.builder(
+                  padding: const EdgeInsets.all(16),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: gridColumnsForWidth(constraints.maxWidth),
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 0.6,
                   ),
-                  const SizedBox(height: 8),
+                  itemCount: favorites.length,
+                  itemBuilder: (context, index) =>
+                      _FavoriteCard(item: favorites[index]),
+                );
+              },
+            ),
+          );
+        },
+        loading: AppLoadingView.new,
+        error: (error, _) => AppErrorView(
+          error: error,
+          onRetry: () => ref.invalidate(favoritesProvider),
+        ),
+      ),
+    );
+  }
+}
+
+class _FavoriteCard extends ConsumerWidget {
+  const _FavoriteCard({required this.item});
+
+  final FavoriteItem item;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
+    final typeLabel = switch (item.type) {
+      FavoriteType.movie => l10n.typeMovie,
+      FavoriteType.tv => l10n.typeTv,
+      FavoriteType.celebrity => l10n.typeCelebrity,
+    };
+
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () => context.push(_routeFor(item)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: double.infinity,
+                child: CachedImage(
+                  imageUrl: tmdbImage(item.posterPath),
+                  errorIcon: item.type == FavoriteType.celebrity
+                      ? Icons.person
+                      : Icons.movie,
+                  semanticLabel: item.title,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 8, 4, 4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   Text(
-                    context.translate('start_adding_favorites'),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.grey),
+                    item.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          typeLabel,
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        visualDensity: VisualDensity.compact,
+                        tooltip: l10n.removeFromFavorites,
+                        icon: Icon(
+                          Icons.favorite,
+                          size: 18,
+                          color: theme.colorScheme.error,
+                        ),
+                        onPressed: () => toggleFavorite(context, ref, item),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            )
-          : RefreshIndicator(
-              onRefresh: _refresh,
-              child: GridView.builder(
-                padding: const EdgeInsets.all(16),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
-                  childAspectRatio: 0.7,
-                ),
-                itemCount: favorites.length,
-                itemBuilder: (context, index) {
-                  final favorite = favorites[index];
-                  return Card(
-                    elevation: 4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        switch (favorite.type) {
-                          case 'movie':
-                            context.push('/movie/${favorite.itemId}');
-                            break;
-                          case 'tv':
-                            context.push('/tv/${favorite.itemId}');
-                            break;
-                          case 'celebrity':
-                            context.push('/artistId/${favorite.itemId}');
-                            break;
-                        }
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: ClipRRect(
-                              borderRadius: const BorderRadius.vertical(
-                                top: Radius.circular(12),
-                              ),
-                              child: CachedImage(
-                                imageUrl: favorite.posterPath.isNotEmpty
-                                    ? '$imageUrl${favorite.posterPath}'
-                                    : null,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                errorIcon: Icons.image,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  favorite.title,
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      favorite.type.toUpperCase(),
-                                      style: TextStyle(
-                                        color: Colors.grey[600],
-                                        fontSize: 10,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.favorite,
-                                        color: Colors.red,
-                                        size: 18,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {
-                                        ref.read(favoritesProvider.notifier)
-                                            .removeFavorite(favorite.itemId, favorite.type);
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
             ),
+          ],
+        ),
+      ),
     );
   }
 
+  String _routeFor(FavoriteItem item) => switch (item.type) {
+    FavoriteType.movie => AppRoutes.movie(item.itemId),
+    FavoriteType.tv => AppRoutes.tv(item.itemId),
+    FavoriteType.celebrity => AppRoutes.artist(item.itemId),
+  };
 }

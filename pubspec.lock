@@ -254,14 +254,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.1"
-  flutter_dotenv:
-    dependency: "direct main"
-    description:
-      name: flutter_dotenv
-      sha256: "7f302212152f6a483c28b270d36f343496a981af4d05fb455bee40ea35de2170"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.2"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -382,7 +374,7 @@ packages:
     source: hosted
     version: "4.1.2"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       sha256: "3df61194eb431efc39c4ceba583b95633a403f46c9fd341e550ce0bfa50e9aa5"
@@ -621,14 +613,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.2"
-  pretty_dio_logger:
-    dependency: "direct main"
-    description:
-      name: pretty_dio_logger
-      sha256: "36f2101299786d567869493e2f5731de61ce130faa14679473b26905a92b6407"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.0"
   pub_semver:
     dependency: transitive
     description:

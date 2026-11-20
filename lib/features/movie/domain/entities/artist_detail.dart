@@ -1,19 +1,16 @@
-class Artistdetail {
-  final int id;
-  final String name;
-  final String? profilePath;
-  final String biography;
-  final String knownForDepartment;
-  final String placeOfBirth;
-  final String birthday;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Artistdetail({
-    required this.id,
-    required this.name,
-    required this.profilePath,
-    required this.biography,
-    required this.knownForDepartment,
-    required this.placeOfBirth,
-    required this.birthday,
-  });
+part 'artist_detail.freezed.dart';
+
+@freezed
+abstract class ArtistDetail with _$ArtistDetail {
+  const factory ArtistDetail({
+    required int id,
+    @Default('') String name,
+    String? profilePath,
+    @Default('') String biography,
+    @Default('') String knownForDepartment,
+    @Default('') String placeOfBirth,
+    @Default('') String birthday,
+  }) = _ArtistDetail;
 }

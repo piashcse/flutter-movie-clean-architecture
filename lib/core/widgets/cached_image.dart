@@ -3,16 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class CachedImage extends StatelessWidget {
-  final String? imageUrl;
-  final double? width;
-  final double? height;
-  final BoxFit fit;
-  final double borderRadius;
-  final bool isCircular;
-  final IconData errorIcon;
-  final Color? shimmerBaseColor;
-  final Color? shimmerHighlightColor;
-
   const CachedImage({
     super.key,
     required this.imageUrl,
@@ -22,14 +12,21 @@ class CachedImage extends StatelessWidget {
     this.borderRadius = 0,
     this.isCircular = false,
     this.errorIcon = Icons.broken_image,
-    this.shimmerBaseColor,
-    this.shimmerHighlightColor,
+    this.semanticLabel,
   });
+
+  final String? imageUrl;
+  final double? width;
+  final double? height;
+  final BoxFit fit;
+  final double borderRadius;
+  final bool isCircular;
+  final IconData errorIcon;
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
-    final baseColor = shimmerBaseColor ?? Colors.grey[300]!;
-    final highlightColor = shimmerHighlightColor ?? Colors.grey[100]!;
+    final colors = Theme.of(context).colorScheme;
 
     Widget imageWidget;
     if (imageUrl != null && imageUrl!.isNotEmpty) {
@@ -38,11 +35,21 @@ class CachedImage extends StatelessWidget {
         width: width,
         height: height,
         fit: fit,
-        placeholder: (_, _) => _shimmerPlaceholder(baseColor, highlightColor),
-        errorWidget: (_, _, _) => _staticPlaceholder(baseColor),
+        placeholder: (_, _) => _shimmerPlaceholder(
+          colors.surfaceContainerHighest,
+          colors.surfaceContainerLow,
+        ),
+        errorWidget: (_, _, _) => _staticPlaceholder(colors),
+        imageBuilder: (context, imageProvider) => Image(
+          image: imageProvider,
+          width: width,
+          height: height,
+          fit: fit,
+          semanticLabel: semanticLabel,
+        ),
       );
     } else {
-      imageWidget = _staticPlaceholder(baseColor);
+      imageWidget = _staticPlaceholder(colors);
     }
 
     if (isCircular) {
@@ -61,20 +68,16 @@ class CachedImage extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: base,
       highlightColor: highlight,
-      child: Container(
-        width: width,
-        height: height,
-        color: base,
-      ),
+      child: SizedBox(width: width, height: height),
     );
   }
 
-  Widget _staticPlaceholder(Color base) {
+  Widget _staticPlaceholder(ColorScheme colors) {
     return Container(
       width: width,
       height: height,
-      color: base,
-      child: Icon(errorIcon, color: Colors.grey),
+      color: colors.surfaceContainerHighest,
+      child: Icon(errorIcon, color: colors.outline),
     );
   }
 }

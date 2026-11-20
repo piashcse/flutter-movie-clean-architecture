@@ -1,219 +1,176 @@
-# Flutter Movie Clean Architecture
-[![Flutter](https://img.shields.io/badge/Flutter-3.24.1-blue.svg?logo=flutter)](https://flutter.dev)
-[![Dart](https://img.shields.io/badge/Dart-3.8.0-blue.svg?logo=dart)](https://dart.dev)
-[![Riverpod](https://img.shields.io/badge/Riverpod-2.6.1-brightgreen?logo=flutter)](https://riverpod.dev)
-[![Localization](https://img.shields.io/badge/Localization-English_&_Spanish-blue)](https://flutter.dev/docs/development/accessibility-and-localization/internationalization)
-![badge-Android](https://img.shields.io/badge/Platform-Android-brightgreen)
-![badge-iOS](https://img.shields.io/badge/Platform-iOS-lightgray)
-[![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](https://www.apache.org/licenses/LICENSE-2.0)
+# Flutter Movie — Clean Architecture
+
+[![Flutter](https://img.shields.io/badge/Flutter-3.44-blue.svg?logo=flutter)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.12-blue.svg?logo=dart)](https://dart.dev)
+[![Riverpod](https://img.shields.io/badge/Riverpod-3.5-brightgreen)](https://riverpod.dev)
+[![CI](https://github.com/piashcse/flutter-movie-clean-architecture/actions/workflows/ci.yml/badge.svg)](https://github.com/piashcse/flutter-movie-clean-architecture/actions/workflows/ci.yml)
+[![Localization](https://img.shields.io/badge/Localization-English_%26_Spanish-blue)](https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://opensource.org/licenses/MIT)
 <a href="https://github.com/piashcse"><img alt="GitHub" src="https://img.shields.io/static/v1?label=GitHub&message=piashcse&color=C51162"/></a>
 
-Flutter Movie App built with Riverpod, Clean Architecture, and GoRouter that showcases movies and TV series fetched from TMDB API. It includes now playing, popular, top-rated, and upcoming Movies, TV series and Celebrity with support for pagination, search, and detailed views.
+A TMDB client for movies, TV series and celebrities built with Flutter,
+Riverpod, go_router and a pragmatic Clean Architecture. It supports paginated
+browsing, universal search, favourites, light/dark/system theming and
+English/Spanish localisation.
 
 <p align="center">
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_1.png" />
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_2.png" />
-   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_3.png" />
+  <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_3.png" />
 </p>
 <p align="center">
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_4.png" />
-   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_5.png" />
+  <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_5.png" />
   <img width="30%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter_movie_6.png" />
 </p>
 
-## ✨ Features
+## Features
 
-### Movies
-- 🎞 Now Playing, Popular, Top Rated & Upcoming movie sections (paginated)
-- 🔍 Movie Detail Pages with Cast & Crew
-- 🎯 Recommended Movies
-- 🔍 Search Movies (debounced)
-- 👤 Artist/Actor Detail Page with navigation from movie cast
-- ❤️ Favorite Movies (saved locally using Hive database)
+- **Movies** — now playing, popular, top rated and upcoming (infinite scroll),
+  details with cast/crew and recommendations.
+- **TV series** — airing today, on the air, popular and upcoming, details with
+  cast and recommendations.
+- **Celebrities** — popular and trending people, artist detail with combined
+  movie/TV credits.
+- **Universal search** — debounced, category-aware (movies / TV / people) and
+  fully typed.
+- **Favourites** — offline persistence with Hive, optimistic updates with
+  rollback on storage failure.
+- **Theming** — light/dark/system preference persisted locally; all colours come
+  from the Material 3 `ColorScheme`.
+- **Localisation** — generated `AppLocalizations` (ARB) for English and Spanish
+  with an in-app language switcher.
 
-### TV Series
-- 📺 Airing Today, On The Air, Popular & Upcoming TV series sections (paginated)
-- 🔍 TV Series Detail Pages with Cast & Crew
-- 🎯 Recommended TV Series
-- 🔍 Search TV Series (debounced)
-- 👤 Artist/Actor Detail Page with navigation from TV series cast
-- ❤️ Favorite TV Series (saved locally using Hive database)
-
-### Celebrity
-- 🌟 Popular and Trending Celebrities/Persons sections (paginated)
-- 🔍 Celebrity Search functionality (debounced)
-- 👤 Celebrity Detail Page with navigation from movie/tv cast
-- ❤️ Favorite Celebrities (saved locally using Hive database)
-
-### Common Features
-- 📃 Infinite Scroll Pagination across all list views
-- 🔄 Bottom Navigation with tab switching
-- 🌐 Multi-language Support with Localization (English & Spanish)
-- 🧭 Declarative Routing with GoRouter
-- 🧱 Clean Architecture (Presentation / Domain / Data) — no empty abstraction layers
-- 🧪 Riverpod State Management
-- 🌐 Network layer using Dio with Logging
-- 🚀 Smooth UX with loading indicators and cached images
-- ❤️ Favorite Management with Local Storage (Hive)
-- 🎨 Dark/Light/System Theme Toggle (persisted)
-- 🔍 Unified Universal Search with debounced API calls
-
-## 🏗️ Architecture
-
-This project follows Clean Architecture principles with pragmatic simplifications:
-
-<p align="center">
-  </br>
-  <img width="80%" height="80%" src="https://github.com/piashcse/flutter-movie-clean-architecture/blob/main/screen_shots/flutter-clean-architecture.png" />
-</p>
-
-### Layers:
-- **Presentation Layer**: UI components (pages/widgets), state management (Riverpod providers)
-- **Domain Layer**: Business entities, repository interfaces
-- **Data Layer**: Remote data sources (Dio), local persistence (Hive), repository implementations, data models
-
-### Key Architectural Decisions:
-- **No empty use case layer**: Use cases that only delegate to repositories were removed. Providers call repositories directly. Use cases are only added when they contain actual business logic.
-- **Shared entities**: Duplicate `Cast`/`Crew` classes across features merged into `core/entities/credit_entity.dart`.
-- **Shared widgets**: `MediaCard`, `DescriptionSection`, `RecommendationsSection`, `CreditsSection` reused across movie and TV series features.
-- **Favorites as a proper feature**: Favorites provider and model moved from `core/hive/` and `movie/` into `features/favorites/` with proper Clean Architecture layers.
-
-## 📁 Project Structure
+## Architecture
 
 ```
-flutter_movie_clean_architecture/
-├── .env                                    # TMDB API key (gitignored)
-├── lib/
-│   ├── main.dart
-│   ├── core/
-│   │   ├── config/
-│   │   │   └── app_constant.dart           # URLs, reads apiKey from .env
-│   │   ├── entities/
-│   │   │   └── credit_entity.dart          # Shared Cast/Crew entities
-│   │   ├── hive/
-│   │   │   └── hive_helper.dart            # Hive initialization
-│   │   ├── localization/
-│   │   │   ├── app_localizations.dart
-│   │   │   └── localization_helper.dart
-│   │   ├── network/
-│   │   │   └── dio_provider.dart           # Dio HTTP client
-│   │   ├── theme/
-│   │   │   ├── app_theme.dart
-│   │   │   ├── theme_providers.dart        # ThemeModeNotifier (direct Hive)
-│   │   │   └── theme_toggle_widget.dart
-│   │   ├── utils/
-│   │   │   ├── pagination_consumer_state.dart  # Reusable pagination logic
-│   │   │   └── utils.dart
-│   │   └── widgets/
-│   │       ├── media_card.dart             # Unified card for movie/tv/person
-│   │       └── detail_sections.dart        # Shared Description/Recommendations/Credits
-│   ├── routing/
-│   │   └── app_router.dart
-│   ├── presentation/
-│   │   ├── pages/
-│   │   │   └── main_tab_page.dart
-│   │   └── widgets/
-│   │       └── universal_search.dart       # Debounced universal search
-│   └── features/
-│       ├── celebrity/
-│       │   ├── data/
-│       │   │   ├── datasources/
-│       │   │   ├── models/
-│       │   │   └── repositories/
-│       │   ├── domain/
-│       │   │   ├── entities/
-│       │   │   └── repositories/
-│       │   └── presentation/
-│       │       ├── pages/
-│       │       └── providers/
-│       ├── favorites/                      # Proper Clean Architecture layers
-│       │   ├── data/models/
-│       │   │   ├── favorite_model.dart
-│       │   │   └── favorite_model.g.dart
-│       │   ├── presentation/providers/
-│       │   │   └── favorite_provider.dart  # Single favorites StateNotifier
-│       │   └── favorites_page.dart
-│       ├── movie/
-│       │   ├── data/
-│       │   │   ├── datasources/
-│       │   │   ├── models/
-│       │   │   └── repositories/
-│       │   ├── domain/
-│       │   │   ├── entities/
-│       │   │   └── repositories/
-│       │   └── presentation/
-│       │       ├── pages/
-│       │       │   ├── movie_main_page.dart
-│       │       │   ├── movie_detail_page.dart
-│       │       │   ├── artist_detail_page.dart
-│       │       │   ├── now_playing_page.dart    # Paginated
-│       │       │   ├── popular_page.dart        # Paginated
-│       │       │   ├── top_rated_page.dart
-│       │       │   └── upcoming_movies_page.dart
-│       │       └── providers/
-│       │           └── movie_provider.dart
-│       └── tv_series/
-│           ├── data/
-│           ├── domain/
-│           └── presentation/
-│               ├── pages/
-│               └── providers/
-├── test/
-├── pubspec.yaml
-├── analysis_options.yaml
-├── .env
-└── .gitignore
+presentation  →  domain  ←  data
+   (UI, Riverpod)   (entities, repositories)   (datasources, models, repository impls)
 ```
 
-## 🚀 Getting Started
+Key decisions:
+
+- **No ceremonial use-case layer.** Providers call repositories directly; use
+  cases are introduced only when real business logic exists.
+- **Models are mapped once.** Freezed data models expose `toEntity()` extension
+  mappers in `data/models/mappers.dart`; repositories never repeat field
+  mapping.
+- **Typed failures.** `TmdbClient` and the Hive layer convert every error into
+  an `AppFailure`; the UI renders a translated message from `FailureKind`.
+- **Generic UI building blocks.** `PagedMediaGrid<T>`, `MediaHubPage`,
+  `DetailHeader`, `DetailInfoSection`, `RecommendationsSection<T>` and
+  `CreditsSection` remove duplicated screens across features.
+- **Favourites have domain/data layers** (`FavoriteItem` + repository), so the
+  UI never touches Hive models.
+- **Configuration is injected** with `--dart-define`; nothing sensitive is
+  bundled as an asset.
+
+### Project structure
+
+```
+lib/
+├── main.dart                     # bootstrap, error hooks, ProviderScope
+├── core/
+│   ├── config/                   # TMDB endpoints + image helpers
+│   ├── entities/                 # shared Credits and SearchResult types
+│   ├── error/                    # AppFailure, mapping, reporter
+│   ├── hive/                     # Hive lifecycle
+│   ├── localization/             # locale provider, l10n extension, switchers
+│   ├── models/                   # shared CreditModel
+│   ├── network/                  # Dio, retry/log interceptors, TmdbClient
+│   ├── storage/                  # KeyValueStore abstraction
+│   ├── theme/                    # Material 3 themes + theme mode
+│   ├── utils/                    # formatting + responsive layout
+│   └── widgets/                  # shared UI building blocks
+├── features/
+│   ├── movie/{data,domain,presentation}
+│   ├── tv_series/{data,domain,presentation}
+│   ├── celebrity/{data,domain,presentation}
+│   └── favorites/{data,domain,presentation}
+├── l10n/                         # ARB sources + generated localizations
+├── presentation/                 # shell page + universal search
+└── routing/                      # AppRoutes, router provider, navigation helpers
+```
+
+## Getting started
 
 ### Prerequisites
-- Flutter SDK (3.24.1 or higher)
-- Dart SDK (3.8.0 or higher)
-- Git
-- TMDB API Key (free, register at https://www.themoviedb.org/settings/api)
 
-### Installation
+- Flutter 3.44.2 or newer (Dart 3.12)
+- A free [TMDB API key](https://www.themoviedb.org/settings/api)
 
-1. Clone the repository:
+### Configure the API key
+
+Copy the example config and add your key:
+
 ```bash
-git clone git@github.com:piashcse/flutter-movie-clean-architecture.git
-cd flutter-movie-clean-architecture
+cp assets/config/env.example.json assets/config/env.json
+# edit assets/config/env.json → {"TMDB_API_KEY": "your_key"}
 ```
 
-2. Set up environment variables:
-```bash
-# Edit .env and add your TMDB API key
-TMDB_API_KEY=your_api_key_here
-```
+`assets/config/env.json` is bundled as an asset and read at startup, so no
+launch flags are required:
 
-3. Install dependencies:
 ```bash
 flutter pub get
-```
-
-4. Generate code (build runner):
-```bash
-flutter pub run build_runner build --delete-conflicting-outputs
-```
-
-5. Run the app:
-```bash
+flutter gen-l10n
+dart run build_runner build
 flutter run
 ```
 
-## 🛠️ Built With
+For CI or release builds you can inject the same value at compile time instead
+(it takes precedence over the asset):
 
-- [Flutter](https://flutter.dev) - Google's UI toolkit
-- [Riverpod](https://riverpod.dev) - Composable state management
-- [GoRouter](https://pub.dev/packages/go_router) - Declarative routing
-- [Dio](https://pub.dev/packages/dio) - HTTP client
-- [flutter_dotenv](https://pub.dev/packages/flutter_dotenv) - Environment variable management
-- [JsonSerializable](https://pub.dev/packages/json_serializable) - JSON code generation
-- [Flutter Localizations](https://flutter.dev/docs/development/accessibility-and-localization/internationalization) - Multi-language support
-- [PrettyDioLogger](https://pub.dev/packages/pretty_dio_logger) - HTTP request logging
-- [Hive](https://pub.dev/packages/hive) - Local key-value database
-- [CachedNetworkImage](https://pub.dev/packages/cached_network_image) - Image caching
+```bash
+flutter build apk --release --dart-define=TMDB_API_KEY=your_key
+# or
+flutter run --dart-define-from-file=assets/config/env.json
+```
+
+`assets/config/env.json`, `.env` and signing material are git-ignored.
+
+> **Seeing the "No TMDB API key configured" screen?**
+> `assets/config/env.json` is missing, empty, or contains the placeholder. Copy
+> `env.example.json` as shown above and fully restart the app (hot reload does
+> not re-read the asset). VS Code users can also pick the included
+> **Flutter (env.json)** launch configuration.
+
+
+### Useful commands
+
+```bash
+flutter analyze                 # strict analysis (0 issues expected)
+dart format lib test            # format hand-written sources
+flutter test                    # unit + widget tests
+flutter test --coverage         # lcov report in coverage/lcov.info
+dart run build_runner watch     # regenerate freezed/json while developing
+```
+
+## Localisation
+
+Strings live in `lib/l10n/app_en.arb` and `lib/l10n/app_es.arb`; the
+`AppLocalizations` class is generated by `flutter gen-l10n` (configured in
+`l10n.yaml`). Access strings with the `context.l10n` extension:
+
+```dart
+Text(context.l10n.recommendedMovies)
+```
+
+When adding a key, add it to **all** ARB files.
+
+## Security
+
+TMDB's v3 key is sent as a query parameter and, like any value shipped in a
+mobile app, can be extracted from the binary. For a production deployment,
+proxy TMDB requests through your own backend so the key never leaves the
+server. Requests are HTTPS-only (ATS restrictions restored on iOS) and the
+debug logger never prints query strings, headers or bodies.
+
+## CI
+
+`.github/workflows/ci.yml` runs formatting checks, `flutter analyze`, the test
+suite with coverage and a debug APK build on every push and pull request.
+Dependabot keeps pub and GitHub Actions dependencies up to date.
 
 ## 👨‍💻 Developed By
 
@@ -232,17 +189,25 @@ flutter run
 ## 📄 License
 
 ```
-Copyright 2025 piashcse (Mehedi Hassan Piash)
+MIT License
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+Copyright (c) 2025 piashcse (Mehedi Hassan Piash)
 
-    http://www.apache.org/licenses/LICENSE-2.0
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 ```

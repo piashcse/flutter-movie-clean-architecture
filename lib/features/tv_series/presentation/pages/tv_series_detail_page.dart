@@ -1,260 +1,131 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
-import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
+import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 import 'package:flutter_movie_clean_architecture/core/utils/utils.dart';
-import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
-import 'package:flutter_movie_clean_architecture/core/widgets/detail_sections.dart';
-import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_model.dart';
-import 'package:flutter_movie_clean_architecture/features/favorites/presentation/providers/favorite_provider.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/app_status_views.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/credits_section.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/description_section.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/detail_header.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/detail_info_section.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/recommendations_section.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/domain/entities/favorite_item.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/presentation/favorite_actions.dart';
+import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series.dart';
+import 'package:flutter_movie_clean_architecture/features/tv_series/domain/entities/tv_series_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/providers/tv_series_provider.dart';
+import 'package:flutter_movie_clean_architecture/routing/app_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-
-class _TvDescriptionNotifier extends Notifier<bool> {
-  @override
-  bool build() => false;
-}
-
-final tvDescriptionExpandedProvider = NotifierProvider<_TvDescriptionNotifier, bool>(
-  _TvDescriptionNotifier.new,
-);
 
 class TvSeriesDetailPage extends ConsumerWidget {
-  final int tvSeriesId;
-
   const TvSeriesDetailPage({super.key, required this.tvSeriesId});
 
+  final int tvSeriesId;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tvSeriesDetailAsync = ref.watch(tvSeriesDetailProvider(tvSeriesId));
-    final recommendedTvSeriesAsync = ref.watch(recommendedTvSeriesProvider(tvSeriesId));
-    final tvSeriesCreditsAsync = ref.watch(tvSeriesCreditsProvider(tvSeriesId));
+    final detailAsync = ref.watch(tvSeriesDetailProvider(tvSeriesId));
+    final l10n = context.l10n;
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: tvSeriesDetailAsync.when(
-        data: (tvSeries) => CustomScrollView(
+      body: detailAsync.when(
+        data: (series) => CustomScrollView(
           slivers: [
-            TvSeriesDetailHeader(tvSeries: tvSeries),
+            DetailHeader(
+              title: l10n.tvSeriesDetail,
+              imageUrl: detailImage(series.posterPath),
+              isFavorite: isFavorite(ref, series.id, FavoriteType.tv),
+              onToggleFavorite: () =>
+                  toggleFavorite(context, ref, _toFavorite(series)),
+            ),
             SliverToBoxAdapter(
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TvSeriesDetailInfoSection(tvSeries: tvSeries),
+                  DetailInfoSection(
+                    title: series.name,
+                    imageUrl: tmdbImage(series.posterPath),
+                    items: [
+                      DetailInfoItem(
+                        l10n.duration,
+                        formatTvDuration(series.episodeRunTime) ?? l10n.nA,
+                      ),
+                      DetailInfoItem(
+                        l10n.firstAirDate,
+                        series.firstAirDate.isEmpty
+                            ? l10n.nA
+                            : series.firstAirDate,
+                      ),
+                      DetailInfoItem(
+                        l10n.language,
+                        series.originalLanguage.isEmpty
+                            ? l10n.nA
+                            : series.originalLanguage.toUpperCase(),
+                      ),
+                      DetailInfoItem(
+                        l10n.rating,
+                        series.voteAverage > 0
+                            ? series.voteAverage.toStringAsFixed(1)
+                            : l10n.nA,
+                      ),
+                      DetailInfoItem(
+                        l10n.episodes,
+                        series.numberOfEpisodes > 0
+                            ? '${series.numberOfEpisodes}'
+                            : l10n.nA,
+                      ),
+                      DetailInfoItem(
+                        l10n.seasons,
+                        series.numberOfSeasons > 0
+                            ? '${series.numberOfSeasons}'
+                            : l10n.nA,
+                      ),
+                    ],
+                  ),
                   DescriptionSection(
-                    overview: tvSeries.overview ?? '',
-                    isExpanded: ref.watch(tvDescriptionExpandedProvider),
-                    onToggle: () =>
-                        ref.read(tvDescriptionExpandedProvider.notifier).state =
-                        !ref.read(tvDescriptionExpandedProvider.notifier).state,
+                    title: l10n.description,
+                    text: series.overview,
                   ),
-                  RecommendationsSection(
-                    itemsAsync: recommendedTvSeriesAsync,
-                    titleKey: 'recommended_tv_series',
-                    errorKey: 'failed_to_load_recommended_tv_series',
-                    idGetter: (item) => item.id.toString(),
-                    posterPathGetter: (item) => item.posterPath,
-                    routePrefix: '/tv',
-                    errorIcon: Icons.tv,
+                  RecommendationsSection<TvSeries>(
+                    itemsAsync: ref.watch(
+                      recommendedTvSeriesProvider(tvSeriesId),
+                    ),
+                    title: l10n.recommendedTvSeries,
+                    errorText: l10n.failedToLoadRecommendedTvSeries,
+                    imageOf: (item) => item.posterPath,
+                    routeOf: (item) => AppRoutes.tv(item.id),
+                    itemLabelOf: (item) => item.name,
+                    fallbackIcon: Icons.tv,
+                    onRetry: () =>
+                        ref.invalidate(recommendedTvSeriesProvider(tvSeriesId)),
                   ),
-                  CreditsSection(creditsAsync: tvSeriesCreditsAsync),
+                  CreditsSection(
+                    creditsAsync: ref.watch(
+                      tvSeriesCreditsProvider(tvSeriesId),
+                    ),
+                    onRetry: () =>
+                        ref.invalidate(tvSeriesCreditsProvider(tvSeriesId)),
+                  ),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
           ],
         ),
-        loading: () => Center(
-          child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor)),
-        ),
-        error: (error, _) => Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text(context.translate('error_loading_tv_series_details'),
-                  style: Theme.of(context).textTheme.headlineSmall),
-              const SizedBox(height: 8),
-              Text(error.toString(),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.grey)),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => context.pop(),
-                child: Text(context.translate('go_back')),
-              ),
-            ],
-          ),
+        loading: AppLoadingView.new,
+        error: (error, _) => AppErrorView(
+          error: error,
+          onRetry: () => ref.invalidate(tvSeriesDetailProvider(tvSeriesId)),
         ),
       ),
     );
   }
+
+  FavoriteItem _toFavorite(TvSeriesDetail series) => FavoriteItem(
+    itemId: series.id,
+    title: series.name,
+    posterPath: series.posterPath ?? '',
+    type: FavoriteType.tv,
+    overview: series.overview,
+    releaseDate: series.firstAirDate,
+  );
 }
-
-class TvSeriesDetailHeader extends ConsumerWidget {
-  final dynamic tvSeries;
-
-  const TvSeriesDetailHeader({super.key, required this.tvSeries});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final favorites = ref.watch(favoritesProvider);
-    final isFavorite = favorites.any(
-      (fav) => fav.itemId == tvSeries.id && fav.type == 'tv',
-    );
-
-    return SliverAppBar(
-      expandedHeight: 300,
-      pinned: true,
-      backgroundColor: Theme.of(context).primaryColor,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back, color: Colors.white),
-        onPressed: () => context.pop(),
-      ),
-      title: const Text(
-        'TV Series Detail',
-        style: TextStyle(color: Colors.white, fontSize: 20),
-      ),
-      actions: [
-        IconButton(
-          icon: Icon(
-            isFavorite ? Icons.favorite : Icons.favorite_border,
-            color: isFavorite ? Colors.red : Colors.white,
-          ),
-          onPressed: () {
-            final favorite = Favorite(
-              id: DateTime.now().millisecondsSinceEpoch,
-              itemId: tvSeries.id,
-              title: tvSeries.name ?? 'Unknown Title',
-              posterPath: tvSeries.posterPath ?? '',
-              type: 'tv',
-              overview: tvSeries.overview,
-              releaseDate: tvSeries.firstAirDate,
-            );
-            ref.read(favoritesProvider.notifier).toggleFavorite(favorite);
-          },
-        ),
-      ],
-      flexibleSpace: FlexibleSpaceBar(
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            CachedImage(
-              imageUrl: tvSeries.posterPath != null ? '$imageUrl${tvSeries.posterPath}' : null,
-              fit: BoxFit.cover,
-              errorIcon: Icons.movie,
-            ),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Colors.transparent,
-                    Colors.black.withValues(alpha: 0.7),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class TvSeriesDetailInfoSection extends StatelessWidget {
-  final dynamic tvSeries;
-
-  const TvSeriesDetailInfoSection({super.key, required this.tvSeries});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: Container(
-              width: 120,
-              height: 180,
-              decoration: BoxDecoration(
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.3),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: CachedImage(
-                imageUrl: tvSeries.posterPath != null ? '$imageUrl${tvSeries.posterPath}' : null,
-                fit: BoxFit.cover,
-                errorIcon: Icons.movie,
-              ),
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  tvSeries.name ?? 'Unknown Title',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    _buildInfoItem(
-                        'Duration',
-                        formatTvDuration(tvSeries.episodeRunTime)),
-                    _buildInfoItem('First Air Date', tvSeries.firstAirDate ?? 'N/A'),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    _buildInfoItem('Language',
-                        tvSeries.originalLanguage?.toUpperCase() ?? 'N/A'),
-                    _buildInfoItem('Rating',
-                        tvSeries.voteAverage?.toStringAsFixed(1) ?? 'N/A'),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Row(
-                  children: [
-                    _buildInfoItem('Episodes', tvSeries.numberOfEpisodes?.toString() ?? 'N/A'),
-                    _buildInfoItem('Seasons', tvSeries.numberOfSeasons?.toString() ?? 'N/A'),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoItem(String label, String value) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-}
-

@@ -4,12 +4,12 @@ part 'tv_series_model.freezed.dart';
 part 'tv_series_model.g.dart';
 
 @freezed
-sealed class TvSeriesModel with _$TvSeriesModel {
+abstract class TvSeriesModel with _$TvSeriesModel {
   const factory TvSeriesModel({
-    required int id,
-    required String name,
+    @Default(0) int id,
+    @Default('') String name,
     @JsonKey(name: 'poster_path') String? posterPath,
-    required String overview,
+    @Default('') String overview,
   }) = _TvSeriesModel;
 
   factory TvSeriesModel.fromJson(Map<String, dynamic> json) =>

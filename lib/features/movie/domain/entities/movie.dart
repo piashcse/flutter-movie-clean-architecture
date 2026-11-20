@@ -1,13 +1,13 @@
-class Movie {
-  final int id;
-  final String title;
-  final String? posterPath;
-  final String overview;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  Movie({
-    required this.id,
-    required this.title,
-    required this.posterPath,
-    required this.overview,
-  });
+part 'movie.freezed.dart';
+
+@freezed
+abstract class Movie with _$Movie {
+  const factory Movie({
+    required int id,
+    @Default('') String title,
+    String? posterPath,
+    @Default('') String overview,
+  }) = _Movie;
 }

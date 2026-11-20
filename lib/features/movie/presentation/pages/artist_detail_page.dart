@@ -1,291 +1,208 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
-import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
+import 'package:flutter_movie_clean_architecture/core/entities/credit_entity.dart';
+import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/app_status_views.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
-import 'package:flutter_movie_clean_architecture/features/favorites/data/models/favorite_model.dart';
-import 'package:flutter_movie_clean_architecture/features/favorites/presentation/providers/favorite_provider.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/description_section.dart';
+import 'package:flutter_movie_clean_architecture/core/widgets/recommendations_section.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/domain/entities/favorite_item.dart';
+import 'package:flutter_movie_clean_architecture/features/favorites/presentation/favorite_actions.dart';
+import 'package:flutter_movie_clean_architecture/features/movie/domain/entities/artist_detail.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
+import 'package:flutter_movie_clean_architecture/routing/app_routes.dart';
+import 'package:flutter_movie_clean_architecture/routing/navigation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
-class ArtistDetailPage extends ConsumerStatefulWidget {
-  final int artistId;
-
+class ArtistDetailPage extends ConsumerWidget {
   const ArtistDetailPage({super.key, required this.artistId});
 
-  @override
-  ConsumerState<ArtistDetailPage> createState() => _ArtistDetailPageState();
-}
-
-class ArtistMoviesSection extends StatelessWidget {
-  final AsyncValue<dynamic> artistAllMoviesAsync;
-
-  const ArtistMoviesSection({super.key, required this.artistAllMoviesAsync});
+  final int artistId;
 
   @override
-  Widget build(BuildContext context) {
-    return artistAllMoviesAsync.when(
-      data: (moviesResponse) {
-        final movies = moviesResponse.cast;
-        if (movies.isEmpty) return const SizedBox.shrink();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final detailAsync = ref.watch(artistDetailProvider(artistId));
+    final creditsAsync = ref.watch(artistCreditsProvider(artistId));
+    final favorite = isFavorite(ref, artistId, FavoriteType.celebrity);
+    final l10n = context.l10n;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
-              child: Text(
-                context.translate('movies_and_tv_shows'),
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+    return Scaffold(
+      body: detailAsync.when(
+        data: (artist) => CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              title: Text(
+                artist.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                tooltip: MaterialLocalizations.of(context).backButtonTooltip,
+                onPressed: () => popOrGoHome(context),
+              ),
+              actions: [
+                IconButton(
+                  tooltip: favorite
+                      ? l10n.removeFromFavorites
+                      : l10n.addToFavorites,
+                  icon: Icon(favorite ? Icons.favorite : Icons.favorite_border),
+                  onPressed: () =>
+                      toggleFavorite(context, ref, _toFavorite(artist)),
+                ),
+              ],
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _ArtistHeader(artist: artist),
+                    const SizedBox(height: 16),
+                    if (artist.placeOfBirth.isNotEmpty)
+                      _InfoRow(
+                        icon: Icons.location_on_outlined,
+                        label: l10n.placeOfBirth,
+                        value: artist.placeOfBirth,
+                      ),
+                    if (artist.birthday.isNotEmpty)
+                      _InfoRow(
+                        icon: Icons.cake_outlined,
+                        label: l10n.birthday,
+                        value: artist.birthday,
+                      ),
+                    const SizedBox(height: 16),
+                    DescriptionSection(
+                      title: l10n.biography,
+                      text: artist.biography,
+                      emptyMessage: l10n.noBiographyAvailable,
+                    ),
+                    RecommendationsSection<CastMember>(
+                      itemsAsync: creditsAsync.whenData(
+                        (credits) => credits.cast,
+                      ),
+                      title: l10n.moviesAndTvShows,
+                      errorText: l10n.failedToLoadMovies,
+                      imageOf: (credit) => credit.posterPath,
+                      routeOf: (credit) => credit.mediaType == 'tv'
+                          ? AppRoutes.tv(credit.id)
+                          : AppRoutes.movie(credit.id),
+                      itemLabelOf: (credit) => credit.character,
+                      onRetry: () =>
+                          ref.invalidate(artistCreditsProvider(artistId)),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
               ),
             ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 160,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: movies.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 12),
-                itemBuilder: (context, index) {
-                  final item = movies[index];
-                  return GestureDetector(
-                    onTap: () {
-                      if (item.mediaType == 'tv') {
-                        context.push('/tv/${item.id}');
-                      } else {
-                        context.push('/movie/${item.id}');
-                      }
-                    },
-                    child: CachedImage(
-                      imageUrl: item.posterPath != null ? '$imageUrl${item.posterPath}' : null,
-                      width: 110,
-                      height: 160,
-                      fit: BoxFit.cover,
-                      borderRadius: 12,
-                      errorIcon: Icons.movie,
-                    ),
-                  );
-                },
-              ),
-            ),
-            const SizedBox(height: 12),
           ],
-        );
-      },
-      loading: () => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 24),
-        child: Center(child: CircularProgressIndicator()),
-      ),
-      error: (error, _) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Text(
-          context.translate('failed_to_load_movies'),
-          style: TextStyle(color: Colors.red[400]),
+        ),
+        loading: AppLoadingView.new,
+        error: (error, _) => AppErrorView(
+          error: error,
+          onRetry: () => ref.invalidate(artistDetailProvider(artistId)),
         ),
       ),
     );
   }
 
+  FavoriteItem _toFavorite(ArtistDetail artist) => FavoriteItem(
+    itemId: artist.id,
+    title: artist.name,
+    posterPath: artist.profilePath ?? '',
+    type: FavoriteType.celebrity,
+    overview: artist.biography,
+  );
 }
 
-class _ArtistDetailPageState extends ConsumerState<ArtistDetailPage> {
-  bool _isExpanded = false;
+class _ArtistHeader extends StatelessWidget {
+  const _ArtistHeader({required this.artist});
+
+  final ArtistDetail artist;
 
   @override
   Widget build(BuildContext context) {
-    final artistDetailAsync = ref.watch(artistDetailProvider(widget.artistId));
-    final artistAllMoviesAsync = ref.watch(artistDetailAllMoviesProvider(widget.artistId));
-    final favorites = ref.watch(favoritesProvider);
+    final theme = Theme.of(context);
+    final l10n = context.l10n;
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: artistDetailAsync.when(
-        data: (artist) {
-          final isFavorite = favorites.any(
-            (fav) => fav.itemId == widget.artistId && fav.type == 'celebrity',
-          );
-
-          return CustomScrollView(
-            slivers: [
-              SliverAppBar(
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                foregroundColor: Colors.black,
-                elevation: 0,
-                pinned: true,
-                floating: false,
-                expandedHeight: 0,
-                leading: IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: () => context.pop(),
-                ),
-                title: Text(
-                  artist.name,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                actions: [
-                  IconButton(
-                    icon: Icon(
-                      isFavorite ? Icons.favorite : Icons.favorite_border,
-                      color: isFavorite ? Colors.red : Colors.black,
-                    ),
-                    onPressed: () {
-                      final favorite = Favorite(
-                        id: DateTime.now().millisecondsSinceEpoch,
-                        itemId: widget.artistId,
-                        title: artist.name ?? 'Unknown Artist',
-                        posterPath: artist.profilePath ?? '',
-                        type: 'celebrity',
-                        overview: artist.biography,
-                        releaseDate: null,
-                      );
-                      ref.read(favoritesProvider.notifier).toggleFavorite(favorite);
-                    },
-                  ),
-                ],
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CachedImage(
-                            imageUrl: artist.profilePath != null ? '$imageUrl${artist.profilePath}' : null,
-                            width: 140,
-                            height: 200,
-                            borderRadius: 8,
-                            errorIcon: Icons.person,
-                          ),
-                          const SizedBox(width: 18),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  artist.name,
-                                  style: const TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  context.translate('artist_detail'),
-                                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                                ),
-                                Text(
-                                  artist.knownForDepartment ?? context.translate('acting'),
-                                  style: const TextStyle(fontSize: 16, color: Colors.black87),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      if (artist.biography != null && artist.biography!.isNotEmpty)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              context.translate('biography'),
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              artist.biography!,
-                              maxLines: _isExpanded ? null : 5,
-                              overflow: _isExpanded
-                                  ? TextOverflow.visible
-                                  : TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                color: Colors.black87,
-                                height: 1.5,
-                              ),
-                            ),
-                            if (artist.biography!.length > 200)
-                              TextButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _isExpanded = !_isExpanded;
-                                  });
-                                },
-                                child: Text(
-                                  _isExpanded
-                                      ? context.translate('show_less')
-                                      : context.translate('read_more'),
-                                ),
-                              ),
-                          ],
-                        ),
-                      const SizedBox(height: 16),
-                      if (artist.placeOfBirth != null && artist.placeOfBirth!.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Row(
-                            children: [
-                              Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${context.translate('place_of_birth')}: ${artist.placeOfBirth}',
-                                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                              ),
-                            ],
-                          ),
-                        ),
-                      if (artist.birthday != null && artist.birthday!.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Row(
-                            children: [
-                              Icon(Icons.cake, size: 16, color: Colors.grey[600]),
-                              const SizedBox(width: 4),
-                              Text(
-                                '${context.translate('birthday')}: ${artist.birthday}',
-                                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                              ),
-                            ],
-                          ),
-                        ),
-                      const SizedBox(height: 24),
-                      ArtistMoviesSection(artistAllMoviesAsync: artistAllMoviesAsync),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 120,
+          height: 180,
+          child: CachedImage(
+            imageUrl: tmdbImage(artist.profilePath),
+            borderRadius: 12,
+            errorIcon: Icons.person,
+            semanticLabel: artist.name,
+          ),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.error_outline, size: 64, color: Colors.red),
-              const SizedBox(height: 16),
-              Text(context.translate('error_loading_artist_details'),
-                  style: Theme.of(context).textTheme.headlineSmall),
-              const SizedBox(height: 8),
-              Text(error.toString(), textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
+              Text(
+                artist.name,
+                style: theme.textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                l10n.artistDetail,
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                artist.knownForDepartment.isEmpty
+                    ? l10n.acting
+                    : artist.knownForDepartment,
+                style: theme.textTheme.bodyMedium,
+              ),
             ],
           ),
         ),
+      ],
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: theme.colorScheme.onSurfaceVariant),
+          const SizedBox(width: 6),
+          Text(
+            '$label: ',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          Expanded(child: Text(value, style: theme.textTheme.bodySmall)),
+        ],
       ),
     );
   }

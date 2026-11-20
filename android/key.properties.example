@@ -1,0 +1,6 @@
+# Copy this file to android/key.properties and fill in your keystore details.
+# `storeFile` is relative to android/app/ or an absolute path.
+storePassword=your_store_password
+keyPassword=your_key_password
+keyAlias=upload
+storeFile=upload-keystore.jks

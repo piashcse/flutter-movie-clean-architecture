@@ -2,315 +2,247 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_clean_architecture/core/config/app_constant.dart';
-import 'package:flutter_movie_clean_architecture/core/localization/localization_helper.dart';
+import 'package:flutter_movie_clean_architecture/core/entities/search_result.dart';
+import 'package:flutter_movie_clean_architecture/core/error/failure_messages.dart';
+import 'package:flutter_movie_clean_architecture/core/localization/l10n.dart';
 import 'package:flutter_movie_clean_architecture/core/widgets/cached_image.dart';
-import 'package:flutter_movie_clean_architecture/features/celebrity/presentation/providers/celebrity_provider.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/presentation/providers/movie_provider.dart';
-import 'package:flutter_movie_clean_architecture/features/tv_series/presentation/providers/tv_series_provider.dart';
+import 'package:flutter_movie_clean_architecture/presentation/providers/search_provider.dart';
+import 'package:flutter_movie_clean_architecture/routing/app_routes.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class UniversalSearchWidget extends ConsumerStatefulWidget {
+  const UniversalSearchWidget({super.key, required this.onClose});
+
   final VoidCallback onClose;
 
-  const UniversalSearchWidget({
-    super.key,
-    required this.onClose,
-  });
-
   @override
-  ConsumerState<UniversalSearchWidget> createState() => _UniversalSearchWidgetState();
+  ConsumerState<UniversalSearchWidget> createState() =>
+      _UniversalSearchWidgetState();
 }
 
 class _UniversalSearchWidgetState extends ConsumerState<UniversalSearchWidget> {
-  bool _isLoading = false;
-  final TextEditingController _searchController = TextEditingController();
-  List<Map<String, dynamic>> _searchResults = [];
-  int _activeTab = 0;
+  final TextEditingController _controller = TextEditingController();
   Timer? _debounce;
 
-  Future<void> _movieSearch(String query) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final result = await ref.read(movieSearchProvider(query).future);
-      setState(() {
-        _searchResults = result.map<Map<String, dynamic>>((movie) {
-          return {
-            'id': movie.id.toString() ?? '',
-            'title': movie.title ?? '',
-            'image': '$imageUrl${movie.posterPath ?? ''}',
-            'type': 'movie',
-          };
-        }).toList();
-      });
-    } catch (e) {
-      debugPrint('Movie search error: $e');
-      setState(() {
-        _searchResults = [];
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _tvSeriesSearch(String query) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final result = await ref.read(tvSeriesSearchProvider(query).future);
-      setState(() {
-        _searchResults = result.map<Map<String, dynamic>>((tvSeries) {
-          return {
-            'id': tvSeries.id.toString() ?? '',
-            'title': tvSeries.name ?? '',
-            'image': '$imageUrl${tvSeries.posterPath ?? ''}',
-            'type': 'tv',
-          };
-        }).toList();
-      });
-    } catch (e) {
-      debugPrint('TV series search error: $e');
-      setState(() {
-        _searchResults = [];
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _celebritySearch(String query) async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final result = await ref.read(searchPersonsResultProvider(query).future);
-      setState(() {
-        _searchResults = result.map<Map<String, dynamic>>((person) {
-          return {
-            'id': person.id.toString() ?? '',
-            'title': person.name ?? '',
-            'image': '$imageUrl${person.profilePath ?? ''}',
-            'type': 'celebrity',
-          };
-        }).toList();
-      });
-    } catch (e) {
-      debugPrint('Celebrity search error: $e');
-      setState(() {
-        _searchResults = [];
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
-  void _onSearchChanged(String query) {
-    _debounce?.cancel();
-    if (query.trim().isEmpty) {
-      setState(() {
-        _searchResults.clear();
-      });
-      return;
-    }
-    _debounce = Timer(const Duration(milliseconds: 400), () {
-      _performSearch(query);
-    });
-  }
-
-  void _performSearch(String query) {
-    if (_activeTab == 0) {
-      _movieSearch(query);
-    } else if (_activeTab == 1) {
-      _tvSeriesSearch(query);
-    } else {
-      _celebritySearch(query);
-    }
-  }
-
-  void _clearSearch() {
-    _debounce?.cancel();
-    _searchController.clear();
-    setState(() {
-      _searchResults.clear();
-    });
-  }
-
-  void _switchTab(int index) {
-    setState(() {
-      _activeTab = index;
-      if (_searchController.text.isNotEmpty) {
-        _onSearchChanged(_searchController.text);
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        ref.read(searchQueryProvider.notifier).clear();
       }
     });
-  }
-
-  Widget _buildSearchResults() {
-    if (_searchResults.isEmpty && _searchController.text.isNotEmpty) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: 24.0),
-          child: Text(context.translate('no_data')),
-        ),
-      );
-    }
-
-    final limitedResults = _searchResults.take(4).toList();
-
-    return Container(
-      constraints: const BoxConstraints(
-        maxHeight: 400,
-      ),
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: limitedResults.length,
-        itemBuilder: (context, index) {
-          final item = limitedResults[index];
-          return GestureDetector(
-            onTap: () {
-              final id = item['id'];
-              if (id != null && id.toString().isNotEmpty) {
-                if (item['type'] == 'movie') {
-                  context.push('/movie/$id');
-                } else if (item['type'] == 'tv') {
-                  context.push('/tv/$id');
-                } else if (item['type'] == 'celebrity') {
-                  context.push('/artistId/$id');
-                }
-                widget.onClose();
-              }
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Row(
-                children: [
-                  CachedImage(
-                    imageUrl: item['image'],
-                    width: 70,
-                    height: 100,
-                    fit: BoxFit.cover,
-                    borderRadius: 8,
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      item['title']!,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
   }
 
   @override
   void dispose() {
     _debounce?.cancel();
-    _searchController.dispose();
+    _controller.dispose();
     super.dispose();
+  }
+
+  void _onChanged(String value) {
+    _debounce?.cancel();
+    _debounce = Timer(const Duration(milliseconds: 350), () {
+      if (!mounted) {
+        return;
+      }
+      ref.read(searchQueryProvider.notifier).update(value);
+    });
+  }
+
+  void _clear() {
+    _debounce?.cancel();
+    _controller.clear();
+    ref.read(searchQueryProvider.notifier).clear();
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final theme = Theme.of(context);
+    final query = ref.watch(searchQueryProvider);
+    final category = ref.watch(searchCategoryProvider);
+
     return Scaffold(
-      backgroundColor: Colors.black.withValues(alpha: 0.5),
+      backgroundColor: theme.colorScheme.scrim.withValues(alpha: 0.5),
       body: SafeArea(
         child: Column(
           children: [
-            Container(
-              color: Theme.of(context).scaffoldBackgroundColor,
+            Material(
+              color: theme.scaffoldBackgroundColor,
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     child: Row(
                       children: [
                         Expanded(
                           child: TextField(
-                            controller: _searchController,
+                            controller: _controller,
                             autofocus: true,
+                            textInputAction: TextInputAction.search,
                             decoration: InputDecoration(
-                              hintText: context.translate('search'),
+                              hintText: l10n.searchHint,
                               border: InputBorder.none,
                             ),
-                            onChanged: _onSearchChanged,
+                            onChanged: _onChanged,
                           ),
                         ),
-                        _isLoading
-                            ? const Padding(
-                          padding: EdgeInsets.all(12.0),
-                          child: SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          ),
-                        )
-                            : IconButton(
+                        IconButton(
                           icon: const Icon(Icons.close),
-                          onPressed: _searchController.text.isNotEmpty ? _clearSearch : widget.onClose,
+                          tooltip: l10n.search,
+                          onPressed: _controller.text.isEmpty
+                              ? widget.onClose
+                              : _clear,
                         ),
                       ],
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Wrap(
+                      spacing: 8,
                       children: [
-                        ChoiceChip(
-                          label: Text(context.translate('movies')),
-                          selected: _activeTab == 0,
-                          onSelected: (selected) => _switchTab(0),
+                        _categoryChip(
+                          label: l10n.movies,
+                          category: SearchCategory.movies,
+                          selected: category == SearchCategory.movies,
                         ),
-                        const SizedBox(width: 8),
-                        ChoiceChip(
-                          label: Text(context.translate('tv_series')),
-                          selected: _activeTab == 1,
-                          onSelected: (selected) => _switchTab(1),
+                        _categoryChip(
+                          label: l10n.tvSeries,
+                          category: SearchCategory.tvSeries,
+                          selected: category == SearchCategory.tvSeries,
                         ),
-                        const SizedBox(width: 8),
-                        ChoiceChip(
-                          label: Text(context.translate('celebrities')),
-                          selected: _activeTab == 2,
-                          onSelected: (selected) => _switchTab(2),
+                        _categoryChip(
+                          label: l10n.celebrities,
+                          category: SearchCategory.celebrities,
+                          selected: category == SearchCategory.celebrities,
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 8),
-                  if (_searchController.text.isNotEmpty)
-                    _buildSearchResults(),
+                  if (query.isNotEmpty) _buildResults(),
                 ],
               ),
             ),
             Expanded(
               child: GestureDetector(
                 onTap: widget.onClose,
-                child: Container(
-                  color: Colors.transparent,
-                ),
+                child: const SizedBox.expand(),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _categoryChip({
+    required String label,
+    required SearchCategory category,
+    required bool selected,
+  }) {
+    return ChoiceChip(
+      label: Text(label),
+      selected: selected,
+      onSelected: (_) =>
+          ref.read(searchCategoryProvider.notifier).select(category),
+    );
+  }
+
+  Widget _buildResults() {
+    final l10n = context.l10n;
+    final resultsAsync = ref.watch(searchResultsProvider);
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxHeight: 420),
+      child: resultsAsync.when(
+        data: (results) {
+          if (results.isEmpty) {
+            return Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text(l10n.noResults),
+            );
+          }
+
+          return ListView.separated(
+            shrinkWrap: true,
+            padding: const EdgeInsets.only(bottom: 8),
+            itemCount: results.length,
+            separatorBuilder: (_, _) => const Divider(height: 1),
+            itemBuilder: (context, index) => _SearchResultTile(
+              result: results[index],
+              onTap: () {
+                widget.onClose();
+                context.push(_routeFor(results[index]));
+              },
+            ),
+          );
+        },
+        loading: () => const Padding(
+          padding: EdgeInsets.all(16),
+          child: LinearProgressIndicator(),
+        ),
+        error: (error, _) => Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Icon(
+                Icons.error_outline,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(width: 8),
+              Expanded(child: Text(failureMessage(context, error))),
+              TextButton(
+                onPressed: () => ref.invalidate(searchResultsProvider),
+                child: Text(l10n.retry),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  String _routeFor(SearchResult result) => switch (result.type) {
+    SearchResultType.movie => AppRoutes.movie(result.id),
+    SearchResultType.tv => AppRoutes.tv(result.id),
+    SearchResultType.celebrity => AppRoutes.artist(result.id),
+  };
+}
+
+class _SearchResultTile extends StatelessWidget {
+  const _SearchResultTile({required this.result, required this.onTap});
+
+  final SearchResult result;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final typeLabel = switch (result.type) {
+      SearchResultType.movie => l10n.typeMovie,
+      SearchResultType.tv => l10n.typeTv,
+      SearchResultType.celebrity => l10n.typeCelebrity,
+    };
+
+    return ListTile(
+      onTap: onTap,
+      leading: CachedImage(
+        imageUrl: tmdbImage(result.imagePath),
+        width: 48,
+        height: 64,
+        borderRadius: 6,
+        errorIcon: result.type == SearchResultType.celebrity
+            ? Icons.person
+            : Icons.movie,
+        semanticLabel: result.title,
+      ),
+      title: Text(result.title, maxLines: 1, overflow: TextOverflow.ellipsis),
+      subtitle: Text(typeLabel),
     );
   }
 }

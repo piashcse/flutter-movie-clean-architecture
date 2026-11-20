@@ -1,83 +1,92 @@
-import 'package:dio/dio.dart';
+import 'package:flutter_movie_clean_architecture/core/models/credit_model.dart';
+import 'package:flutter_movie_clean_architecture/core/network/tmdb_client.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/artist_detail_model.dart';
-import 'package:flutter_movie_clean_architecture/features/movie/data/models/credit_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/movie_detail_model.dart';
 import 'package:flutter_movie_clean_architecture/features/movie/data/models/movie_model.dart';
 
-class MovieRemoteDataSource {
-  final Dio dio;
+abstract interface class MovieRemoteDataSource {
+  Future<List<MovieModel>> getNowPlaying(int page);
 
-  MovieRemoteDataSource(this.dio);
+  Future<List<MovieModel>> getPopular(int page);
 
-  Future<List<MovieModel>> getNowPlaying(int page) async {
-    final response =
-        await dio.get('movie/now_playing', queryParameters: {'page': page});
-    return (response.data['results'] as List)
-        .map((e) => MovieModel.fromJson(e))
-        .toList();
-  }
+  Future<List<MovieModel>> getTopRated(int page);
 
-  Future<List<MovieModel>> getPopular(int page) async {
-    final response =
-        await dio.get('movie/popular', queryParameters: {'page': page});
-    return (response.data['results'] as List)
-        .map((e) => MovieModel.fromJson(e))
-        .toList();
-  }
+  Future<List<MovieModel>> getUpcoming(int page);
 
-  Future<List<MovieModel>> getUpcoming(int page) async {
-    final response =
-        await dio.get('movie/upcoming', queryParameters: {'page': page});
-    return (response.data['results'] as List)
-        .map((e) => MovieModel.fromJson(e))
-        .toList();
-  }
+  Future<MovieDetailModel> getMovieDetail(int movieId);
 
-  Future<List<MovieModel>> getTopRated(int page) async {
-    final response =
-        await dio.get('movie/top_rated', queryParameters: {'page': page});
-    return (response.data['results'] as List)
-        .map((e) => MovieModel.fromJson(e))
-        .toList();
-  }
+  Future<List<MovieModel>> searchMovies(String query);
 
-  Future<MovieDetailModel> getMovieDetail(int id) async {
-    final response = await dio.get('/movie/$id');
-    if (response.statusCode == 200 &&
-        response.data != null &&
-        response.data is Map<String, dynamic>) {
-      return MovieDetailModel.fromJson(response.data as Map<String, dynamic>);
-    } else {
-      throw Exception('Failed to load movie detail: Invalid response');
-    }
-  }
+  Future<List<MovieModel>> getRecommendedMovies(int movieId);
 
-  Future<List<MovieModel>> getMovieSearch(String query) async {
-    final response =
-        await dio.get('/search/movie', queryParameters: {'query': query});
-    return (response.data['results'] as List)
-        .map((e) => MovieModel.fromJson(e))
-        .toList();
-  }
+  Future<CreditModel> getMovieCredits(int movieId);
 
-  Future<List<MovieModel>> getRecommendedMovie(int movieId) async {
-    final response = await dio.get('movie/$movieId/recommendations');
-    return (response.data['results'] as List)
-        .map((e) => MovieModel.fromJson(e))
-        .toList();
-  }
+  Future<ArtistDetailModel> getArtistDetail(int artistId);
 
-  Future<CreditModel> getMovieCredits(int movieId) async {
-    final response = await dio.get('movie/$movieId/credits');
-    return CreditModel.fromJson(response.data as Map<String, dynamic>);
-  }
+  Future<CreditModel> getArtistCredits(int artistId);
+}
 
-  Future<ArtistDetailModel> getArtistDetail(int artistId) async {
-    final response = await dio.get('person/$artistId');
-    return ArtistDetailModel.fromJson(response.data as Map<String, dynamic>);
-  }
-  Future<CreditModel> getArtistAllMovies(int artistId) async {
-      final response = await dio.get('person/$artistId/combined_credits');
-      return CreditModel.fromJson(response.data as Map<String, dynamic>);
-  }
+class MovieRemoteDataSourceImpl implements MovieRemoteDataSource {
+  const MovieRemoteDataSourceImpl(this._client);
+
+  final TmdbClient _client;
+
+  static const _pageKey = 'page';
+
+  @override
+  Future<List<MovieModel>> getNowPlaying(int page) => _client.getList(
+    'movie/now_playing',
+    MovieModel.fromJson,
+    query: {_pageKey: page},
+  );
+
+  @override
+  Future<List<MovieModel>> getPopular(int page) => _client.getList(
+    'movie/popular',
+    MovieModel.fromJson,
+    query: {_pageKey: page},
+  );
+
+  @override
+  Future<List<MovieModel>> getTopRated(int page) => _client.getList(
+    'movie/top_rated',
+    MovieModel.fromJson,
+    query: {_pageKey: page},
+  );
+
+  @override
+  Future<List<MovieModel>> getUpcoming(int page) => _client.getList(
+    'movie/upcoming',
+    MovieModel.fromJson,
+    query: {_pageKey: page},
+  );
+
+  @override
+  Future<MovieDetailModel> getMovieDetail(int movieId) async =>
+      MovieDetailModel.fromJson(await _client.getObject('movie/$movieId'));
+
+  @override
+  Future<List<MovieModel>> searchMovies(String query) => _client.getList(
+    'search/movie',
+    MovieModel.fromJson,
+    query: {'query': query},
+  );
+
+  @override
+  Future<List<MovieModel>> getRecommendedMovies(int movieId) =>
+      _client.getList('movie/$movieId/recommendations', MovieModel.fromJson);
+
+  @override
+  Future<CreditModel> getMovieCredits(int movieId) async =>
+      CreditModel.fromJson(await _client.getObject('movie/$movieId/credits'));
+
+  @override
+  Future<ArtistDetailModel> getArtistDetail(int artistId) async =>
+      ArtistDetailModel.fromJson(await _client.getObject('person/$artistId'));
+
+  @override
+  Future<CreditModel> getArtistCredits(int artistId) async =>
+      CreditModel.fromJson(
+        await _client.getObject('person/$artistId/combined_credits'),
+      );
 }
